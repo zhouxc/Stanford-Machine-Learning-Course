@@ -1,0 +1,11 @@
+*~
+*.pyc
+build/*
+*.pdf
+*.aux
+*.log
+*.out
+*.sqlite
+.DS_Store
+versions/tarballs/tarball_*.tar.gz
+versions/versioninfo.js
