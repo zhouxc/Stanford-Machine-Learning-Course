@@ -1,0 +1,359 @@
+Anomaly	  
+detec-on	  
+Problem	  
+mo-va-on	  
+Machine	  Learning	  
+
+Anomaly	  detec-on	  example	  
+Dataset:	  
+	  
+New	  engine:	  
+
+(vibra-on)	  
+
+Aircra9	  engine	  features:	  
+	  =	  heat	  generated	  
+	  =	  vibra-on	  intensity	  
+	  	  	  	  	  …	  
+
+(heat)	  
+
+Andrew	  Ng	  
+
+Density	  es-ma-on	  
+
+(vibra-on)	  
+
+Dataset:	  
+Is	  	  	  	  	  	  	  	  	  	  	  	  anomalous?	  
+
+(heat)	  
+
+Andrew	  Ng	  
+
+Anomaly	  detec-on	  example	  
+Fraud	  detec-on:	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  =	  features	  of	  user	  	  	  ’s	  ac-vi-es	  
+Model	  	  	  	  	  	  	  	  	  from	  data.	  
+Iden-fy	  unusual	  users	  by	  checking	  which	  have	  	  
+Manufacturing	  
+Monitoring	  computers	  in	  a	  data	  center.	  
+	  	  	  	  	  	  	  =	  features	  of	  machine	  	  
+	  	  	  	  	  	  	  =	  memory	  use,	  	  	  	  	  	  	  	  =	  number	  of	  disk	  accesses/sec,	  
+	  	  	  	  	  	  	  =	  CPU	  load,	  	  	  	  	  	  	  	  =	  CPU	  load/network	  traﬃc.	  
+…	  
+	  
+
+Andrew	  Ng	  
+
+Anomaly	  
+detec-on	  
+Gaussian	  
+distribu-on	  
+Machine	  Learning	  
+
+Gaussian	  (Normal)	  distribu-on	  
+Say	  	  	  	  	  	  	  	  	  	  .	  If	  	  	  	  is	  a	  distributed	  Gaussian	  with	  mean	  	  	  	  ,	  variance	  	  	  	  	  	  .	  
+
+Andrew	  Ng	  
+
+Gaussian	  distribu-on	  example	  
+
+Andrew	  Ng	  
+
+Parameter	  es-ma-on	  
+Dataset:	  
+
+Andrew	  Ng	  
+
+Anomaly	  
+detec-on	  
+Algorithm	  
+Machine	  Learning	  
+
+Density	  es-ma-on	  
+Training	  set:	  
+Each	  example	  is	  	  
+
+Andrew	  Ng	  
+
+Anomaly	  detec-on	  algorithm	  
+1.  Choose	  features	  	  	  	  	  	  that	  you	  think	  might	  be	  indica-ve	  of	  
+anomalous	  examples.	  
+2.  Fit	  parameters	  
+	  
+	  
+	  
+	  
+3.  Given	  new	  example	  	  	  	  ,	  compute	  	  	  	  	  	  	  	  	  :	  	  
+	  
+	  	  	  	  	  	  	  Anomaly	  if	  	  
+
+Andrew	  Ng	  
+
+Anomaly	  detec-on	  example	  
+
+Andrew	  Ng	  
+
+Anomaly	  
+detec-on	  
+Developing	  and	  
+evalua-ng	  an	  anomaly	  
+detec-on	  system	  
+Machine	  Learning	  
+
+The	  importance	  of	  real-­‐number	  evalua-on	  
+When	  developing	  a	  learning	  algorithm	  (choosing	  features,	  etc.),	  
+making	  decisions	  is	  much	  easier	  if	  we	  have	  a	  way	  of	  evalua-ng	  
+our	  learning	  algorithm.	  
+Assume	  we	  have	  some	  labeled	  data,	  of	  anomalous	  and	  non-­‐
+anomalous	  examples.	  	  (	  	  	  	  	  	  	  	  	  	  	  	  if	  normal,	  	  	  	  	  	  	  	  	  	  	  	  	  if	  anomalous).	  
+Training	  set: 	  
+anomalous)	  
+
+	  
+
+	  	  	  	  	  	  	  (assume	  normal	  examples/not	  
+
+Cross	  valida-on	  set:	  
+Test	  set:	  
+
+Andrew	  Ng	  
+
+AircraA	  engines	  mo-va-ng	  example	  
+10000	  	  good	  (normal)	  engines	  
+20	  
+	  ﬂawed	  engines	  (anomalous)	  
+Training	  set:	  6000	  good	  engines	  
+CV:	  2000	  good	  engines	  (	  
+	  	  ),	  10	  anomalous	  (	  	  	  	  	  	  	  	  	  	  	  )	  
+Test:	  2000	  good	  engines	  (	  	  	  	  	  	  	  	  	  	  	  ),	  10	  anomalous	  (	  	  	  	  	  	  	  	  	  	  	  )	  
+Alterna-ve:	  
+Training	  set:	  6000	  good	  engines	  
+CV:	  4000	  good	  engines	  (	  
+	  	  ),	  10	  anomalous	  (	  	  	  	  	  	  	  	  	  	  	  )	  
+Test:	  4000	  good	  engines	  (	  	  	  	  	  	  	  	  	  	  	  ),	  10	  anomalous	  (	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+Algorithm	  evalua-on	  
+Fit	  model	  	  	  	  	  	  	  	  	  	  on	  training	  set	  
+On	  a	  cross	  valida-on/test	  example	  	  	  	  	  ,	  predict	  
+
+Possible	  evalua-on	  metrics:	  
+	  -­‐	  True	  posi-ve,	  false	  posi-ve,	  false	  nega-ve,	  true	  nega-ve	  
+	  -­‐	  Precision/Recall	  
+	  -­‐	  F1-­‐score	  
+Can	  also	  use	  cross	  valida-on	  set	  to	  choose	  parameter	  	  
+
+Andrew	  Ng	  
+
+Anomaly	  
+detec-on	  
+Machine	  Learning	  
+
+Anomaly	  detec-on	  
+vs.	  supervised	  
+learning	  
+
+Anomaly	  detec-on	  
+
+vs.	  
+
+Very	  small	  number	  of	  posi-ve	  
+examples	  (	  	  	  	  	  	  	  	  	  	  	  ).	  (0-­‐20	  is	  
+common).	  
+Large	  number	  of	  nega-ve	  (	  	  	  	  	  	  	  	  	  	  	  )	  
+examples.	  
+Many	  diﬀerent	  “types”	  of	  
+anomalies.	  Hard	  for	  any	  algorithm	  
+to	  learn	  from	  posi-ve	  examples	  
+what	  the	  anomalies	  look	  like;	  
+future	  anomalies	  may	  look	  nothing	  
+like	  any	  of	  the	  anomalous	  
+examples	  we’ve	  seen	  so	  far.	  
+
+Supervised	  learning	  
+
+Large	  number	  of	  posi-ve	  and	  
+nega-ve	  examples.	  
+	  
+	  
+	  
+Enough	  posi-ve	  examples	  for	  
+algorithm	  to	  get	  a	  sense	  of	  what	  
+posi-ve	  examples	  are	  like,	  	  future	  
+posi-ve	  examples	  likely	  to	  be	  
+similar	  to	  ones	  in	  training	  set.	  
+
+Andrew	  Ng	  
+
+Anomaly	  detec-on	  
+•  Fraud	  detec-on	  
+	  
+•  Manufacturing	  (e.g.	  aircra9	  
+engines)	  
+	  
+•  Monitoring	  machines	  in	  a	  data	  
+center	  
+
+vs.	  
+
+Supervised	  learning	  
+
+•  Email	  spam	  classiﬁca-on	  
+	  
+•  Weather	  predic-on	  (sunny/
+rainy/etc).	  
+	  
+•  Cancer	  classiﬁca-on	  
+
+Andrew	  Ng	  
+
+Anomaly	  
+detec-on	  
+Choosing	  what	  
+features	  to	  use	  
+Machine	  Learning	  
+
+Non-­‐gaussian	  features	  
+
+Error	  analysis	  for	  anomaly	  detec-on	  
+Want 	  
+	  large	  for	  normal	  examples	  	  	  	  .	  
+	  
+	  small	  for	  anomalous	  examples	  	  	  	  .	  
+Most	  common	  problem:	  
+	  
+	  is	  comparable	  (say,	  both	  large)	  for	  normal	  
+	  and	  anomalous	  examples	  
+
+Monitoring	  computers	  in	  a	  data	  center	  
+Choose	  features	  that	  might	  take	  on	  unusually	  large	  or	  
+small	  values	  in	  the	  event	  of	  an	  anomaly.	  
+	  =	  memory	  use	  of	  computer	  
+	  =	  number	  of	  disk	  accesses/sec	  
+	  =	  CPU	  load	  
+	  =	  network	  traﬃc	  
+	  
+
+Anomaly	  
+detec-on	  
+Mul-variate	  
+Gaussian	  distribu-on	  
+Machine	  Learning	  
+
+(Memory	  Use)	  
+
+Mo-va-ng	  example:	  Monitoring	  machines	  in	  a	  data	  center	  
+
+(CPU	  Load)	  
+
+(CPU	  Load)	  
+(Memory	  Use)	  
+
+Andrew	  Ng	  
+
+Mul-variate	  Gaussian	  (Normal)	  distribu-on	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  .	  Don’t	  model
+	  
+	  
+	  	  	  	  etc.	  separately.	  
+Model	  	  	  	  	  	  	  	  	  	  	  all	  in	  one	  go.	  
+Parameters:	  
+	  
+	  
+	  (covariance	  matrix)	  
+
+Andrew	  Ng	  
+
+Mul-variate	  Gaussian	  (Normal)	  examples	  
+
+Andrew	  Ng	  
+
+Mul-variate	  Gaussian	  (Normal)	  examples	  
+
+Andrew	  Ng	  
+
+Mul-variate	  Gaussian	  (Normal)	  examples	  
+
+Andrew	  Ng	  
+
+Mul-variate	  Gaussian	  (Normal)	  examples	  
+
+Andrew	  Ng	  
+
+Mul-variate	  Gaussian	  (Normal)	  examples	  
+
+Andrew	  Ng	  
+
+Mul-variate	  Gaussian	  (Normal)	  examples	  
+
+Andrew	  Ng	  
+
+Anomaly	  
+detec-on	  
+Anomaly	  detec-on	  using	  
+the	  mul-variate	  
+Gaussian	  distribu-on	  
+Machine	  Learning	  
+
+Mul-variate	  Gaussian	  (Normal)	  distribu-on	  
+Parameters	  	  
+
+Parameter	  ﬁfng:	  
+Given	  training	  set	  
+
+Andrew	  Ng	  
+
+Anomaly	  detec-on	  with	  the	  mul-variate	  Gaussian	  
+1.	  Fit	  model	  	  	  	  	  	  	  	  	  	  by	  sefng	  
+
+2.	  Given	  a	  new	  example	  	  	  	  ,	  compute	  
+	  
+	  
+	  
+	  	  	  	  Flag	  an	  anomaly	  if	  	  
+
+Andrew	  Ng	  
+
+Rela-onship	  to	  original	  model	  
+Original	  model:	  	  
+
+Corresponds	  to	  mul-variate	  Gaussian	  
+	  
+	  
+	  
+where	  
+
+Andrew	  Ng	  
+
+Original	  model	  
+
+vs.	  
+
+Mul-variate	  Gaussian	  
+
+Manually	  create	  features	  to	  
+capture	  anomalies	  where	  	  	  	  	  	  	  	  	  	  	  	  	  	  
+take	  unusual	  combina-ons	  of	  
+values.	  
+
+Automa-cally	  captures	  
+correla-ons	  between	  features	  
+
+Computa-onally	  cheaper	  
+(alterna-vely,	  scales	  beger	  to	  
+large	  
+	  	  	  	  )	  
+OK	  even	  if	  	  	  	  	  (training	  set	  size)	  is	  
+small	  
+
+Computa-onally	  more	  expensive	  
+
+Must	  have	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  or	  else	  	  	  	  	  is	  
+non-­‐inver-ble.	  
+
+Andrew	  Ng	  
+
+

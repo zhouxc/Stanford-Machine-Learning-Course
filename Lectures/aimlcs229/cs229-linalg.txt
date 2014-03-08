@@ -1,0 +1,1510 @@
+Linear Algebra Review and Reference
+Zico Kolter
+October 16, 2007
+
+1
+
+Basic Concepts and Notation
+
+Linear algebra provides a way of compactly representing and operating on sets of linear
+equations. For example, consider the following system of equations:
+4x1 − 5x2 = −13
+−2x1 + 3x2 = 9 .
+This is two equations and two variables, so as you know from high school algebra, you
+can find a unique solution for x1 and x2 (unless the equations are somehow degenerate, for
+example if the second equation is simply a multiple of the first, but in the case above there
+is in fact a unique solution). In matrix notation, we can write the system more compactly
+as:
+Ax = b
+13
+4 −5
+.
+,b=
+with A =
+−9
+−2 3
+As we will see shortly, there are many advantages (including the obvious space savings)
+to analyzing linear equations in this form.
+
+1.1
+
+Basic Notation
+
+We use the following notation:
+• By A ∈ Rm×n we denote a matrix with m rows and n columns, where the entries of A
+are real numbers.
+• By x ∈ Rn , we denote a vector with n entries. Usually a vector x will denote a column
+vector — i.e., a matrix with n rows and 1 column. If we want to explicitly represent
+a row vector — a matrix with 1 row and n columns — we typically write xT (here
+xT denotes the transpose of x, which we will define shortly).
+
+1
+
+• The ith element of a vector x is denoted xi :
+
+x1
+ x2
+
+x =  ..
+ .
+
+xn
+
+• We use the notation aij (or Aij , Ai,j , etc) to
+jth column:
+
+a11 a12
+ a21 a22
+
+A =  ..
+..
+ .
+.
+am1 am2
+
+
+
+
+
+.
+
+
+denote the entry of A in the ith row and
+···
+···
+...
+
+a1n
+a2n
+..
+.
+
+· · · amn
+
+
+
+
+
+.
+
+
+• We denote the jth column of A by aj or A:,j :
+
+
+| |
+|
+A =  a 1 a2 · · · an  .
+| |
+|
+• We denote the ith row of A by aTi or Ai,: :
+
+
+— aT1 —
+ — aT — 
+2
+
+
+A=
+.
+..
+
+
+.
+T
+— am —
+
+• Note that these definitions are ambiguous (for example, the a1 and aT1 in the previous
+two definitions are not the same vector). Usually the meaning of the notation should
+be obvious from its use.
+
+2
+
+Matrix Multiplication
+
+The product of two matrices A ∈ Rm×n and B ∈ Rn×p is the matrix
+C = AB ∈ Rm×p ,
+where
+
+n
+
+Cij =
+
+Aik Bkj .
+k=1
+
+Note that in order for the matrix product to exist, the number of columns in A must equal
+the number of rows in B. There are many ways of looking at matrix multiplication, and
+we’ll start by examining a few special cases.
+2
+
+2.1
+
+Vector-Vector Products
+
+Given two vectors x, y ∈ Rn , the quantity xT y, sometimes called the inner product or dot
+product of the vectors, is a real number given by
+n
+
+xT y ∈ R =
+
+xi yi .
+i=1
+
+Note that it is always the case that xT y = y T x.
+Given vectors x ∈ Rm , y ∈ Rn (they no longer have to be the same size), xy T is called
+the outer product of the vectors. It is a matrix whose entries are given by (xy T )ij = xi yj ,
+i.e.,
+
+
+x1 y1 x1 y2 · · · x1 yn
+ x2 y1 x2 y2 · · · x2 yn 
+
+
+xy T ∈ Rm×n =  ..
+..
+..  .
+.
+.
+ .
+.
+.
+. 
+xm y1 xm y2 · · · xm yn
+
+2.2
+
+Matrix-Vector Products
+
+Given a matrix A ∈ Rm×n and a vector x ∈ Rn , their product is a vector y = Ax ∈ Rm .
+There are a couple ways of looking at matrix-vector multiplication, and we will look at them
+both.
+If we write A by rows, then we can express Ax as,
+
+
+
+
+aT1 x
+— aT1 —
+ aT x 
+ — aT — 
+2
+
+ 2 
+
+x
+=
+y=
+
+ ..  .
+..
+
+ . 
+
+.
+T
+aTm x
+— am —
+In other words, the ith entry of y is equal to the inner product of the ith row of A and x,
+yi = aTi x.
+Alternatively, lets write A in column form. In this case we see that,
+
+
+
+
+
+
+
+
+ x1
+
+| |
+|
+ x2 
+
+
+y =  a1 a2 · · · an   ..  =  a1  x1 +  a2  x2 + . . . +  an  xn .
+ . 
+| |
+|
+xn
+
+In other words, y is a linear combination of the columns of A, where the coefficients of
+the linear combination are given by the entries of x.
+So far we have been multiplying on the right by a column vector, but it is also possible
+to multiply on the left by a row vector. This is written, y T = xT A for A ∈ Rm×n , x ∈ Rm ,
+and y ∈ Rn . As before, we can express y T in two obvious ways, depending on whether we
+3
+
+express A in terms on its rows or columns. In the first case we express A in terms of its
+columns, which gives
+
+
+| |
+|
+y T = x T  a1 a 2 · · · an  = x T a 1 x T a2 · · · x T a n
+| |
+|
+
+which demonstrates that the ith entry of y T is equal to the inner product of x and the ith
+column of A.
+Finally, expressing A in terms of rows we get the final representation of the vector-matrix
+product,
+
+
+— aT1 —
+ — aT — 
+2
+
+
+T
+x1 x2 · · · xn 
+y =
+
+..
+
+
+.
+T
+— am —
+= x1
+
+— aT1 —
+
++ x2
+
+— aT2 —
+
++ ... + xn
+
+— aTn —
+
+so we see that y T is a linear combination of the rows of A, where the coefficients for the
+linear combination are given by the entries of x.
+
+2.3
+
+Matrix-Matrix Products
+
+Armed with this knowledge, we can now look at four different (but, of course, equivalent)
+ways of viewing the matrix-matrix multiplication C = AB as defined at the beginning of this
+section. First we can view matrix-matrix multiplication as a set of vector-vector products.
+The most obvious viewpoint, which follows immediately from the definition, is that the
+i, j entry of C is equal to the inner product of the ith row of A and the jth row of B.
+Symbolically, this looks like the following,
+
+
+
+
+aT1 b1 aT1 b2 · · · aT1 bp
+— aT1 — 
+
+| |
+|
+ aT b 1 aT b 2 · · · aT b p 
+ — aT — 
+2
+2
+2
+
+ 2
+
+
+
+b
+b
+·
+·
+·
+b
+=
+C = AB = 
+ ..
+
+..
+..  .
+..
+1
+2
+p
+...
+
+
+
+.
+.
+. 
+.
+| |
+|
+T
+T
+T
+T
+a m b 1 am b 2 · · · am b p
+— am —
+Remember that since A ∈ Rm×n and B ∈ Rn×p , ai ∈ Rn and bj ∈ Rn , so these inner products
+all make sense. This is the most “natural” representation when we represent A by rows and
+B by columns. Alternatively, we can represent A by columns, and B by rows, which leads
+to the interpretation of AB as a sum of outer products. Symbolically,
+
+
+ — bT1 —
+
+n
+| |
+|
+ — bT — 
+2
+
+
+
+
+ai bTi .
+C = AB = a1 a2 · · · an 
+=
+..
+ i=1
+
+.
+| |
+|
+T
+— bn —
+4
+
+Put another way, AB is equal to the sum, over all i, of the outer product of the ith column
+of A and the ith row of B. Since, in this case, ai ∈ Rm and bi ∈ Rp , the dimension of the
+outer product ai bTi is m × p, which coincides with the dimension of C.
+Second, we can also view matrix-matrix multiplication as a set of matrix-vector products.
+Specifically, if we represent B by columns, we can view the columns of C as matrix-vector
+products between A and the columns of B. Symbolically,
+
+ 
+
+|
+|
+|
+| |
+|
+C = AB = A  b1 b2 · · · bp  =  Ab1 Ab2 · · · Abp  .
+|
+|
+|
+| |
+|
+
+Here the ith column of C is given by the matrix-vector product with the vector on the right,
+ci = Abi . These matrix-vector products can in turn be interpreted using both viewpoints
+given in the previous subsection. Finally, we have the analogous viewpoint, where we represent A by rows, and view the rows of C as the matrix-vector product between the rows of A
+and C. Symbolically,
+
+
+
+
+— aT1 B —
+— aT1 —
+ — aT B — 
+ — aT — 
+2
+2
+
+
+
+
+B
+=
+C = AB = 
+.
+
+
+..
+..
+
+
+
+
+.
+.
+T
+T
+— am B —
+— am —
+
+Here the ith row of C is given by the matrix-vector product with the vector on the left,
+cTi = aTi B.
+It may seem like overkill to dissect matrix multiplication to such a large degree, especially
+when all these viewpoints follow immediately from the initial definition we gave (in about a
+line of math) at the beginning of this section. However, virtually all of linear algebra deals
+with matrix multiplications of some kind, and it is worthwhile to spend some time trying to
+develop an intuitive understanding of the viewpoints presented here.
+In addition to this, it is useful to know a few basic properties of matrix multiplication at
+a higher level:
+• Matrix multiplication is associative: (AB)C = A(BC).
+• Matrix multiplication is distributive: A(B + C) = AB + AC.
+• Matrix multiplication is, in general, not commutative; that is, it can be the case that
+AB = BA.
+
+3
+
+Operations and Properties
+
+In this section we present several operations and properties of matrices and vectors. Hopefully a great deal of this will be review for you, so the notes can just serve as a reference for
+these topics.
+5
+
+3.1
+
+The Identity Matrix and Diagonal Matrices
+
+The identity matrix , denoted I ∈ Rn×n , is a square matrix with ones on the diagonal and
+zeros everywhere else. That is,
+1 i=j
+Iij =
+0 i=j
+It has the property that for all A ∈ Rm×n ,
+AI = A = IA
+where the size of I is determined by the dimensions of A so that matrix multiplication is
+possible.
+A diagonal matrix is a matrix where all non-diagonal elements are 0. This is typically
+denoted D = diag(d1 , d2 , . . . , dn ), with
+Dij =
+
+di i = j
+0 i=j
+
+Clearly, I = diag(1, 1, . . . , 1).
+
+3.2
+
+The Transpose
+
+The transpose of a matrix results from “flipping” the rows and columns. Given a matrix
+A ∈ Rm×n , is transpose, written AT , is defined as
+AT ∈ Rn×m , (AT )ij = Aji .
+We have in fact already been using the transpose when describing row vectors, since the
+transpose of a column vector is naturally a row vector.
+The following properties of transposes are easily verified:
+• (AT )T = A
+• (AB)T = B T AT
+• (A + B)T = AT + B T
+
+3.3
+
+Symmetric Matrices
+
+A square matrix A ∈ Rn×n is symmetric if A = AT . It is anti-symmetric if A = −AT .
+It is easy to show that for any matrix A ∈ Rn×n , the matrix A + AT is symmetric and the
+matrix A − AT is anti-symmetric. From this it follows that any square matrix A ∈ Rn×n can
+be represented as a sum of a symmetric matrix and an anti-symmetric matrix, since
+1
+1
+A = (A + AT ) + (A − AT )
+2
+2
+6
+
+and the first matrix on the right is symmetric, while the second is anti-symmetric. It turns out
+that symmetric matrices occur a great deal in practice, and they have many nice properties
+which we will look at shortly. It is common to denote the set of all symmetric matrices of
+size n as Sn , so that A ∈ Sn means that A is a symmetric n × n matrix;
+
+3.4
+
+The Trace
+
+The trace of a square matrix A ∈ Rn×n , denoted tr(A) (or just trA if the parentheses are
+obviously implied), is the sum of diagonal elements in the matrix:
+n
+
+trA =
+
+Aii .
+i=1
+
+As described in the CS229 lecture notes, the trace has the following properties (included
+here for the sake of completeness):
+• For A ∈ Rn×n , trA = trAT .
+• For A, B ∈ Rn×n , tr(A + B) = trA + trB.
+• For A ∈ Rn×n , t ∈ R, tr(tA) = t trA.
+• For A, B such that AB is square, trAB = trBA.
+• For A, B, C such that ABC is square, trABC = trBCA = trCAB, and so on for the
+product of more matrices.
+
+3.5
+
+Norms
+
+A norm of a vector x is informally measure of the “length” of the vector. For example,
+we have the commonly-used Euclidean or ℓ2 norm,
+n
+
+x
+
+2
+
+x2i .
+
+=
+i=1
+
+Note that x 22 = xT x.
+More formally, a norm is any function f : Rn → R that satisfies 4 properties:
+1. For all x ∈ Rn , f (x) ≥ 0 (non-negativity).
+2. f (x) = 0 if and only if x = 0 (definiteness).
+3. For all x ∈ Rn , t ∈ R, f (tx) = |t|f (x) (homogeneity).
+4. For all x, y ∈ Rn , f (x + y) ≤ f (x) + f (y) (triangle inequality).
+7
+
+Other examples of norms are the ℓ1 norm,
+n
+
+x
+
+1
+
+|xi |
+
+=
+i=1
+
+and the ℓ∞ norm,
+x
+
+∞
+
+= maxi |xi |.
+
+In fact, all three norms presented so far are examples of the family of ℓp norms, which are
+parameterized by a real number p ≥ 1, and defined as
+1/p
+
+n
+
+x
+
+p
+
+|xi |p
+
+=
+
+.
+
+i=1
+
+Norms can also be defined for matrices, such as the Frobenius norm,
+m
+
+A
+
+F
+
+n
+
+A2ij =
+
+=
+
+tr(AT A).
+
+i=1 j=1
+
+Many other norms exist, but they are beyond the scope of this review.
+
+3.6
+
+Linear Independence and Rank
+
+A set of vectors {x1 , x2 , . . . xn } is said to be (linearly) independent if no vector can be
+represented as a linear combination of the remaining vectors. Conversely, a vector which
+can be represented as a linear combination of the remaining vectors is said to be (linearly)
+dependent. For example, if
+n−1
+
+xn =
+
+αi xi
+i=1
+
+for some {α1 , . . . , αn−1 } then xn is dependent on {x1 , . . . , xn−1 }; otherwise, it is independent
+of {x1 , . . . , xn−1 }.
+The column rank of a matrix A is the largest number of columns of A that constitute
+linearly independent set. This is often referred to simply as the number of linearly independent columns, but this terminology is a little sloppy, since it is possible that any vector in
+some set {x1 , . . . xn } can be expressed as a linear combination of the remaining vectors, even
+though some subset of the vectors might be independent. In the same way, the row rank
+is the largest number of rows of A that constitute a linearly independent set.
+It is a basic fact of linear algebra, that for any matrix A, columnrank(A) = rowrank(A),
+and so this quantity is simply refereed to as the rank of A, denoted as rank(A). The
+following are some basic properties of the rank:
+• For A ∈ Rm×n , rank(A) ≤ min(m, n). If rank(A) = min(m, n), then A is said to be
+full rank .
+8
+
+• For A ∈ Rm×n , rank(A) = rank(AT ).
+• For A ∈ Rm×n , B ∈ Rn×p , rank(AB) ≤ min(rank(A), rank(B)).
+• For A, B ∈ Rm×n , rank(A + B) ≤ rank(A) + rank(B).
+
+3.7
+
+The Inverse
+
+The inverse of a square matrix A ∈ Rn×n is denoted A−1 , and is the unique matrix such
+that
+A−1 A = I = AA−1 .
+It turns out that A−1 may not exist for some matrices A; we say A is invertible or nonsingular if A−1 exists and non-invertible or singular otherwise. One condition for
+invertibility we already know: it is possible to show that A−1 exists if and only if A is full
+rank. We will soon see that there are many alternative sufficient and necessary conditions, in
+addition to full rank, for invertibility. The following are properties of the inverse; all assume
+that A, B ∈ Rn×n are non-singular:
+• (A−1 )−1 = A
+• If Ax = b, we can multiply by A−1 on both sides to obtain x = A−1 b. This demonstrates
+the inverse with respect to the original system of linear equalities we began this review
+with.
+• (AB)−1 = B −1 A−1
+• (A−1 )T = (AT )−1 . For this reason this matrix is often denoted A−T .
+
+3.8
+
+Orthogonal Matrices
+
+Two vectors x, y ∈ Rn are orthogonal if xT y = 0. A vector x ∈ Rn is normalized if
+x 2 = 1. A square matrix U ∈ Rn×n is orthogonal (note the different meanings when
+talking about vectors versus matrices) if all its columns are orthogonal to each other and are
+normalized (the columns are then referred to as being orthonormal ).
+It follows immediately from the definition of orthogonality and normality that
+UT U = I = UUT .
+In other words, the inverse of an orthogonal matrix is its transpose. Note that if U is not
+square — i.e., U ∈ Rm×n , n < m — but its columns are still orthonormal, then U T U = I,
+but U U T = I. We generally only use the term orthogonal to describe the previous case,
+where U is square.
+Another nice property of orthogonal matrices is that operating on a vector with an
+orthogonal matrix will not change its Euclidean norm, i.e.,
+Ux
+n
+
+n×n
+
+for any x ∈ R , U ∈ R
+
+2
+
+= x
+
+orthogonal.
+9
+
+2
+
+3.9
+
+Range and Nullspace of a Matrix
+
+The span of a set of vectors {x1 , x2 , . . . xn } is the set of all vectors that can be expressed as
+a linear combination of {x1 , . . . , xn }. That is,
+n
+
+span({x1 , . . . xn }) =
+
+αi xi , αi ∈ R .
+
+v:v=
+i=1
+
+It can be shown that if {x1 , . . . , xn } is a set of n linearly independent vectors, where each
+xi ∈ Rn , then span({x1 , . . . xn }) = Rn . In other words, any vector v ∈ Rn can be written as
+a linear combination of x1 through xn . The projection of a vector y ∈ Rm onto the span
+of {x1 , . . . , xn } (here we assume xi ∈ Rm ) is the vector v ∈ span({x1 , . . . xn }) , such that
+v as close as possible to y, as measured by the Euclidean norm v − y 2 . We denote the
+projection as Proj(y; {x1 , . . . , xn }) and can define it formally as,
+Proj(y; {x1 , . . . xn }) = argminv∈span({x1 ,...,xn }) y − v 2 .
+The range (sometimes also called the columnspace) of a matrix A ∈ Rm×n , denoted
+R(A), is the the span of the columns of A. In other words,
+R(A) = {v ∈ Rm : v = Ax, x ∈ Rn }.
+Making a few technical assumptions (namely that A is full rank and that n < m), the
+projection of a vector y ∈ Rm onto the range of A is given by,
+Proj(y; A) = argminv∈R(A) v − y
+
+2
+
+= A(AT A)−1 AT y .
+
+This last equation should look extremely familiar, since it is almost the same formula we
+derived in class (and which we will soon derive again) for the least squares estimation of
+parameters. Looking at the definition for the projection, it should not be too hard to
+convince yourself that this is in fact the same objective that we minimized in our least
+squares problem (except for a squaring of the norm, which doesn’t affect the optimal point)
+and so these problems are naturally very connected. When A contains only a single column,
+a ∈ Rm , this gives the special case for a projection of a vector on to a line:
+aaT
+Proj(y; a) = T y .
+a a
+m×n
+The nullspace of a matrix A ∈ R
+, denoted N (A) is the set of all vectors that equal
+0 when multiplied by A, i.e.,
+N (A) = {x ∈ Rn : Ax = 0}.
+Note that vectors in R(A) are of size m, while vectors in the N (A) are of size n, so vectors
+in R(AT ) and N (A) are both in Rn . In fact, we can say much more. It turns out that
+w : w = u + v, u ∈ R(AT ), v ∈ N (A) = Rn and R(AT ) ∩ N (A) = ∅ .
+In other words, R(AT ) and N (A) are disjoint subsets that together span the entire space of
+Rn . Sets of this type are called orthogonal complements, and we denote this R(AT ) =
+N (A)⊥ .
+10
+
+3.10
+
+The Determinant
+
+The determinant of a square matrix A ∈ Rn×n , is a function det : Rn×n → R, and is
+denoted |A| or detA (like the trace operator, we usually omit parentheses). The full formula
+for the determinant gives little intuition about its meaning, so we instead first give three
+defining properties of the determinant, from which all the rest follow (including the general
+formula):
+1. The determinant of the identity is 1, |I| = 1.
+2. Given a matrix A ∈ Rn×n , if we multiply
+determinant of the new matrix is t|A|,
+
+— t aT1
+ — aT
+2
+
+
+..
+
+.
+— aTm
+3. If we exchange any two rows aTi and aTj
+is −|A|, for example
+
+— aT2
+ — aT
+1
+
+
+..
+
+.
+— aTm
+
+a single row in A by a scalar t ∈ R, then the
+
+—
+— 
+
+ = t|A| .
+
+—
+
+of A, then the determinant of the new matrix
+
+—
+— 
+
+ = −|A| .
+
+—
+
+These properties, however, also give very little intuition about the nature of the determinant, so we now list several properties that follow from the three properties above:
+• For A ∈ Rn×n , |A| = |AT |.
+• For A, B ∈ Rn×n , |AB| = |A||B|.
+• For A ∈ Rn×n , |A| = 0 if and only if A is singular (i.e., non-invertible).
+• For A ∈ Rn×n and A non-singular, |A|−1 = 1/|A|.
+Before given the general definition for the determinant, we define, for A ∈ Rn×n , A\i,\j ∈
+R(n−1)×(n−1) to be the matrix that results from deleting the ith row and jth column from A.
+The general (recursive) formula for the determinant is
+n
+
+|A| =
+
+(−1)i+j aij |A\i,\j |
+
+(for any j ∈ 1, . . . , n)
+
+(−1)i+j aij |A\i,\j |
+
+(for any i ∈ 1, . . . , n)
+
+i=1
+n
+
+=
+j=1
+
+11
+
+with the initial case that |A| = a11 for A ∈ R1×1 . If we were to expand this formula
+completely for A ∈ Rn×n , there would be a total of n! (n factorial) different terms. For this
+reason, we hardly even explicitly write the complete equation of the determinant for matrices
+bigger than 3 × 3. However, the equations for determinants of matrices up to size 3 × 3 are
+fairly common, and it is good to know them:
+
+a11
+a21
+
+
+a11 a12
+ a21 a22
+a31 a32
+
+|[a11 ]| = a11
+a12
+= a11 a22 − a12 a21
+a22
+
+a13
+a11 a22 a33 + a12 a23 a31 + a13 a21 a32
+a23  =
+−a11 a23 a32 − a12 a21 a33 − a13 a22 a31
+a33
+
+The classical adjoint (often just called the adjoint) of a matrix A ∈ Rn×n , is denoted
+adj(A), and defined as
+adj(A) ∈ Rn×n , (adj(A))ij = (−1)i+j |A\j,\i |
+(note the switch in the indices A\j,\i ). It can be shown that for any nonsingular A ∈ Rn×n ,
+A−1 =
+
+1
+adj(A) .
+|A|
+
+While this is a nice “explicit” formula for the inverse of matrix, we should note that, numerically, there are in fact much more efficient ways of computing the inverse.
+
+3.11
+
+Quadratic Forms and Positive Semidefinite Matrices
+
+Given a matrix square A ∈ Rn×n and a vector x ∈ R, the scalar value xT Ax is called a
+quadratic form. Written explicitly, we see that
+n
+
+n
+
+T
+
+x Ax =
+
+Aij xi xj .
+i=1 j=1
+
+Note that,
+
+1
+1
+xT Ax = (xT Ax)T = xT AT x = xT ( A + AT )x
+2
+2
+i.e., only the symmetric part of A contributes to the quadratic form. For this reason, we
+often implicitly assume that the matrices appearing in a quadratic form are symmetric.
+We give the following definitions:
+• A symmetric matrix A ∈ Sn is positive definite (PD) if for all non-zero vectors
+x ∈ Rn , xT Ax > 0. This is usually denoted A ≻ 0 (or just A > 0), and often times the
+set of all positive definite matrices is denoted Sn++ .
+12
+
+• A symmetric matrix A ∈ Sn is position semidefinite (PSD) if for all vectors xT Ax ≥
+0. This is written A 0 (or just A ≥ 0), and the set of all positive semidefinite matrices
+is often denoted Sn+ .
+• Likewise, a symmetric matrix A ∈ Sn is negative definite (ND), denoted A ≺ 0 (or
+just A < 0) if for all non-zero x ∈ Rn , xT Ax < 0.
+• Similarly, a symmetric matrix A ∈ Sn is negative semidefinite (NSD), denoted
+A 0 (or just A ≤ 0) if for all x ∈ Rn , xT Ax ≤ 0.
+• Finally, a symmetric matrix A ∈ Sn is indefinite, if it is neither positive semidefinite
+nor negative semidefinite — i.e., if there exists x1 , x2 ∈ Rn such that xT1 Ax1 > 0 and
+xT2 Ax2 < 0.
+It should be obvious that if A is positive definite, then −A is negative definite and vice
+versa. Likewise, if A is positive semidefinite then −A is negative semidefinite and vice versa.
+If A is indefinite, then so is −A. It can also be shown that positive definite and negative
+definite matrices are always invertible.
+Finally, there is one type of positive definite matrix that comes up frequently, and so
+deserves some special mention. Given any matrix A ∈ Rm×n (not necessarily symmetric or
+even square), the matrix G = AT A (sometimes called a Gram matrix ) is always positive
+semidefinite. Further, if m ≥ n (and we assume for convenience that A is full rank), then
+G = AT A is positive definite.
+
+3.12
+
+Eigenvalues and Eigenvectors
+
+Given a square matrix A ∈ Rn×n , we say that λ ∈ C is an eigenvalue of A and x ∈ Cn is
+the corresponding eigenvector 1 if
+Ax = λx, x = 0 .
+Intuitively, this definition means that multiplying A by the vector x results in a new vector
+that points in the same direction as x, but scaled by a factor λ. Also note that for any
+eigenvector x ∈ Cn , and scalar t ∈ C, A(cx) = cAx = cλx = λ(cx), so cx is also an
+eigenvector. For this reason when we talk about “the” eigenvector associated with λ, we
+usually assume that the eigenvector is normalized to have length 1 (this still creates some
+ambiguity, since x and −x will both be eigenvectors, but we will have to live with this).
+We can rewrite the equation above to state that (λ, x) is an eigenvalue-eigenvector pair
+of A if,
+(λI − A)x = 0, x = 0 .
+1
+
+Note that λ and the entries of x are actually in C, the set of complex numbers, not just the reals; we
+will see shortly why this is necessary. Don’t worry about this technicality for now, you can think of complex
+vectors in the same way as real vectors.
+
+13
+
+But (λI − A)x = 0 has a non-zero solution to x if and only if (λI − A) has a non-empty
+nullspace, which is only the case if (λI − A) is singular, i.e.,
+|(λI − A)| = 0 .
+We can now use the previous definition of the determinant to expand this expression
+into a (very large) polynomial in λ, where λ will have maximum degree n. We then find
+the n (possibly complex) roots of this polynomial to find the n eigenvalues λ1 , . . . , λn . To
+find the eigenvector corresponding to the eigenvalue λi , we simply solve the linear equation
+(λi I − A)x = 0. It should be noted that this is not the method which is actually used
+in practice to numerically compute the eigenvalues and eigenvectors (remember that the
+complete expansion of the determinant has n! terms); it is rather a mathematical argument.
+The following are properties of eigenvalues and eigenvectors (in all cases assume A ∈ Rn×n
+has eigenvalues λi , . . . , λn and associated eigenvectors x1 , . . . xn ):
+• The trace of a A is equal to the sum of its eigenvalues,
+n
+
+trA =
+
+λi .
+i=1
+
+• The determinant of A is equal to the product of its eigenvalues,
+n
+
+|A| =
+
+λi .
+i=1
+
+• The rank of A is equal to the number of non-zero eigenvalues of A.
+• If A is non-singular then 1/λi is an eigenvalue of A−1 with associated eigenvector xi ,
+i.e., A−1 xi = (1/λi )xi .
+• The eigenvalues of a diagonal matrix D = diag(d1 , . . . dn ) are just the diagonal entries
+d1 , . . . dn .
+We can write all the eigenvector equations simultaneously as
+AX = XΛ
+where the columns of X ∈ Rn×n are the eigenvectors of A and Λ is a diagonal matrix whose
+entries are the eigenvalues of A, i.e.,
+
+
+|
+|
+|
+X ∈ Rn×n =  x1 x2 · · · xn  , Λ = diag(λ1 , . . . , λn ) .
+|
+|
+|
+If the eigenvectors of A are linearly independent, then the matrix X will be invertible, so
+A = XΛX −1 . A matrix that can be written in this form is called diagonalizable.
+14
+
+3.13
+
+Eigenvalues and Eigenvectors of Symmetric Matrices
+
+Two remarkable properties come about when we look at the eigenvalues and eigenvectors
+of a symmetric matrix A ∈ Sn . First, it can be shown that all the eigenvalues of A are
+real. Secondly, the eigenvectors of A are orthonormal, i.e., the matrix X defined above is an
+orthogonal matrix (for this reason, we denote the matrix of eigenvectors as U in this case).
+We can therefore represent A as A = U ΛU T , remembering from above that the inverse of
+an orthogonal matrix is just its transpose.
+Using this, we can show that the definiteness of a matrix depends entirely on the sign of
+its eigenvalues. Suppose A ∈ Sn = U ΛU T . Then
+n
+
+xT Ax = xT U ΛU T x = y T Λy =
+
+λi yi2
+i=1
+
+where y = U T x (and since U is full rank, any vector y ∈ Rn can be represented in this form).
+Because yi2 is always positive, the sign of this expression depends entirely on the λi ’s. If all
+λi > 0, then the matrix is positive definite; if all λi ≥ 0, it is positive semidefinite. Likewise,
+if all λi < 0 or λi ≤ 0, then A is negative definite or negative semidefinite respectively.
+Finally, if A has both positive and negative eigenvalues, it is indefinite.
+An application where eigenvalues and eigenvectors come up frequently is in maximizing
+some function of a matrix. In particular, for a matrix A ∈ Sn , consider the following
+maximization problem,
+maxx∈Rn xT Ax
+
+subject to x
+
+2
+2
+
+=1
+
+i.e., we want to find the vector (of norm 1) which maximizes the quadratic form. Assuming
+the eigenvalues are ordered as λ1 ≥ λ2 ≥ . . . ≥ λn , the optimal x for this optimization
+problem is x1 , the eigenvector corresponding to λ1 . In this case the maximal value of the
+quadratic form is λ1 . Similarly, the optimal solution to the minimization problem,
+minx∈Rn xT Ax
+
+subject to x
+
+2
+2
+
+=1
+
+is xn , the eigenvector corresponding to λn , and the minimal value is λn . This can be proved by
+appealing to the eigenvector-eigenvalue form of A and the properties of orthogonal matrices.
+However, in the next section we will see a way of showing it directly using matrix calculus.
+
+4
+
+Matrix Calculus
+
+While the topics in the previous sections are typically covered in a standard course on linear
+algebra, one topic that does not seem to be covered very often (and which we will use
+extensively) is the extension of calculus to the vector setting. Despite the fact that all the
+actual calculus we use is relatively trivial, the notation can often make things look much
+more difficult than they are. In this section we present some basic definitions of matrix
+calculus and provide a few examples.
+15
+
+4.1
+
+The Gradient
+
+Suppose that f : Rm×n → R is a function that takes as input a matrix A of size m × n and
+returns a real value. Then the gradient of f (with respect to A ∈ Rm×n ) is the matrix of
+partial derivatives, defined as:
+
+
+∂f (A)
+∂f (A)
+∂f (A)
+·
+·
+·
+∂A11
+∂A12
+∂A1n
+ ∂f
+(A)
+∂f (A)
+∂f (A) 
+
+
+·
+·
+·
+∂A21
+∂A22
+∂A2n 
+∇A f (A) ∈ Rm×n = 
+..
+.. 
+...
+ ..
+.
+. 
+ .
+∂f (A)
+∂Am2
+
+∂f (A)
+∂Am1
+
+···
+
+∂f (A)
+∂Amn
+
+i.e., an m × n matrix with
+
+(∇A f (A))ij =
+
+∂f (A)
+.
+∂Aij
+
+Note that the size of ∇A f (A) is always the same as the size of A. So if, in particular, A is
+just a vector x ∈ Rn ,
+
+
+
+
+∇x f (x) = 
+
+
+
+∂f (x)
+∂x1
+∂f (x)
+∂x2
+
+..
+.
+
+∂f (x)
+∂xn
+
+
+
+.
+
+
+
+It is very important to remember that the gradient of a function is only defined if the function
+is real-valued, that is, if it returns a scalar value. We can not, for example, take the gradient
+of Ax, A ∈ Rn×n with respect to x, since this quantity is vector-valued.
+It follows directly from the equivalent properties of partial derivatives that:
+• ∇x (f (x) + g(x)) = ∇x f (x) + ∇x g(x).
+• For t ∈ R, ∇x (t f (x)) = t∇x f (x).
+It is a little bit trickier to determine what the proper expression is for ∇x f (Ax), A ∈ Rn×n ,
+but this is doable as well (if fact, you’ll have to work this out for a homework problem).
+
+4.2
+
+The Hessian
+
+Suppose that f : Rn → R is a function that takes a vector in Rn and returns a real number.
+Then the Hessian matrix with respect to x, written ∇2x f (x) or simply as H is the n × n
+matrix of partial derivatives,
+ ∂ 2 f (x) ∂ 2 f (x)
+∂ 2 f (x) 
+· · · ∂x
+∂x1 ∂x2
+∂x21
+1 ∂xn
+ ∂ 2 f (x) ∂ 2 f (x)
+∂ 2 f (x) 
+ ∂x2 ∂x1
+· · · ∂x2 ∂xn 
+∂x22
+.
+∇2x f (x) ∈ Rn×n = 
+
+
+..
+..
+..
+...
+
+
+.
+.
+.
+∂ 2 f (x)
+∂ 2 f (x)
+∂ 2 f (x)
+···
+∂xn ∂x1
+∂xn ∂x2
+∂x2
+n
+
+16
+
+In other words, ∇2x f (x) ∈ Rn×n , with
+(∇2x f (x))ij =
+
+∂ 2 f (x)
+.
+∂xi ∂xj
+
+Note that the Hessian is always symmetric, since
+∂ 2 f (x)
+∂ 2 f (x)
+=
+.
+∂xi ∂xj
+∂xj ∂xi
+Similar to the gradient, the Hessian is defined only when f (x) is real-valued.
+It is natural to think of the gradient as the analogue of the first derivative for functions
+of vectors, and the Hessian as the analogue of the second derivative (and the symbols we
+use also suggest this relation). This intuition is generally correct, but there a few caveats to
+keep in mind.
+First, for real-valued functions of one variable f : R → R, it is a basic definition that the
+second derivative is the derivative of the first derivative, i.e.,
+∂ 2 f (x)
+∂ ∂
+=
+f (x).
+2
+∂x
+∂x ∂x
+However, for functions of a vector, the gradient of the function is a vector, and we cannot
+take the gradient of a vector — i.e.,
+
+
+
+
+∇x ∇x f (x) = ∇x 
+
+
+
+∂f (x)
+∂x1
+∂f (x)
+∂x2
+
+..
+.
+
+∂f (x)
+∂x1
+
+
+
+
+
+
+
+and this expression is not defined. Therefore, it is not the case that the Hessian is the
+gradient of the gradient. However, this is almost true, in the following sense: If we look at
+the ith entry of the gradient (∇x f (x))i = ∂f (x)/∂xi , and take the gradient with respect to
+x we get
+
+
+
+∂f (x) 
+∇x
+=
+
+∂xi
+
+
+∂ 2 f (x)
+∂xi ∂x1
+∂ 2 f (x)
+∂xi ∂x2
+
+..
+.
+
+∂f (x)
+∂xi ∂xn
+
+
+
+
+
+
+
+which is the ith column (or row) of the Hessian. Therefore,
+∇2x f (x) =
+
+∇x (∇x f (x))1 ∇x (∇x f (x))2 · · ·
+
+∇x (∇x f (x))n
+
+.
+
+If we don’t mind being a little bit sloppy we can say that (essentially) ∇2x f (x) = ∇x (∇x f (x))T ,
+so long as we understand that this really means taking the gradient of each entry of (∇x f (x))T ,
+not the gradient of the whole vector.
+17
+
+Finally, note that while we can take the gradient with respect to a matrix A ∈ Rn , for
+the purposes of this class we will only consider taking the Hessian with respect to a vector
+x ∈ Rn . This is simply a matter of convenience (and the fact that none of the calculations
+we do require us to find the Hessian with respect to a matrix), since the Hessian with respect
+to a matrix would have to represent all the partial derivatives ∂ 2 f (A)/(∂Aij ∂Akℓ ), and it is
+rather cumbersome to represent this as a matrix.
+
+4.3
+
+Gradients and Hessians of Quadratic and Linear Functions
+
+Now let’s try to determine the gradient and Hessian matrices for a few simple functions. It
+should be noted that all the gradients given here are special cases of the gradients given in
+the CS229 lecture notes.
+For x ∈ Rn , let f (x) = bT x for some known vector b ∈ Rn . Then
+n
+
+f (x) =
+
+bi xi
+i=1
+
+so
+∂f (x)
+∂
+=
+∂xk
+∂xk
+
+n
+
+bi xi = bk .
+i=1
+
+T
+
+From this we can easily see that ∇x b x = b. This should be compared to the analogous
+situation in single variable calculus, where ∂/(∂x) ax = a.
+Now consider the quadratic function f (x) = xT Ax for A ∈ Sn . Remember that
+n
+
+n
+
+f (x) =
+
+Aij xi xj
+i=1 j=1
+
+so
+∂f (x)
+∂
+=
+∂xk
+∂xk
+
+n
+
+n
+
+n
+
+Aij xi xj =
+i=1 j=1
+
+n
+
+Aik xi +
+i=1
+
+n
+
+Akj xj = 2
+j=1
+
+Aki xi
+i=1
+
+where the last equality follows since A is symmetric (which we can safely assume, since it is
+appearing in a quadratic form). Note that the kth entry of ∇x f (x) is just the inner product
+of the kth row of A and x. Therefore, ∇x xT Ax = 2Ax. Again, this should remind you of
+the analogous fact in single-variable calculus, that ∂/(∂x) ax2 = 2ax.
+Finally, lets look at the Hessian of the quadratic function f (x) = xT Ax (it should be
+obvious that the Hessian of a linear function bT x is zero). This is even easier than determining
+the gradient of the function, since
+∂ 2 f (x)
+∂2
+=
+∂xk ∂xℓ
+∂xk ∂xℓ
+
+n
+
+n
+
+Aij xi xj = Akℓ + Aℓk = 2Akℓ .
+i=1 j=1
+
+Therefore, it should be clear that ∇2x xT Ax = 2A, which should be entirely expected (and
+again analogous to the single-variable fact that ∂ 2 /(∂x2 ) ax2 = 2a).
+To recap,
+18
+
+• ∇x bT x = b
+• ∇x xT Ax = 2Ax (if A symmetric)
+• ∇2x xT Ax = 2A (if A symmetric)
+
+4.4
+
+Least Squares
+
+Lets apply the equations we obtained in the last section to derive the least squares equations.
+Suppose we are given matrices A ∈ Rm×n (for simplicity we assume A is full rank) and a
+vector b ∈ Rm such that b ∈ R(A). In this situation we will not be able to find a vector
+x ∈ Rn , such that Ax = b, so instead we want to find a vector x such that Ax is as close as
+possible to b, as measured by the square of the Euclidean norm Ax − b 22 .
+Using the fact that x 22 = xT x, we have
+Ax − b
+
+2
+2
+
+= (Ax − b)T (Ax − b)
+= xT AT Ax − 2bT Ax + bT b
+
+Taking the gradient with respect to x we have, and using the properties we derived in the
+previous section
+∇x (xT AT Ax − 2bT Ax + bT b) = ∇x xT AT Ax − ∇x 2bT Ax + ∇x bT b
+= 2AT Ax − 2AT b
+Setting this last expression equal to zero and solving for x gives the normal equations
+x = (AT A)−1 AT b
+which is the same as what we derived in class.
+
+4.5
+
+Gradients of the Determinant
+
+Now lets consider a situation where we find the gradient of a function with respect to a matrix,
+namely for A ∈ Rn×n , we want to find ∇A |A|. Recall from our discussion of determinants
+that
+n
+(−1)i+j Aij |A\i,\j |
+
+|A| =
+
+(for any j ∈ 1, . . . , n)
+
+i=1
+
+so
+∂
+∂
+|A| =
+∂Akℓ
+∂Akℓ
+
+n
+
+(−1)i+j Aij |A\i,\j | = (−1)k+ℓ |A\k,\ℓ | = (adj(A))ℓk .
+i=1
+
+From this it immediately follows from the properties of the adjoint that
+∇A |A| = (adj(A))T = |A|A−T .
+19
+
+Now lets consider the function f : Sn++ → R, f (A) = log |A|. Note that we have to
+restrict the domain of f to be the positive definite matrices, since this ensures that |A| > 0,
+so that the log of |A| is a real number. In this case we can use the chain rule (nothing fancy,
+just the ordinary chain rule from single-variable calculus) to see that
+∂ log |A| ∂|A|
+1 ∂|A|
+∂ log |A|
+=
+=
+.
+∂Aij
+∂|A| ∂Aij
+|A| ∂Aij
+From this is should be obvious that
+∇A log |A| =
+
+1
+∇A |A| = A−1 ,
+|A|
+
+where we can drop the transpose in the last expression because A is symmetric. Note the
+similarity to the single-valued case, where ∂/(∂x) log x = 1/x.
+
+4.6
+
+Eigenvalues as Optimization
+
+Finally, we use matrix calculus to solve an optimization problem in a way that leads directly
+to eigenvalue/eigenvector analysis. Consider the following, equality constrained optimization
+problem:
+maxx∈Rn xT Ax subject to x 22 = 1
+for a symmetric matrix A ∈ Sn . A standard way of solving optimization problems with
+equality constraints is by forming the Lagrangian, an objective function that includes the
+equality constraints.2 The Lagrangian in this case can be given by
+L(x, λ) = xT Ax − λxT x
+where λ is called the Lagrange multiplier associated with the equality constraint. It can be
+established that for x∗ to be a optimal point to the problem, the gradient of the Lagrangian
+has to be zero at x∗ (this is not the only condition, but it is required). That is,
+∇x L(x, λ) = ∇x (xT Ax − λxT x) = 2AT x − 2λx = 0.
+Notice that this is just the linear equation Ax = λx. This shows that the only points which
+can possibly maximize (or minimize) xT Ax assuming xT x = 1 are the eigenvectors of A.
+
+2
+Don’t worry if you haven’t seen Lagrangians before, as we will cover them in greater detail later in
+CS229.
+
+20
+
+

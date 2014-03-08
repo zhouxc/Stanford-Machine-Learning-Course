@@ -1,0 +1,65 @@
+List of related AI Classes
+CS229 covered a broad swath of topics in machine learning, compressed into a single quarter. Machine learning is a hugely inter-disciplinary topic, and there are many
+other sub-communities of AI working on related topics, or working on applying machine
+learning to different problems.
+Stanford has one of the best and broadest sets of AI courses of pretty much any
+university. It offers a wide range of classes, covering most of the scope of AI issues. Here
+are some some classes in which you can learn more about topics related to CS229:
+AI Overview
+• CS221 (Aut): Artificial Intelligence: Principles and Techniques. Broad overview
+of AI and applications, including robotics, vision, NLP, search, Bayesian networks,
+and learning. Taught by Professor Andrew Ng.
+Robotics
+• CS223A (Win): Robotics from the perspective of building the robot and controlling
+it; focus on manipulation. Taught by Professor Oussama Khatib (who builds the
+big robots in the Robotics Lab).
+• CS225A (Spr): A lab course from the same perspective, taught by Professor Khatib.
+• CS225B (Aut): A lab course where you get to play around with making mobile
+robots navigate in the real world. Taught by Dr. Kurt Konolige (SRI).
+• CS277 (Spr): Experimental Haptics. Teaches haptics programming and touch
+feedback in virtual reality. Taught by Professor Ken Salisbury, who works on
+robot design, haptic devices/teleoperation, robotic surgery, and more.
+• CS326A (Latombe): Motion planning. An algorithmic robot motion planning
+course, by Professor Jean-Claude Latombe, who (literally) wrote the book on the
+topic.
+Knowledge Representation & Reasoning
+• CS222 (Win): Logical knowledge representation and reasoning. Taught by Professor Yoav Shoham and Professor Johan van Benthem.
+• CS227 (Spr): Algorithmic methods such as search, CSP, planning. Taught by Dr.
+Yorke-Smith (SRI).
+Probabilistic Methods
+• CS228 (Win): Probabilistic models in AI. Bayesian networks, hidden Markov models, and planning under uncertainty. Taught by Professor Daphne Koller, who
+works on computational biology, Bayes nets, learning, computational game theory,
+and more.
+1
+
+Perception & Understanding
+• CS223B (Win): Introduction to computer vision. Algorithms for processing and
+interpreting image or camera information. Taught by Professor Sebastian Thrun,
+who led the DARPA Grand Challenge/DARPA Urban Challenge teams, or Professor Jana Kosecka, who works on vision and robotics.
+• CS224S (Win): Speech recognition and synthesis. Algorithms for large vocabulary continuous speech recognition, text-to-speech, conversational dialogue agents.
+Taught by Professor Dan Jurafsky, who co-authored one of the two most-used
+textbooks on NLP.
+• CS224N (Spr): Natural language processing, including parsing, part of speech
+tagging, information extraction from text, and more. Taught by Professor Chris
+Manning, who co-authored the other of the two most-used textbooks on NLP.
+• CS224U (Win): Natural language understanding, including computational semantics and pragmatics, with application to question answering, summarization, and
+inference. Taught by Professors Dan Jurafsky and Chris Manning.
+Multi-agent systems
+• CS224M (Win): Multi-agent systems, including game theoretic foundations, designing systems that induce agents to coordinate, and multi-agent learning. Taught
+by Professor Yoav Shoham, who works on economic models of multi-agent interactions.
+• CS227B (Spr): General game playing. Reasoning and learning methods for playing
+any of a broad class of games. Taught by Professor Michael Genesereth, who works
+on computational logic, enterprise management and e-commerce.
+Convex Optimization
+• EE364A (Win): Convex Optimization. Convexity, duality, convex programs, interior point methods, algorithms. Taught by Professor Stephen Boyd, who works on
+optimization and its application to engineering problems.
+AI Project courses
+• CS294B/CS294W (Win): STAIR (STanford AI Robot) project. Project course
+with no lectures. By drawing from machine learning and all other areas of AI,
+we’ll work on the challenge problem of building a general-purpose robot that can
+carry out home and office chores, such as tidying up a room, fetching items, and
+preparing meals. Taught by Professor Andrew Ng.
+
+2
+
+

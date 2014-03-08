@@ -1,0 +1,55 @@
+CS 229
+Machine Learning
+Handout #2: Tentative Course Schedule
+Syllabus
+z
+
+Introduction (1 class) Basic concepts.
+
+z
+
+Supervised learning. (6 classes) Supervised learning setup. LMS.
+Logistic regression. Perceptron. Exponential family.
+Generative learning algorithms. Gaussian discriminant analysis. Naive Bayes.
+Support vector machines.
+Model selection and feature selection.
+Ensemble methods: Bagging, boosting, ECOC.
+
+z
+
+Learning theory. (3 classes) Bias/variance tradeoff. Union and Chernoff/Hoeffding
+bounds.
+VC dimension. Worst case (online) learning.
+Advice on using learning algorithms.
+
+z
+
+Unsupervised learning. (5 classes) Clustering. K-means.
+EM. Mixture of Gaussians.
+Factor analysis.
+PCA. MDS. pPCA.
+Independent components analysis (ICA).
+
+z
+
+Reinforcement learning and control. (4 classes) MDPs. Bellman equations.
+Value iteration. Policy iteration.
+Linear quadratic regulation (LQR). LQG.
+Q-learning. Value function approximation.
+Policy search. Reinforce. POMDPs.
+
+Dates for assignments
+z
+z
+z
+z
+z
+
+Assignment 1: Out 10/3. Due 10/17.
+Assignment 2: Out 10/17. Due 10/31.
+Assignment 3: Out 10/31. Due 11/14.
+Assignment 4: Out 11/14. Due 12/3.
+Term project: Proposals due 10/19. Milestone due 11/16. Poster presentations on 12/12;
+final writeup due on 12/14 (no late days).
+
+

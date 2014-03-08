@@ -1,0 +1,275 @@
+Support	  Vector	  
+Machines	  
+Op2miza2on	  
+objec2ve	  
+Machine	  Learning	  
+
+Alterna(ve	  view	  of	  logis(c	  regression	  
+
+If	  	  	  	  	  	  	  	  	  	  ,	  we	  want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  
+If	  	  	  	  	  	  	  	  	  	  ,	  we	  want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  
+
+Andrew	  Ng	  
+
+Alterna(ve	  view	  of	  logis(c	  regression	  
+Cost	  of	  example:	  
+
+If	  	  	  	  	  	  	  	  	  	  	  (want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ):	  
+
+If	  	  	  	  	  	  	  	  	  	  	  (want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ):	  
+
+Andrew	  Ng	  
+
+Support	  vector	  machine	  
+Logis2c	  regression:	  
+
+Support	  vector	  machine:	  
+
+Andrew	  Ng	  
+
+SVM	  hypothesis	  
+
+Hypothesis:	  
+
+Andrew	  Ng	  
+
+Support	  Vector	  
+Machines	  
+Large	  Margin	  
+Intui2on	  
+Machine	  Learning	  
+
+Support	  Vector	  Machine	  
+
+-­‐1	  
+
+1	  
+
+-­‐1	  
+
+1	  
+
+If	  	  	  	  	  	  	  	  	  	  ,	  we	  want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  (not	  just	  	  	  	  	  	  	  )	  
+If	  	  	  	  	  	  	  	  	  	  ,	  we	  want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  (not	  just	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+SVM	  Decision	  Boundary	  
+
+Whenever	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  :	  
+
+-­‐1	  
+
+1	  
+
+-­‐1	  
+
+1	  
+
+Whenever	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  :	  
+
+Andrew	  Ng	  
+
+SVM	  Decision	  Boundary:	  Linearly	  separable	  case	  
+
+x2	  
+
+x1	  
+
+Large	  margin	  classiﬁer	  
+
+Andrew	  Ng	  
+
+Large	  margin	  classiﬁer	  in	  presence	  of	  outliers	  
+
+x2	  
+
+x1	  
+
+Andrew	  Ng	  
+
+Support	  Vector	  
+Machines	  
+
+Machine	  Learning	  
+
+The	  mathema2cs	  
+behind	  large	  margin	  
+classiﬁca2on	  (op2onal)	  
+
+Vector	  Inner	  Product	  
+
+Andrew	  Ng	  
+
+SVM	  Decision	  Boundary	  
+
+Andrew	  Ng	  
+
+SVM	  Decision	  Boundary	  
+
+Andrew	  Ng	  
+
+Support	  Vector	  
+Machines	  
+
+Kernels	  I	  
+Machine	  Learning	  
+
+Non-­‐linear	  Decision	  Boundary	  
+
+x2	  
+
+x1	  
+
+Is	  there	  a	  diﬀerent	  /	  beRer	  choice	  of	  the	  features	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ?	  
+
+Andrew	  Ng	  
+
+Kernel	  
+
+Given	  	  	  	  	  ,	  compute	  new	  feature	  depending	  	  
+on	  proximity	  to	  landmarks	  	  
+
+x2	  
+
+x1	  
+
+Andrew	  Ng	  
+
+Kernels	  and	  Similarity	  
+
+Andrew	  Ng	  
+
+Example:	  
+
+Andrew	  Ng	  
+
+x2	  
+
+x1	  
+
+Andrew	  Ng	  
+
+Support	  Vector	  
+Machines	  
+
+Kernels	  II	  
+Machine	  Learning	  
+
+Choosing	  the	  landmarks	  
+Given	  	  	  	  :	  
+	  
+	  
+
+x2	  
+
+x1	  
+
+Predict	  	  	  	  	  	  	  	  	  	  	  	  	  if	  
+Where	  to	  get	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ?	  
+
+Andrew	  Ng	  
+
+SVM	  with	  Kernels	  
+Given	  
+choose	  
+Given	  example	  	  	  	  	  :	  
+	  
+	  
+For	  training	  example	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  :	  	  
+
+Andrew	  Ng	  
+
+SVM	  with	  Kernels	  
+Hypothesis:	  Given	  	  	  	  ,	  compute	  features	  
+Predict	  “y=1”	  if	  
+Training:	  
+
+Andrew	  Ng	  
+
+	  	  
+
+SVM	  parameters:	  
+C	  (	  	  	  	  	  	  	  	  	  ).	  	  	  	  Large	  C:	  Lower	  bias,	  high	  variance.	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  Small	  C:	  Higher	  bias,	  low	  variance.	  
+	  	  	  	  	  	  	  	  	  Large	  	  	  	  	  :	  Features	  	  	  	  	  vary	  more	  smoothly.	  
+	  
+	  Higher	  bias,	  lower	  variance.	  
+
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  Small	  	  	  	  	  :	  Features	  	  	  	  	  vary	  less	  smoothly.	  
+	  
+	  Lower	  bias,	  higher	  variance.	  
+
+Andrew	  Ng	  
+
+Support	  Vector	  
+Machines	  
+
+Using	  an	  SVM	  
+Machine	  Learning	  
+
+Use	  SVM	  so]ware	  package	  (e.g.	  liblinear,	  libsvm,	  …)	  to	  solve	  for	  
+parameters	  	  	  	  .	  
+Need	  to	  specify:	  
+Choice	  of	  parameter	  C.	  
+Choice	  of	  kernel	  (similarity	  func2on):	  
+E.g.	  No	  kernel	  (“linear	  kernel”)	  
+Predict	  “y	  =	  1”	  if	  	  
+Gaussian	  kernel:	  
+	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  where	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  	  
+Need	  to	  choose	  	  	  	  	  	  .	  
+
+Andrew	  Ng	  
+
+Kernel	  (similarity)	  func(ons:	  
+function f = kernel(x1,x2)
+x1
+
+x2	  
+
+return
+
+Note:	  Do	  perform	  feature	  scaling	  before	  using	  the	  Gaussian	  kernel.	  
+
+Andrew	  Ng	  
+
+Other	  choices	  of	  kernel	  
+Note:	  Not	  all	  similarity	  func2ons	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  make	  valid	  kernels.	  
+(Need	  to	  sa2sfy	  technical	  condi2on	  called	  “Mercer’s	  Theorem”	  to	  make	  
+sure	  SVM	  packages’	  op2miza2ons	  run	  correctly,	  and	  do	  not	  diverge).	  
+Many	  oﬀ-­‐the-­‐shelf	  kernels	  available:	  
+-­‐  Polynomial	  kernel:	  
+
+	  
+
+-­‐  More	  esoteric:	  String	  kernel,	  chi-­‐square	  kernel,	  histogram	  
+intersec2on	  kernel,	  …	  
+
+Andrew	  Ng	  
+
+Mul(-­‐class	  classiﬁca(on	  
+
+Many	  SVM	  packages	  already	  have	  built-­‐in	  mul2-­‐class	  classiﬁca2on	  
+func2onality.	  
+Otherwise,	  use	  one-­‐vs.-­‐all	  method.	  (Train	  	  	  	  	  	  	  SVMs,	  one	  to	  dis2nguish	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  from	  the	  rest,	  for	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ),	  get	  	  
+Pick	  class	  	  	  	  with	  largest	  
+
+Andrew	  Ng	  
+
+Logis(c	  regression	  vs.	  SVMs	  
+	  	  	  	  	  	  	  	  number	  of	  features	  (	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ),	  	  	  	  	  	  	  	  	  	  	  	  number	  of	  training	  examples	  
+If	  	  	  	  	  is	  large	  (rela2ve	  to	  	  	  	  	  ):	  
+Use	  logis2c	  regression,	  or	  SVM	  without	  a	  kernel	  (“linear	  kernel”)	  
+If	  	  	  	  	  is	  small,	  	  	  	  	  	  	  is	  intermediate:	  
+Use	  SVM	  with	  Gaussian	  kernel	  
+If	  	  	  	  	  is	  small,	  	  	  	  	  	  is	  large:	  
+Create/add	  more	  features,	  then	  use	  logis2c	  regression	  or	  SVM	  
+without	  a	  kernel	  
+Neural	  network	  likely	  to	  work	  well	  for	  most	  of	  these	  secngs,	  but	  may	  be	  
+slower	  to	  train.	  
+
+Andrew	  Ng	  
+
+

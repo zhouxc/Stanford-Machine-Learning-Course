@@ -1,0 +1,332 @@
+Applica'on	  example:	  	  
+Photo	  OCR	  
+Problem	  descrip'on	  
+and	  pipeline	  
+Machine	  Learning	  
+
+The	  Photo	  OCR	  problem	  
+
+Andrew	  Ng	  
+
+Photo	  OCR	  pipeline	  
+1.	  Text	  detec'on	  
+
+2.	  Character	  segmenta'on	  
+3.	  Character	  classiﬁca'on	  
+A
+
+N
+
+T
+
+Andrew	  Ng	  
+
+Photo	  OCR	  pipeline	  
+
+Image	  
+
+Text	  detec8on	  
+
+Character	  
+segmenta8on	  
+
+Character	  
+recogni8on	  
+
+Applica'on	  example:	  	  
+Photo	  OCR	  
+
+Sliding	  windows	  
+Machine	  Learning	  
+
+Text	  detec8on	  
+
+Pedestrian	  detec8on	  
+
+Andrew	  Ng	  
+
+Supervised	  learning	  for	  pedestrian	  detec8on	  
+pixels	  in	  82x36	  image	  patches	  
+
+Posi've	  examples	  
+
+Nega've	  examples	  
+
+Andrew	  Ng	  
+
+Sliding	  window	  detec8on	  
+
+Andrew	  Ng	  
+
+Sliding	  window	  detec8on	  
+
+Andrew	  Ng	  
+
+Sliding	  window	  detec8on	  
+
+Andrew	  Ng	  
+
+Sliding	  window	  detec8on	  
+
+Andrew	  Ng	  
+
+Text	  detec8on	  
+
+Andrew	  Ng	  
+
+Text	  detec8on	  
+
+Posi've	  examples	  
+
+Nega've	  examples	  
+
+Andrew	  Ng	  
+
+Text	  detec8on	  
+
+[David	  Wu]	  
+
+Andrew	  Ng	  
+
+1D	  Sliding	  window	  for	  character	  segmenta8on	  
+
+Posi've	  examples	  
+
+Nega've	  examples	  
+
+Andrew	  Ng	  
+
+Photo	  OCR	  pipeline	  
+1.	  Text	  detec'on	  
+
+2.	  Character	  segmenta'on	  
+3.	  Character	  classiﬁca'on	  
+A
+
+N
+
+T
+
+Andrew	  Ng	  
+
+Applica'on	  example:	  	  
+Photo	  OCR	  
+
+Machine	  Learning	  
+
+GeIng	  lots	  of	  
+data:	  Ar'ﬁcial	  
+data	  synthesis	  
+
+Character	  recogni8on	  
+
+A
+I
+
+T
+
+N
+Q
+
+A
+
+Andrew	  Ng	  
+
+Ar8ﬁcial	  data	  synthesis	  for	  photo	  OCR	  
+
+Abcdefg
+Abcdefg
+
+Abcdefg
+Abcdefg
+Abcdefg
+Real	  data	  
+[Adam	  Coates	  and	  Tao	  Wang]	  
+
+Andrew	  Ng	  
+
+Ar8ﬁcial	  data	  synthesis	  for	  photo	  OCR	  
+
+Real	  data	  
+[Adam	  Coates	  and	  Tao	  Wang]	  
+
+Synthe'c	  data	  
+
+Andrew	  Ng	  
+
+Synthesizing	  data	  by	  introducing	  distor8ons	  
+
+[Adam	  Coates	  and	  Tao	  Wang]	  
+
+Andrew	  Ng	  
+
+Synthesizing	  data	  by	  introducing	  distor8ons:	  Speech	  recogni8on	  
+Original	  audio:	  
+	  
+Audio	  on	  bad	  cellphone	  connec'on	  
+Noisy	  background:	  Crowd	  
+Noisy	  background:	  Machinery	  
+[www.pdsounds.org]	  
+
+Andrew	  Ng	  
+
+Synthesizing	  data	  by	  introducing	  distor8ons	  	  	  	  	  
+Distor'on	  introduced	  should	  be	  representa'on	  of	  the	  type	  of	  
+noise/distor'ons	  in	  the	  test	  set.	  
+Audio:	  
+Background	  noise,	  	  
+bad	  cellphone	  connec'on	  
+Usually	  does	  not	  help	  to	  add	  purely	  random/meaningless	  noise	  
+to	  your	  data.	  
+intensity	  (brightness)	  of	  pixel	  
+	  	  	  	  	  	  	  	  random	  noise	  
+[Adam	  Coates	  and	  Tao	  Wang]	  
+
+Andrew	  Ng	  
+
+Discussion	  on	  geJng	  more	  data	  
+1.  Make	  sure	  you	  have	  a	  low	  bias	  classiﬁer	  before	  expending	  the	  
+eﬀort.	  (Plot	  learning	  curves).	  E.g.	  keep	  increasing	  the	  number	  
+of	  features/number	  of	  hidden	  units	  in	  neural	  network	  un'l	  
+you	  have	  a	  low	  bias	  classiﬁer.	  
+2.  “How	  much	  work	  would	  it	  be	  to	  get	  10x	  as	  much	  data	  as	  we	  
+currently	  have?”	  
+-­‐  Ar'ﬁcial	  data	  synthesis	  
+-­‐  Collect/label	  it	  yourself	  
+-­‐  “Crowd	  source”	  (E.g.	  Amazon	  Mechanical	  Turk)	  
+
+Andrew	  Ng	  
+
+Discussion	  on	  geJng	  more	  data	  
+1.  Make	  sure	  you	  have	  a	  low	  bias	  classiﬁer	  before	  expending	  the	  
+eﬀort.	  (Plot	  learning	  curves).	  E.g.	  keep	  increasing	  the	  number	  
+of	  features/number	  of	  hidden	  units	  in	  neural	  network	  un'l	  
+you	  have	  a	  low	  bias	  classiﬁer.	  
+2.  “How	  much	  work	  would	  it	  be	  to	  get	  10x	  as	  much	  data	  as	  we	  
+currently	  have?”	  
+-­‐  Ar'ﬁcial	  data	  synthesis	  
+-­‐  Collect/label	  it	  yourself	  
+-­‐  “Crowd	  source”	  (E.g.	  Amazon	  Mechanical	  Turk)	  
+
+Andrew	  Ng	  
+
+Applica'on	  example:	  	  
+Photo	  OCR	  
+Ceiling	  analysis:	  What	  
+part	  of	  the	  pipeline	  to	  
+work	  on	  next	  
+Machine	  Learning	  
+
+Es8ma8ng	  the	  errors	  due	  to	  each	  component	  (ceiling	  analysis)	  
+Image	  
+
+Text	  detec8on	  
+
+Character	  
+segmenta8on	  
+
+Character	  
+recogni8on	  
+
+What	  part	  of	  the	  pipeline	  should	  you	  spend	  the	  most	  'me	  
+trying	  to	  improve?	  
+Component	  
+
+Accuracy	  
+
+Overall	  system	  
+
+72%	  
+
+Text	  detec'on	  
+
+89%	  
+
+Character	  segmenta'on	  
+
+90%	  
+
+Character	  recogni'on	  
+
+100%	  
+
+Andrew	  Ng	  
+
+Another	  ceiling	  analysis	  example	  
+Face	  recogni'on	  from	  images	  	  
+(Ar'ﬁcial	  example)	  
+Camera!
+image!
+
+Preprocess!
+(remove background)!
+
+Eyes segmentation!
+
+Face detection!
+
+Nose segmentation!
+
+Logistic regression!
+
+Label"
+
+Mouth
+segmentation!
+
+Andrew	  Ng	  
+
+Another	  ceiling	  analysis	  example	  
+Camera!
+image!
+
+Preprocess!
+(remove background)!
+Eyes segmentation!
+
+Face detection!
+
+Nose segmentation!
+Mouth
+segmentation!
+
+Logistic regression!
+
+Label"
+
+Component	  
+
+Accuracy	  
+
+Overall	  system	  
+
+85%	  
+
+Preprocess	  (remove	  
+background)	  
+
+85.1%	  
+
+Face	  detec'on	  
+
+91%	  
+
+Eyes	  segmenta'on	  
+
+95%	  
+
+Nose	  segmenta'on	  
+
+96%	  
+
+Mouth	  segmenta'on	  	  
+
+97%	  
+
+Logis'c	  regression	  
+
+100%	  
+
+Andrew	  Ng	  
+
+

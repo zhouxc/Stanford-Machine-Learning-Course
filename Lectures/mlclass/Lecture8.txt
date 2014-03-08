@@ -1,0 +1,388 @@
+Neural	  Networks:	  
+Representa1on	  
+
+Non-­‐linear	  
+hypotheses	  
+Machine	  Learning	  
+
+Non-­‐linear	  Classiﬁca/on	  
+
+x2	  
+
+x1	  
+
+size	  
+#	  bedrooms	  
+#	  ﬂoors	  
+age	  
+
+Andrew	  Ng	  
+
+What	  is	  this?	  
+You	  see	  this:	  	  
+
+But	  the	  camera	  sees	  this:	  
+
+Andrew	  Ng	  
+
+Computer	  Vision:	  Car	  detec/on	  
+
+Cars	  
+
+Not	  a	  car	  
+
+Tes1ng:	  
+	  
+	  
+What	  is	  this?	  	  	  
+
+Andrew	  Ng	  
+
+pixel	  1
+
+Learning	  
+Algorithm	  
+pixel	  2
+Raw	  image	  
+pixel	  2	  
+
+Cars	  
+“Non”-­‐Cars	  
+
+pixel	  1	  
+
+Andrew	  Ng	  
+
+pixel	  1
+
+Learning	  
+Algorithm	  
+pixel	  2
+Raw	  image	  
+pixel	  2	  
+
+Cars	  
+“Non”-­‐Cars	  
+
+pixel	  1	  
+
+Andrew	  Ng	  
+
+pixel	  1
+
+Learning	  
+Algorithm	  
+pixel	  2
+
+50	  x	  50	  pixel	  images→	  2500	  pixels	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  (7500	  if	  RGB)	  
+
+Raw	  image	  
+pixel	  2	  
+
+pixel	  1	  intensity	  
+pixel	  2	  intensity	  
+
+Cars	  
+“Non”-­‐Cars	  
+
+pixel	  1	  
+
+pixel	  2500	  
+intensity	  
+
+Quadra1c	  features	  (	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ):	  ≈3	  million
+	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  features	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Representa1on	  
+
+Neurons	  and	  
+the	  brain	  
+Machine	  Learning	  
+
+Neural	  Networks	  
+Origins:	  Algorithms	  that	  try	  to	  mimic	  the	  brain.	  
+Was	  very	  widely	  used	  in	  80s	  and	  early	  90s;	  popularity	  
+diminished	  in	  late	  90s.	  
+Recent	  resurgence:	  State-­‐of-­‐the-­‐art	  technique	  for	  many	  
+applica1ons	  
+
+Andrew	  Ng	  
+
+The	  “one	  learning	  algorithm”	  hypothesis	  
+
+Auditory	  Cortex	  
+
+Auditory	  cortex	  learns	  to	  see	  
+	  
+[Roe	  et	  al.,	  1992]	  
+
+Andrew	  Ng	  
+
+The	  “one	  learning	  algorithm”	  hypothesis	  
+
+Somatosensory	  Cortex	  
+
+Somatosensory	  cortex	  learns	  to	  see	  
+	  
+[Me1n	  &	  Frost,	  1989]	  
+
+Andrew	  Ng	  
+
+Sensor	  representa/ons	  in	  the	  brain	  
+
+Seeing	  with	  your	  tongue	  
+
+Human	  echoloca1on	  (sonar)	  
+
+Hap1c	  belt:	  Direc1on	  sense	  
+[BrainPort;	  Welsh	  &	  Blasch,	  1997;	  Nagel	  et	  al.,	  2005;	  Constan1ne-­‐Paton	  &	  Law,	  2009]	  
+
+Implan1ng	  a	  3rd	  eye	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Representa1on	  
+
+Model	  
+representa1on	  I	  
+Machine	  Learning	  
+
+Neuron	  in	  the	  brain	  
+
+Andrew	  Ng	  
+
+Neurons	  in	  the	  brain	  
+
+[Credit:	  US	  Na1onal	  Ins1tutes	  of	  Health,	  Na1onal	  Ins1tute	  on	  Aging]	  
+
+Andrew	  Ng	  
+
+Neuron	  model:	  Logis/c	  unit	  
+
+Sigmoid	  (logis1c)	  ac1va1on	  func1on.	  
+
+Andrew	  Ng	  
+
+Neural	  Network	  
+
+Layer	  1	  
+
+Layer	  2	  
+
+Layer	  3	  
+
+Andrew	  Ng	  
+
+Neural	  Network	  
+
+“ac1va1on”	  of	  unit	  	  	  	  in	  layer	  	  
+matrix	  of	  weights	  controlling	  
+func1on	  mapping	  from	  layer	  	  	  	  to	  
+layer	  
+
+If	  network	  has	  	  	  	  	  	  units	  in	  layer	  	  	  	  ,	  	  	  	  	  	  	  	  	  	  	  units	  in	  layer	  	  	  	  	  	  	  	  	  	  	  ,	  then	  
+will	  be	  of	  dimension	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Representa1on	  
+
+Model	  
+representa1on	  II	  
+Machine	  Learning	  
+
+Forward	  propaga/on:	  Vectorized	  implementa/on	  
+
+Add	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+
+Andrew	  Ng	  
+
+Neural	  Network	  learning	  its	  own	  features	  
+
+Layer	  1	  
+
+Layer	  2	  
+
+Layer	  3	  
+
+Andrew	  Ng	  
+
+Other	  network	  architectures	  
+
+Layer	  1	  
+
+Layer	  2	  
+
+Layer	  3	  
+
+Layer	  4	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Representa1on	  
+
+Examples	  and	  
+intui1ons	  I	  
+Machine	  Learning	  
+
+Non-­‐linear	  classiﬁca/on	  example:	  XOR/XNOR	  
+	  	  	  	  ,	  	  	  	  	  	  are	  binary	  (0	  or	  1).	  
+x2	  
+
+x2	  
+
+x1	  
+x1	  
+
+Andrew	  Ng	  
+
+Simple	  example:	  AND	  
+
+1.0	  
+
+0	  
+0	  
+1	  
+1	  
+
+0	  
+1	  
+0	  
+1	  
+
+Andrew	  Ng	  
+
+Example:	  OR	  func/on	  
+
+-­‐10	  
+20	  
+20	  
+
+0	  
+0	  
+1	  
+1	  
+
+0	  
+1	  
+0	  
+1	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Representa1on	  
+
+Examples	  and	  
+intui1ons	  II	  
+Machine	  Learning	  
+
+Nega/on:	  
+
+0	  
+1	  
+
+Andrew	  Ng	  
+
+PuPng	  it	  together:	  	  
+-­‐30	  
+
+10	  
+
+-­‐10	  
+
+20	  
+
+-­‐20	  
+
+20	  
+
+20	  
+
+-­‐20	  
+
+20	  
+
+0	  
+0	  
+1	  
+1	  
+
+0	  
+1	  
+0	  
+1	  
+
+Andrew	  Ng	  
+
+Neural	  Network	  intui/on	  
+
+Layer	  1	  
+
+Layer	  2	  
+
+Layer	  3	  
+
+Layer	  4	  
+
+Andrew	  Ng	  
+
+HandwriRen	  digit	  classiﬁca/on	  
+
+[Courtesy	  of	  Yann	  LeCun]	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Representa1on	  
+
+Mul1-­‐class	  
+classiﬁca1on	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Mul/ple	  output	  units:	  One-­‐vs-­‐all.	  
+
+Pedestrian	  
+
+Car	  
+
+Motorcycle	  
+
+Truck	  
+
+Want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  	  	  etc.	  
+when	  pedestrian	  	  	  	  	  	  	  	  	  when	  car
+
+	  when	  motorcycle	  
+
+Andrew	  Ng	  
+
+Mul/ple	  output	  units:	  One-­‐vs-­‐all.	  
+
+Want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  	  	  etc.	  
+when	  pedestrian	  	  	  	  	  	  	  	  	  when	  car
+
+	  when	  motorcycle	  
+
+Training	  set:	  	  
+	  	  	  	  	  	  	  one	  of	  	  	  	  	  	  	  	  	  	  ,
+
+	  	  ,	  	  	  	  	  	  	  	  	  	  	  	  	  ,
+
+	  	  
+
+pedestrian	  	  	  	  car 	  motorcycle	  	  	  truck	  
+
+Andrew	  Ng	  
+
+

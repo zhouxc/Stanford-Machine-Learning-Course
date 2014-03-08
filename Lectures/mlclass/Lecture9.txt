@@ -1,0 +1,313 @@
+Neural	  Networks:	  
+Learning	  
+
+Cost	  func5on	  
+Machine	  Learning	  
+
+Neural	  Network	  (Classiﬁca2on)	  
+total	  no.	  of	  layers	  in	  network	  
+no.	  of	  units	  (not	  coun5ng	  bias	  unit)	  in	  
+layer	  	  
+Layer	  1	   Layer	  2	  
+
+Layer	  3	  
+
+Binary	  classiﬁca5on	  
+	  	  
+	  
+	  	  1	  output	  unit	  
+	  
+
+Layer	  4	  
+
+	  
+
+Mul5-­‐class	  classiﬁca5on	  (K	  classes)	  
+E.g.	  	  	  	  	  	  	  	  	  	  	  ,	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  
+pedestrian	  	  car	  	  motorcycle	  	  	  truck	  
+
+	  	  K	  output	  units	  
+	  
+
+Andrew	  Ng	  
+
+Cost	  func2on	  
+Logis5c	  regression:	  
+	  
+	  
+	  
+Neural	  network:	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Learning	  
+Backpropaga5on	  
+algorithm	  
+Machine	  Learning	  
+
+Gradient	  computa2on	  
+
+Need	  code	  to	  compute:	  
+-­‐  	  	  
+-­‐  	  	  
+
+Gradient	  computa2on	  
+Given	  one	  training	  example	  (	  	  	  ,	  	  	  	  ):	  
+Forward	  propaga5on:	  
+
+Layer	  1	   Layer	  2	  
+
+Layer	  3	  
+
+Layer	  4	  
+
+Gradient	  computa2on:	  Backpropaga2on	  algorithm	  
+Intui5on:	  	  	  	  	  	  	  	  	  	  	  	  	  	  “error”	  of	  node	  	  	  	  in	  layer	  	  	  .	  
+For	  each	  output	  unit	  (layer	  L	  =	  4)	  
+Layer	  1	   Layer	  2	  
+
+Layer	  3	  
+
+Layer	  4	  
+
+Backpropaga2on	  algorithm	  
+Training	  set	  
+
+Set	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  (for	  all	  	  	  	  	  	  	  	  	  	  ).	  
+
+For	  
+Set	  
+Perform	  forward	  propaga5on	  to	  compute	  	  	  	  	  	  	  	  	  for	  	  	  	  	  	  	  
+Using	  	  	  	  	  	  	  ,	  compute	  
+Compute	  	  
+
+Neural	  Networks:	  
+Learning	  
+Backpropaga5on	  
+intui5on	  
+Machine	  Learning	  
+
+Forward	  Propaga2on	  
+
+Forward	  Propaga2on	  
+
+Andrew	  Ng	  
+
+What	  is	  backpropaga2on	  doing?	  
+
+Focusing	  on	  a	  single	  example	  	  	  	  	  	  ,	  	  	  	  	  	  	  ,	  the	  case	  of	  1	  output	  unit,	  
+and	  ignoring	  regulariza5on	  (	  	  	  	  	  	  	  	  	  	  ),	  
+(Think	  of	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  	  	  	  	  	  
+I.e.	  how	  well	  is	  the	  network	  doing	  on	  example	  i?	  
+
+Andrew	  Ng	  
+
+Forward	  Propaga2on	  
+
+“error”	  of	  cost	  for	  	  	  	  	  	  	  	  	  (unit	  	  	  	  in	  layer	  	  	  ).	  	  
+Formally,
+
+	  
+
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  (for	  	  	  	  	  	  	  	  	  	  	  ),	  where	  	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Learning	  
+Implementa5on	  
+note:	  Unrolling	  
+parameters	  
+
+Machine	  Learning	  
+
+Advanced	  op2miza2on	  
+function [jVal, gradient] = costFunction(theta)
+
+…	  
+optTheta = fminunc(@costFunction, initialTheta, options)
+
+Neural	  Network	  (L=4):	  
+-­‐	  matrices	  	  (Theta1, Theta2, Theta3)	  
+	  
+	  
+	  -­‐	  matrices	  	  (D1, D2, D3)	  
+“Unroll”	  into	  vectors	  
+
+Andrew	  Ng	  
+
+Example	  
+
+thetaVec = [ Theta1(:); Theta2(:); Theta3(:)];
+DVec = [D1(:); D2(:); D3(:)];
+Theta1 = reshape(thetaVec(1:110),10,11);
+Theta2 = reshape(thetaVec(111:220),10,11);
+Theta3 = reshape(thetaVec(221:231),1,11);
+
+Andrew	  Ng	  
+
+Learning	  Algorithm	  
+
+Have	  ini5al	  parameters	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+Unroll	  to	  get	  initialTheta	  to	  pass	  to	  
+fminunc(@costFunction, initialTheta, options)
+function [jval, gradientVec] = costFunction(thetaVec)
+
+From	  thetaVec, get	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+Use	  forward	  prop/back	  prop	  to	  compute	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  
+and	  	  	  	  	  	  	  	  	  .	  
+Unroll	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  to	  get	  gradientVec.
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Learning	  
+Gradient	  checking	  
+Machine	  Learning	  
+
+Numerical	  es2ma2on	  of	  gradients	  
+
+Implement:	  gradApprox
+EPSILON))
+
+= (J(theta + EPSILON) – J(theta –
+/(2*EPSILON)
+
+Andrew	  Ng	  
+
+Parameter	  vector	  	  
+(E.g.	  	  	  	  	  	  is	  “unrolled”	  version	  of	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+for i = 1:n,
+thetaPlus = theta;
+thetaPlus(i) = thetaPlus(i) + EPSILON;
+thetaMinus = theta;
+thetaMinus(i) = thetaMinus(i) – EPSILON;
+gradApprox(i) = (J(thetaPlus) – J(thetaMinus))
+/(2*EPSILON);
+end;
+
+Check	  that	  gradApprox	  ≈	  DVec
+
+Andrew	  Ng	  
+
+Implementa2on	  Note:	  
+-­‐  Implement	  backprop	  to	  compute	  DVec	  (unrolled	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ).	  
+-­‐  Implement	  numerical	  gradient	  check	  to	  compute	  gradApprox.	  
+-­‐  Make	  sure	  they	  give	  similar	  values.	  
+-­‐  Turn	  oﬀ	  gradient	  checking.	  Using	  backprop	  code	  for	  learning.	  
+	  
+Important:	  
+-­‐  Be	  sure	  to	  disable	  your	  gradient	  checking	  code	  before	  training	  	  
+your	  classiﬁer.	  If	  you	  run	  numerical	  gradient	  computa5on	  on	  	  
+every	  itera5on	  of	  gradient	  descent	  (or	  in	  the	  inner	  loop	  of	  
+costFunction(…))your	  code	  will	  be	  very	  slow.	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Learning	  
+
+Random	  
+ini5aliza5on	  
+Machine	  Learning	  
+
+Ini2al	  value	  of	  
+
+For	  gradient	  descent	  and	  advanced	  op5miza5on	  
+method,	  need	  ini5al	  value	  for	  	  	  	  	  .	  
+optTheta = fminunc(@costFunction,
+initialTheta, options)
+
+Consider	  gradient	  descent	  
+Set	   initialTheta
+	  
+	  
+	   = zeros(n,1)
+	  
+	  	  	  	  	  	  	  	  	  	  ?	  
+
+Andrew	  Ng	  
+
+Zero	  ini2aliza2on	  
+
+A_er	  each	  update,	  parameters	  corresponding	  to	  inputs	  going	  into	  each	  of	  
+two	  hidden	  units	  are	  iden5cal.	  	  
+
+Andrew	  Ng	  
+
+Random	  ini2aliza2on:	  Symmetry	  breaking	  
+Ini5alize	  each	  	  	  	  	  	  	  	  	  	  	  	  to	  a	  random	  value	  in	  	  
+(i.e.	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+	  
+E.g.	  
+Theta1 =
+
+rand(10,11)*(2*INIT_EPSILON)
+- INIT_EPSILON;
+
+Theta2 =
+
+rand(1,11)*(2*INIT_EPSILON)
+- INIT_EPSILON;
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Learning	  
+
+Machine	  Learning	  
+
+Pu`ng	  it	  
+together	  
+
+Training	  a	  neural	  network	  
+Pick	  a	  network	  architecture	  (connec5vity	  paaern	  between	  neurons)	  
+
+No.	  of	  input	  units:	  Dimension	  of	  features	  
+No.	  output	  units:	  Number	  of	  classes	  
+Reasonable	  default:	  1	  hidden	  layer,	  or	  if	  >1	  hidden	  layer,	  have	  same	  no.	  of	  
+hidden	  units	  in	  every	  layer	  (usually	  the	  more	  the	  beaer)	  
+
+Andrew	  Ng	  
+
+Training	  a	  neural	  network	  
+1.  Randomly	  ini5alize	  weights	  
+2.  Implement	  forward	  propaga5on	  to	  get	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  for	  any	  	  	  
+3.  Implement	  code	  to	  compute	  cost	  func5on	  
+4.  Implement	  backprop	  to	  compute	  par5al	  deriva5ves	  
+for i = 1:m
+
+Perform	  forward	  propaga5on	  and	  backpropaga5on	  using	  
+example	  
+(Get	  ac5va5ons	  	  	  	  	  	  	  	  and	  delta	  terms	  	  	  	  	  	  	  for
+	  	  	  	  	  	  	  	  	  	  	  	  ).	  
+
+Andrew	  Ng	  
+
+Training	  a	  neural	  network	  
+5.  Use	  gradient	  checking	  to	  compare	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  computed	  using	  
+backpropaga5on	  vs.	  using	  	  numerical	  es5mate	  of	  gradient	  	  	  	  	  	  	  	  	  	  
+of	  	  	  	  	  	  	  	  	  	  .	  
+Then	  disable	  gradient	  checking	  code.	  
+6.  Use	  gradient	  descent	  or	  advanced	  op5miza5on	  method	  with	  
+backpropaga5on	  to	  try	  to	  	  minimize	  	  	  	  	  	  	  	  	  	  as	  a	  func5on	  of	  
+parameters	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Neural	  Networks:	  
+Learning	  
+Backpropaga5on	  
+example:	  Autonomous	  
+driving	  (op5onal)	  
+Machine	  Learning	  
+
+[Courtesy	  of	  Dean	  Pomerleau]	  
+
+

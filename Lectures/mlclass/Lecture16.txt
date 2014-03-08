@@ -1,0 +1,615 @@
+Recommender	  
+Systems	  
+Problem	  
+formula4on	  
+Machine	  Learning	  
+
+Example:	  Predic/ng	  movie	  ra/ngs	  
+User	  rates	  movies	  using	  one	  to	  ﬁve	  stars	  
+Movie	  
+
+Alice	  (1)	  
+
+Bob	  (2)	  
+
+Carol	  (3)	  
+
+Dave	  (4)	  
+
+Love	  at	  last	  
+Romance	  forever	  
+Cute	  puppies	  of	  love	  
+Nonstop	  car	  chases	  
+Swords	  vs.	  karate	  
+
+=	  no.	  users	  
+=	  no.	  movies	  
+=	  1	  if	  user	  	  	  	  has	  
+rated	  movie	  	  	  
+=	  ra4ng	  given	  by	  
+user	  	  	  	  to	  movie	  	  	  	  
+(deﬁned	  only	  if	  	  
+	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+Recommender	  
+Systems	  
+Content-­‐based	  
+recommenda4ons	  
+Machine	  Learning	  
+
+Content-­‐based	  recommender	  systems	  
+Movie	  
+
+Alice	  (1)	  
+
+Bob	  (2)	  
+
+Carol	  (3)	  
+
+Dave	  (4)	  
+
+	  
+(romance)	  
+
+	  
+(ac/on)	  
+
+Love	  at	  last	  
+
+5	  
+
+5	  
+
+0	  
+
+0	  
+
+0.9	  
+
+0	  
+
+Romance	  forever	  
+
+5	  
+
+?	  
+
+?	  
+
+0	  
+
+1.0	  
+
+0.01	  
+
+Cute	  puppies	  of	  love	  
+
+?	  
+
+4	  
+
+0	  
+
+?	  
+
+0.99	  
+
+0	  
+
+Nonstop	  car	  chases	  
+
+0	  
+
+0	  
+
+5	  
+
+4	  
+
+0.1	  
+
+1.0	  
+
+Swords	  vs.	  karate	  
+
+0	  
+
+0	  
+
+5	  
+
+?	  
+
+0	  
+
+0.9	  
+
+For	  each	  user	  	  	  ,	  learn	  a	  parameter	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  Predict	  user	  	  	  	  as	  
+ra4ng	  movie	  	  	  	  	  with	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  stars.	  	  
+
+Andrew	  Ng	  
+
+Problem	  formula/on	  
+	  	  	  	  	  if	  user	  	  	  	  has	  rated	  movie	  	  	  	  	  (0	  otherwise)	  
+	  	  	  	  	  	  ra4ng	  by	  user	  	  	  on	  movie	  	  	  	  (if	  deﬁned)	  
+	  	  	  	  	  	  	  =	  parameter	  vector	  for	  user	  	  
+	  	  	  	  	  	  	  =	  feature	  vector	  for	  movie	  	  	  	  
+For	  user	  	  	  	  ,	  movie	  	  	  	  ,	  predicted	  ra4ng:	  
+	  	  	  	  	  	  	  	  =	  no.	  of	  movies	  rated	  by	  user	  
+To	  learn	  	  	  	  	  	  	  :	  
+
+Andrew	  Ng	  
+
+Op/miza/on	  objec/ve:	  
+To	  learn	  	  	  	  	  	  	  (parameter	  for	  user	  	  	  ):	  
+
+To	  learn	  
+
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  :	  
+
+Andrew	  Ng	  
+
+Op/miza/on	  algorithm:	  
+
+Gradient	  descent	  update:	  
+
+Andrew	  Ng	  
+
+Recommender	  
+Systems	  
+Collabora4ve	  
+ﬁltering	  
+Machine	  Learning	  
+
+Problem	  mo/va/on	  
+Movie	  
+
+Alice	  (1)	  
+
+Bob	  (2)	  
+
+Carol	  (3)	  
+
+Dave	  (4)	  
+
+	  
+(romance)	  
+
+	  
+(ac/on)	  
+
+Love	  at	  last	  
+
+5	  
+
+5	  
+
+0	  
+
+0	  
+
+0.9	  
+
+0	  
+
+Romance	  forever	  
+
+5	  
+
+?	  
+
+?	  
+
+0	  
+
+1.0	  
+
+0.01	  
+
+Cute	  puppies	  of	  
+love	  
+
+?	  
+
+4	  
+
+0	  
+
+?	  
+
+0.99	  
+
+0	  
+
+Nonstop	  car	  
+chases	  
+
+0	  
+
+0	  
+
+5	  
+
+4	  
+
+0.1	  
+
+1.0	  
+
+Swords	  vs.	  karate	  
+
+0	  
+
+0	  
+
+5	  
+
+?	  
+
+0	  
+
+0.9	  
+
+Andrew	  Ng	  
+
+Problem	  mo/va/on	  
+Movie	  
+
+Alice	  (1)	  
+
+Bob	  (2)	  
+
+Carol	  (3)	  
+
+Dave	  (4)	  
+
+	  
+(romance)	  
+
+	  
+(ac/on)	  
+
+Love	  at	  last	  
+
+5	  
+
+5	  
+
+0	  
+
+0	  
+
+?	  
+
+?	  
+
+Romance	  forever	  
+
+5	  
+
+?	  
+
+?	  
+
+0	  
+
+?	  
+
+?	  
+
+Cute	  puppies	  of	  
+love	  
+
+?	  
+
+4	  
+
+0	  
+
+?	  
+
+?	  
+
+?	  
+
+Nonstop	  car	  
+chases	  
+
+0	  
+
+0	  
+
+5	  
+
+4	  
+
+?	  
+
+?	  
+
+Swords	  vs.	  karate	  
+
+0	  
+
+0	  
+
+5	  
+
+?	  
+
+?	  
+
+?	  
+
+Andrew	  Ng	  
+
+Op/miza/on	  algorithm	  
+Given	  
+
+	  	  	  	  	  	  	  	  	  ,	  to	  learn	  	  	  	  	  	  :	  
+
+Given	  
+
+	  	  	  	  	  	  	  	  	  ,	  to	  learn
+
+	  
+
+	  :	  
+
+Andrew	  Ng	  
+
+Collabora/ve	  ﬁltering	  
+Given	  
+	  	  	  	  	  	  	  	  	  	  (and	  movie	  ra4ngs),	  	  
+	  can	  es4mate	  
+	  	  
+Given	  
+	  	  	  	  	  	  	  	  	  ,	  	  
+	  can	  es4mate	  
+
+Andrew	  Ng	  
+
+Recommender	  
+Systems	  
+Collabora4ve	  
+ﬁltering	  algorithm	  
+Machine	  Learning	  
+
+Collabora/ve	  ﬁltering	  op/miza/on	  objec/ve	  
+
+Given	  
+
+	  	  	  	  	  	  	  	  	  ,	  es4mate
+
+	  
+
+	  :	  
+
+Given	  
+
+	  	  	  	  	  	  	  	  	  ,	  es4mate
+
+	  
+
+	  	  :	  
+
+	  
+
+	  simultaneously:	  	  	  	  	  	  	  	  	  	  	  	  
+
+Minimizing 	  
+
+	  	  	  	  	  	  	  	  and
+
+Andrew	  Ng	  
+
+Collabora/ve	  ﬁltering	  algorithm	  
+1.  Ini4alize 	  
+	  
+	  	  	  	  	  	  	  	   	  	  	  	  	  to	  small	  random	  values.	  
+2.  Minimize 	  
+	  
+	  
+	  
+	  using	  gradient	  
+descent	  (or	  an	  advanced	  op4miza4on	  algorithm).	  E.g.	  for	  
+every
+	  
+	  
+	  	  	  	  	  	  	  	  	  	  :	  
+	  
+	  
+	  
+	  
+3.  For	  a	  user	  with	  parameters	  	  	  	  	  	  	  and	  a	  movie	  with	  (learned)	  
+features	  	  	  	  	  	  ,	  predict	  a	  star	  ra4ng	  of	  	  	  	  	  	  	  	  	  	  	  .	  
+
+Andrew	  Ng	  
+
+Recommender	  
+Systems	  
+
+Machine	  Learning	  
+
+Vectoriza4on:	  
+Low	  rank	  matrix	  
+factoriza4on	  
+
+Collabora/ve	  ﬁltering	  
+Movie	  
+
+Alice	  (1)	  
+
+Bob	  (2)	  
+
+Carol	  (3)	  
+
+Dave	  (4)	  
+
+Love	  at	  last	  
+
+5	  
+
+5	  
+
+0	  
+
+0	  
+
+Romance	  forever	  
+
+5	  
+
+?	  
+
+?	  
+
+0	  
+
+Cute	  puppies	  of	  
+love	  
+
+?	  
+
+4	  
+
+0	  
+
+?	  
+
+Nonstop	  car	  
+chases	  
+
+0	  
+
+0	  
+
+5	  
+
+4	  
+
+Swords	  vs.	  karate	  
+
+0	  
+
+0	  
+
+5	  
+
+?	  
+
+Andrew	  Ng	  
+
+Collabora/ve	  ﬁltering	  
+Predicted	  ra4ngs:	  
+
+Andrew	  Ng	  
+
+Finding	  related	  movies	  
+For	  each	  product	  	  	  	  ,	  we	  learn	  a	  feature	  vector	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+
+How	  to	  ﬁnd	  movies	  	  	  	  related	  to	  movie	  	  	  ?	  
+
+5	  most	  similar	  movies	  to	  movie	  	  	  :	  
+Find	  the	  5	  movies	  	  	  	  with	  the	  smallest
+
+	  	  	  	  	  	  	  	  	  .	  
+
+Andrew	  Ng	  
+
+Recommender	  
+Systems	  
+	  
+
+Machine	  Learning	  
+
+Implementa4onal	  
+detail:	  	  Mean	  
+normaliza4on	  
+
+Users	  who	  have	  not	  rated	  any	  movies	  
+Movie	  
+
+Alice	  (1)	  
+
+Bob	  (2)	  
+
+Carol	  (3)	  
+
+Dave	  (4)	  
+
+Eve	  (5)	  
+
+Love	  at	  last	  
+
+5	  
+
+5	  
+
+0	  
+
+0	  
+
+?	  
+
+Romance	  forever	  
+
+5	  
+
+?	  
+
+?	  
+
+0	  
+
+?	  
+
+Cute	  puppies	  of	  love	  
+
+?	  
+
+4	  
+
+0	  
+
+?	  
+
+?	  
+
+Nonstop	  car	  chases	  
+
+0	  
+
+0	  
+
+5	  
+
+4	  
+
+?	  
+
+Swords	  vs.	  karate	  
+
+0	  
+
+0	  
+
+5	  
+
+?	  
+
+?	  
+
+Andrew	  Ng	  
+
+Mean	  Normaliza/on:	  
+
+For	  user	  	  	  	  ,	  on	  movie	  	  	  	  predict:	  
+
+User	  5	  (Eve):	  
+
+Andrew	  Ng	  
+
+

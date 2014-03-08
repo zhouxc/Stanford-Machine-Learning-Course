@@ -1,0 +1,631 @@
+Programming Exercise 3:
+Multi-class Classification and Neural Networks
+Machine Learning
+October 25, 2011
+
+Introduction
+In this exercise, you will implement one-vs-all logistic regression and neural
+networks to recognize hand-written digits. Before starting the programming
+exercise, we strongly recommend watching the video lectures and completing
+the review questions for the associated topics.
+To get started with the exercise, download the starter code and unzip its
+contents to the directory where you wish to complete the exercise. If needed,
+use the cd command in Octave to change to this directory before starting
+this exercise.
+
+Files included in this exercise
+ex3.m - Octave script that will help step you through part 1
+ex3 nn.m - Octave script that will help step you through part 2
+ex3data1.mat - Training set of hand-written digits
+ex3weights.mat - Initial weights for the neural network exercise
+submitWeb.m - Alternative submission script
+submit.m - Submission script that sends your solutions to our servers
+displayData.m - Function to help visualize the dataset
+fmincg.m - Function minimization routine (similar to fminunc)
+sigmoid.m - Sigmoid function
+[ ] lrCostFunction.m - Logistic regression cost function
+[ ] oneVsAll.m - Train a one-vs-all multi-class classifier
+[ ] predictOneVsAll.m - Predict using a one-vs-all multi-class classifier
+[ ] predict.m - Neural network prediction function
+
+1
+
+indicates files you will need to complete
+Throughout the exercise, you will be using the scripts ex3.m and ex3 nn.m.
+These scripts set up the dataset for the problems and make calls to functions
+that you will write. You do not need to modify these scripts. You are only
+required to modify functions in other files, by following the instructions in
+this assignment.
+
+Where to get help
+We also strongly encourage using the online Q&A Forum to discuss exercises with other students. However, do not look at any source code written
+by others or share your source code with others.
+If you run into network errors using the submit script, you can also use
+an online form for submitting your solutions. To use this alternative submission interface, run the submitWeb script to generate a submission file (e.g.,
+submit ex2 part1.txt). You can then submit this file through the web
+submission form in the programming exercises page (go to the programming
+exercises page, then select the exercise you are submitting for). If you are
+having no problems submitting through the standard submission system using the submit script, you do not need to use this alternative submission
+interface.
+
+1
+
+Multi-class Classification
+
+For this exercise, you will use logistic regression and neural networks to
+recognize handwritten digits (from 0 to 9). Automated handwritten digit
+recognition is widely used today - from recognizing zip codes (postal codes)
+on mail envelopes to recognizing amounts written on bank checks. This
+exercise will show you how the methods you’ve learned can be used for this
+classification task.
+In the first part of the exercise, you will extend your previous implemention of logistic regression and apply it to one-vs-all classification.
+
+2
+
+1.1
+
+Dataset
+
+You are given a data set in ex3data1.mat that contains 5000 training examples of handwritten digits.1 The .mat format means that that the data
+has been saved in a native Octave/Matlab matrix format, instead of a text
+(ASCII) format like a csv-file. These matrices can be read directly into your
+program by using the load command. After loading, matrices of the correct
+dimensions and values will appear in your program’s memory. The matrix
+will already be named, so you do not need to assign names to them.
+% Load saved matrices from file
+load('ex3data1.mat');
+% The matrices X and y will now be in your Octave environment
+
+There are 5000 training examples in ex3data1.mat, where each training
+example is a 20 pixel by 20 pixel grayscale image of the digit. Each pixel is
+represented by a floating point number indicating the grayscale intensity at
+that location. The 20 by 20 grid of pixels is “unrolled” into a 400-dimensional
+vector. Each of these training examples become a single row in our data
+matrix X. This gives us a 5000 by 400 matrix X where every row is a training
+example for a handwritten digit image.
+
+
+— (x(1) )T —
+ — (x(2) )T — 
+
+
+X=
+
+..
+
+
+.
+(m) T
+— (x ) —
+The second part of the training set is a 5000-dimensional vector y that
+contains labels for the training set. To make things more compatible with
+Octave/Matlab indexing, where there is no zero index, we have mapped the
+digit zero to the value ten. Therefore, a “0” digit is labeled as “10”, while
+the digits “1” to “9” are labeled as “1” to “9” in their natural order.
+
+1.2
+
+Visualizing the data
+
+You will begin by visualizing a subset of the training set. In Part 1 of ex3.m,
+the code randomly selects selects 100 rows from X and passes those rows
+to the displayData function. This function maps each row to a 20 pixel by
+20 pixel grayscale image and displays the images together. We have provided
+1
+This is a subset of the MNIST handwritten digit dataset (http://yann.lecun.com/
+exdb/mnist/).
+
+3
+
+the displayData function, and you are encouraged to examine the code to
+see how it works. After you run this step, you should see an image like Figure
+1.
+
+Figure 1: Examples from the dataset
+
+1.3
+
+Vectorizing Logistic Regression
+
+You will be using multiple one-vs-all logistic regression models to build a
+multi-class classifier. Since there are 10 classes, you will need to train 10
+separate logistic regression classifiers. To make this training efficient, it is
+important to ensure that your code is well vectorized. In this section, you
+will implement a vectorized version of logistic regression that does not employ
+any for loops. You can use your code in the last exercise as a starting point
+for this exercise.
+1.3.1
+
+Vectorizing the cost function
+
+We will begin by writing a vectorized version of the cost function. Recall
+that in (unregularized) logistic regression, the cost function is
+1
+J(θ) =
+m
+
+m
+
+−y (i) log(hθ (x(i) )) − (1 − y (i) ) log(1 − hθ (x(i) )) .
+i=1
+
+To compute each element in the summation, we have to compute hθ (x(i) )
+for every example i, where hθ (x(i) ) = g(θT x(i) ) and g(z) = 1+e1−z is the
+4
+
+sigmoid function. It turns out that we can compute this quickly for all our
+examples by using matrix multiplication. Let us define X and θ as
+
+
+
+
+— (x(1) )T —
+θ0
+ — (x(2) )T — 
+ θ1 
+
+
+
+
+X=
+and
+θ
+=
+
+ ..  .
+..
+
+
+
+. 
+.
+(m) T
+θn
+— (x ) —
+Then, by computing the matrix product Xθ, we have
+
+ 
+— (x(1) )T θ —
+— θT (x(1) ) —
+ — (x(2) )T θ —   — θT (x(2) ) —
+
+ 
+Xθ = 
+=
+..
+..
+
+ 
+.
+.
+(m) T
+T
+— (x ) θ —
+— θ (x(m) ) —
+
+
+
+
+.
+
+
+In the last equality, we used the fact that aT b = bT a if a and b are vectors.
+This allows us to compute the products θT x(i) for all our examples i in one
+line of code.
+Your job is to write the unregularized cost function in the file lrCostFunction.m
+Your implementation should use the strategy we presented above to calculate θT x(i) . You should also use a vectorized approach for the rest of the
+cost function. A fully vectorized version of lrCostFunction.m should not
+contain any loops.
+(Hint: You might want to use the element-wise multiplication operation
+(.*) and the sum operation sum when writing this function)
+1.3.2
+
+Vectorizing the gradient
+
+Recall that the gradient of the (unregularized) logistic regression cost is a
+vector where the j th element is defined as
+1
+∂J
+=
+∂θj
+m
+
+m
+(i)
+
+(hθ (x(i) ) − y (i) )xj
+
+.
+
+i=1
+
+To vectorize this operation over the dataset, we start by writing out all
+
+5
+
+the partial derivatives explicitly for all θj ,
+
+m
+(i)
+(i) (i)
+ ∂J 
+i=1 (hθ (x ) − y )x0
+
+∂θ0
+
+ ∂J 
+(i)
+m
+
+ ∂θ1 
+(hθ (x(i) ) − y (i) )x1
+
+i=1
+
+
+
+ ∂J 
+ ∂θ2  = 1 
+(i)
+m
+(hθ (x(i) ) − y (i) )x2
+
+ m
+i=1
+
+ . 
+
+ .. 
+
+..
+
+
+
+.
+
+∂J
+m
+(i)
+(i) (i)
+∂θn
+i=1 (hθ (x ) − y )xn
+=
+
+1
+m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+m
+
+(hθ (x(i) ) − y (i) )x(i)
+i=1
+
+1
+= X T (hθ (x) − y).
+m
+where
+
+
+
+
+
+
+hθ (x) − y = 
+
+
+hθ (x(1) ) − y (1)
+hθ (x(2) ) − y (2)
+..
+.
+hθ (x(1) ) − y (m)
+
+(1)
+
+
+
+.
+
+
+Note that x(i) is a vector, while (hθ (x(i) )−y (i) ) is a scalar (single number).
+To understand the last step of the derivation, let βi = (hθ (x(i) ) − y (i) ) and
+observe that:
+
+
+ β1
+
+|
+|
+|
+ β2 
+
+(i)
+(1)
+(2)
+(m)  
+
+βi x = x
+x
+... x
+ ..  = X T β,
+ . 
+i
+|
+|
+|
+βm
+where the values βi = (hθ (x(i) ) − y (i) ).
+The expression above allows us to compute all the partial derivatives
+without any loops. If you are comfortable with linear algebra, we encourage
+you to work through the matrix multiplications above to convince yourself
+that the vectorized version does the same computations. You should now
+implement Equation 1 to compute the correct vectorized gradient. Once you
+are done, complete the function lrCostFunction.m by implementing the
+gradient.
+
+6
+
+Debugging Tip: Vectorizing code can sometimes be tricky. One common strategy for debugging is to print out the sizes of the matrices you
+are working with using the size function. For example, given a data matrix X of size 100 × 20 (100 examples, 20 features) and θ, a vector with
+dimensions 20 × 1, you can observe that Xθ is a valid multiplication operation, while θX is not. Furthermore, if you have a non-vectorized version
+of your code, you can compare the output of your vectorized code and
+non-vectorized code to make sure that they produce the same outputs.
+1.3.3
+
+Vectorizing regularized logistic regression
+
+After you have implemented vectorization for logistic regression, you will now
+add regularization to the cost function. Recall that for regularized logistic
+regression, the cost function is defined as
+1
+J(θ) =
+m
+
+m
+
+−y
+
+(i)
+
+i=1
+
+λ
+log(hθ (x )) − (1 − y ) log(1 − hθ (x )) +
+2m
+(i)
+
+(i)
+
+n
+
+(i)
+
+θj2 .
+j=1
+
+Note that you should not be regularizing θ0 which is used for the bias
+term.
+Correspondingly, the partial derivative of regularized logistic regression
+cost for θj is defined as
+1
+∂J
+=
+∂θ0
+m
+∂J
+1
+=
+∂θj
+m
+
+m
+(i)
+
+(hθ (x(i) ) − y (i) )xj )
+
+for j = 0
+
+i=1
+m
+(i)
+
+(hθ (x(i) ) − y (i) )xj + λθj
+
+for j ≥ 1.
+
+i=1
+
+Now modify your code in lrCostFunction to account for regularization.
+Once again, you should not put any loops into your code.
+
+7
+
+Octave Tip: When implementing the vectorization for regularized logistic regression, you might often want to only sum and update certain
+elements of θ. In Octave, you can index into the matrices to access and
+update only certain elements. For example, A(:, 3:5) = B(:, 1:3) will
+replaces the columns 3 to 5 of A with the columns 1 to 3 from B. One
+special keyword you can use in indexing is the end keyword in indexing.
+This allows us to select columns (or rows) until the end of the matrix.
+For example, A(:, 2:end) will only return elements from the 2nd to last
+column of A. Thus, you could use this together with the sum and .^ operations to compute the sum of only the elements you are interested in
+(e.g., sum(z(2:end).^2)). In the starter code, lrCostFunction.m, we
+have also provided hints on yet another possible method computing the
+regularized gradient.
+You should now submit your vectorized logistic regression cost function.
+
+1.4
+
+One-vs-all Classification
+
+In this part of the exercise, you will implement one-vs-all classification by
+training multiple regularized logistic regression classifiers, one for each of
+the K classes in our dataset (Figure 1). In the handwritten digits dataset,
+K = 10, but your code should work for any value of K.
+You should now complete the code in oneVsAll.m to train one classifier for
+each class. In particular, your code should return all the classifier parameters
+in a matrix Θ ∈ RK×(N +1) , where each row of Θ corresponds to the learned
+logistic regression parameters for one class. You can do this with a “for”-loop
+from 1 to K, training each classifier independently.
+Note that the y argument to this function is a vector of labels from 1 to
+10, where we have mapped the digit “0” to the label 10 (to avoid confusions
+with indexing).
+When training the classifier for class k ∈ {1, ..., K}, you will want a mdimensional vector of labels y, where yj ∈ 0, 1 indicates whether the j-th
+training instance belongs to class k (yj = 1), or if it belongs to a different
+class (yj = 0). You may find logical arrays helpful for this task.
+
+8
+
+Octave Tip: Logical arrays in Octave are arrays which contain binary (0
+or 1) elements. In Octave, evaluating the expression a == b for a vector a
+(of size m × 1) and scalar b will return a vector of the same size as a with
+ones at positions where the elements of a are equal to b and zeroes where
+they are different. To see how this works for yourself, try the following
+code in Octave:
+a = 1:10; % Create a and b
+b = 3;
+a == b
+% You should try different values of b here
+Furthermore, you will be using fmincg for this exercise (instead of fminunc).
+fmincg works similarly to fminunc, but is more more efficient for dealing with
+a large number of parameters.
+After you have correctly completed the code for oneVsAll.m, the script
+ex3.m will continue to use your oneVsAll function to train a multi-class classifier.
+You should now submit the training function for one-vs-all classification.
+1.4.1
+
+One-vs-all Prediction
+
+After training your one-vs-all classifier, you can now use it to predict the
+digit contained in a given image. For each input, you should compute the
+“probability” that it belongs to each class using the trained logistic regression
+classifiers. Your one-vs-all prediction function will pick the class for which the
+corresponding logistic regression classifier outputs the highest probability and
+return the class label (1, 2,..., or K) as the prediction for the input example.
+You should now complete the code in predictOneVsAll.m to use the
+one-vs-all classifier to make predictions.
+Once you are done, ex3.m will call your predictOneVsAll function using
+the learned value of Θ. You should see that the training set accuracy is about
+94.9% (i.e., it classifies 94.9% of the examples in the training set correctly).
+You should now submit the prediction function for one-vs-all classification.
+
+9
+
+2
+
+Neural Networks
+
+In the previous part of this exercise, you implemented multi-class logistic regression to recognize handwritten digits. However, logistic regression cannot
+form more complex hypotheses as it is only a linear classifier.2
+In this part of the exercise, you will implement a neural network to recognize handwritten digits using the same training set as before. The neural
+network will be able to represent complex models that form non-linear hypotheses. For this week, you will be using parameters from a neural network
+that we have already trained. Your goal is to implement the feedforward
+propagation algorithm to use our weights for prediction. In next week’s exercise, you will write the backpropagation algorithm for learning the neural
+network parameters.
+The provided script, ex3 nn.m, will help you step through this exercise.
+
+2.1
+
+Model representation
+
+Our neural network is shown in Figure 2. It has 3 layers – an input layer, a
+hidden layer and an output layer. Recall that our inputs are pixel values of
+digit images. Since the images are of size 20×20, this gives us 400 input layer
+units (excluding the extra bias unit which always outputs +1). As before,
+the training data will be loaded into the variables X and y.
+You have been provided with a set of network parameters (Θ(1) , Θ(2) )
+already trained by us. These are stored in ex3weights.mat and will be
+loaded by ex3 nn.m into Theta1 and Theta2 The parameters have dimensions
+that are sized for a neural network with 25 units in the second layer and 10
+output units (corresponding to the 10 digit classes).
+% Load saved matrices from file
+load('ex3weights.mat');
+%
+%
+%
+%
+
+The matrices Theta1 and Theta2 will now be in your Octave
+environment
+Theta1 has size 25 x 401
+Theta2 has size 26 x 10
+2
+
+You could add more features (such as polynomial features) to logistic regression, but
+that can be very expensive to train.
+
+10
+
+Figure 2: Neural network model.
+
+2.2
+
+Feedforward Propagation and Prediction
+
+Now you will implement feedforward propagation for the neural network. You
+will need to complete the code in predict.m to return the neural network’s
+prediction.
+You should implement the feedforward computation that computes hθ (x(i) )
+for every example i and returns the associated predictions. Similar to the
+one-vs-all classification strategy, the prediction from the neural network will
+be the label that has the largest output (hθ (x))k .
+Implementation Note: The matrix X contains the examples in rows.
+When you complete the code in predict.m, you will need to add the
+column of 1’s to the matrix. The matrices Theta1 and Theta2 contain
+the parameters for each unit in rows. Specifically, the first row of Theta1
+corresponds to the first hidden unit in the second layer. In Octave, when
+you compute z (2) = Θ(1) a(1) , be sure that you index (and if necessary,
+transpose) X correctly so that you get a(l) as a column vector.
+Once you are done, ex3 nn.m will call your nnCostFunction using the
+loaded set of parameters for Theta1 and Theta2, and λ = 1. You should
+
+11
+
+see that the accuracy is about 97.5%. After that, an interactive sequence
+will launch displaying images from the training set one at a time, while the
+console prints out the predicted label for the displayed image. To stop the
+image sequence, press Ctrl-C.
+You should now submit the neural network prediction function.
+
+Submission and Grading
+After completing this assignment, be sure to use the submit function to submit your solutions to our servers. The following is a breakdown of how each
+part of this exercise is scored.
+Part
+Regularized Logisic Regression
+One-vs-all classifier training
+One-vs-all classifier prediction
+Neural Network Prediction Function
+Total Points
+
+Submitted File
+lrCostFunction.m
+oneVsAll.m
+predictOneVsAll.m
+predict.m
+
+Points
+30 points
+20 points
+20 points
+30 points
+100 points
+
+You are allowed to submit your solutions multiple times, and we will
+take the highest score into consideration. To prevent rapid-fire guessing, the
+system enforces a minimum of 5 minutes between submissions.
+All parts of this programming exercise are due Sunday, November 6th
+at 23:59:59 PDT.
+
+12
+
+

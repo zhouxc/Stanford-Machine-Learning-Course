@@ -1,0 +1,263 @@
+Introduc)on	  
+
+Welcome	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+SPAM
+Andrew	  Ng	  
+
+Machine	  Learning	  
+-­‐ 	  Grew	  out	  of	  work	  in	  AI	  
+-­‐ 	  New	  capability	  for	  computers	  	  
+	  
+
+Examples:	  	  
+-­‐ 	  Database	  mining	  	  
+Large	  datasets	  from	  growth	  of	  automa)on/web.	  	  	  
+E.g.,	  Web	  click	  data,	  medical	  records,	  biology,	  engineering	  
+-­‐ 	  Applica)ons	  can’t	  program	  by	  hand.	  
+E.g.,	  Autonomous	  helicopter,	  handwri)ng	  recogni)on,	  most	  of	  
+Natural	  Language	  Processing	  (NLP),	  Computer	  Vision.	  	  
+	  
+Andrew	  Ng	  
+
+Machine	  Learning	  
+-­‐ 	  Grew	  out	  of	  work	  in	  AI	  
+-­‐ 	  New	  capability	  for	  computers	  	  
+	  
+
+Examples:	  	  
+-­‐ 	  Database	  mining	  	  
+Large	  datasets	  from	  growth	  of	  automa)on/web.	  	  	  
+E.g.,	  Web	  click	  data,	  medical	  records,	  biology,	  engineering	  
+-­‐ 	  Applica)ons	  can’t	  program	  by	  hand.	  
+E.g.,	  Autonomous	  helicopter,	  handwri)ng	  recogni)on,	  most	  of	  
+Natural	  Language	  Processing	  (NLP),	  Computer	  Vision.	  	  
+-­‐ 	  Self-­‐customizing	  programs	  
+E.g.,	  Amazon,	  NeOlix	  product	  recommenda)ons	  
+-­‐ 	  Understanding	  human	  learning	  (brain,	  real	  AI).	  
+
+Andrew	  Ng	  
+
+Introduc)on	  
+What	  is	  machine	  
+learning	  
+Machine	  Learning	  
+Andrew	  Ng	  
+
+Machine	  Learning	  deﬁni)on	  
+•  Arthur	  Samuel	  (1959).	  Machine	  Learning:	  Field	  of	  
+study	  that	  gives	  computers	  the	  ability	  to	  learn	  
+without	  being	  explicitly	  programmed.	  	  
+•  Tom	  Mitchell	  (1998)	  Well-­‐posed	  Learning	  
+Problem:	  A	  computer	  program	  is	  said	  to	  learn	  
+from	  experience	  E	  with	  respect	  to	  some	  task	  T	  
+and	  some	  performance	  measure	  P,	  if	  its	  
+performance	  on	  T,	  as	  measured	  by	  P,	  improves	  
+with	  experience	  E.	  	  
+Andrew	  Ng	  
+
+“A	  computer	  program	  is	  said	  to	  learn	  from	  experience	  E	  with	  respect	  to	  
+some	  task	  T	  and	  some	  performance	  measure	  P,	  if	  its	  performance	  on	  T,	  
+as	  measured	  by	  P,	  improves	  with	  experience	  E.”	  
+
+Suppose	  your	  email	  program	  watches	  which	  emails	  you	  do	  or	  do	  
+not	  mark	  as	  spam,	  and	  based	  on	  that	  learns	  how	  to	  be\er	  ﬁlter	  
+spam.	  	  What	  is	  the	  task	  T	  in	  this	  se]ng?	  	  
+	  
+Classifying	  emails	  as	  spam	  or	  not	  spam.	  	  
+Watching	  you	  label	  emails	  as	  spam	  or	  not	  spam.	  	  
+The	  number	  (or	  frac)on)	  of	  emails	  correctly	  classiﬁed	  as	  spam/not	  spam.	  	  
+None	  of	  the	  above—this	  is	  not	  a	  machine	  learning	  problem.	  
+
+Machine	  learning	  algorithms:	  
+-­‐  Supervised	  learning	  
+-­‐  Unsupervised	  learning	  
+Others:	  Reinforcement	  learning,	  recommender	  
+systems.	  	  
+	  
+
+Also	  talk	  about:	  Prac)cal	  advice	  for	  applying	  
+learning	  algorithms.	  	  
+Andrew	  Ng	  
+
+Introduc)on	  
+
+Supervised	  
+Learning	  
+Machine	  Learning	  
+Andrew	  Ng	  
+
+Housing	  price	  predic)on.	  	  
+400	  
+300	  
+
+Price	  ($)	  	  
+200	  
+in	  1000’s	  
+100	  
+0	  
+0	  
+
+500	  
+
+1000	  
+
+1500	  
+
+2000	  
+
+2500	  
+
+Size	  in	  feet2	  	  
+
+Supervised	  Learning	  
+“right	  answers”	  given	  
+
+Regression:	  Predict	  con)nuous	  
+valued	  output	  (price)	  
+Andrew	  Ng	  
+
+Breast	  cancer	  (malignant,	  benign)	  
+Classiﬁca)on	  
+Discrete	  valued	  
+output	  (0	  or	  1)	  
+
+1(Y)	  
+
+Malignant?	  
+0(N)	  
+
+Tumor	  Size	  
+
+Tumor	  Size	  
+Andrew	  Ng	  
+
+-­‐  Clump	  Thickness	  
+-­‐  Uniformity	  of	  Cell	  Size	  
+-­‐  Uniformity	  of	  Cell	  Shape	  
+…	  
+
+Age	  
+
+Tumor	  Size	  
+
+Andrew	  Ng	  
+
+You’re	  running	  a	  company,	  and	  you	  want	  to	  develop	  learning	  algorithms	  to	  address	  
+each	  of	  two	  problems.	  
+	  
+Problem	  1:	  You	  have	  a	  large	  inventory	  of	  iden)cal	  items.	  	  You	  want	  to	  predict	  how	  
+many	  of	  these	  items	  will	  sell	  over	  the	  next	  3	  months.	  
+Problem	  2:	  You’d	  like	  soYware	  to	  examine	  individual	  customer	  accounts,	  and	  for	  each	  
+account	  decide	  if	  it	  has	  been	  hacked/compromised.	  	  
+	  
+Should	  you	  treat	  these	  as	  classiﬁca)on	  or	  as	  regression	  problems?	  	  
+Treat	  both	  as	  classiﬁca)on	  problems.	  	  
+Treat	  problem	  1	  as	  a	  classiﬁca)on	  problem,	  problem	  2	  as	  a	  regression	  problem.	  	  
+Treat	  problem	  1	  as	  a	  regression	  problem,	  problem	  2	  as	  a	  classiﬁca)on	  problem.	  	  
+Treat	  both	  as	  regression	  problems.	  	  
+
+Introduc)on	  
+
+Unsupervised	  
+Learning	  
+Machine	  Learning	  
+Andrew	  Ng	  
+
+Supervised	  Learning	  
+
+x2	  
+
+x1	  
+Andrew	  Ng	  
+
+Unsupervised	  Learning	  
+
+x2	  
+
+x1	  
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Genes	  
+
+Individuals	  
+
+[Source:	  Su-­‐In	  Lee,	  Dana	  Pe’er,	  Aimee	  Dudley,	  George	  Church,	  Daphne	  Koller]	  
+
+Andrew	  Ng	  
+
+Organize	  compu)ng	  clusters	  
+
+Social	  network	  analysis	  
+
+Image	  credit:	  NASA/JPL-­‐Caltech/E.	  Churchwell	  (Univ.	  of	  Wisconsin,	  Madison)	  	  
+
+Market	  segmenta)on	  
+
+Astronomical	  data	  analysis	  
+
+Andrew	  Ng	  
+
+Cocktail	  party	  problem	  
+
+Speaker	  #1	  
+
+Speaker	  #2	  
+
+Microphone	  #1	  
+
+Microphone	  #2	  
+Andrew	  Ng	  
+
+Microphone	  #1:	  
+	  
+Microphone	  #2:	  	  
+
+Output	  #1:	  
+	  
+Output	  #2:	  	  
+
+Microphone	  #1:	  
+	  
+Microphone	  #2:	  	  
+
+Output	  #1:	  
+	  
+Output	  #2:	  	  
+
+[Audio	  clips	  courtesy	  of	  Te-­‐Won	  Lee.]	  
+
+Andrew	  Ng	  
+
+Cocktail	  party	  problem	  algorithm	  
+	  
+[W,s,v]	  =	  svd((repmat(sum(x.*x,1),size(x,1),1).*x)*x');	  
+
+[Source:	  Sam	  Roweis,	  Yair	  Weiss	  &	  Eero	  Simoncelli]	  
+
+Andrew	  Ng	  
+
+Of	  the	  following	  examples,	  which	  would	  you	  address	  using	  an	  
+unsupervised	  learning	  algorithm?	  	  (Check	  all	  that	  apply.)	  	  
+	  
+Given	  email	  labeled	  as	  spam/not	  spam,	  learn	  a	  spam	  ﬁlter.	  
+
+Given	  a	  set	  of	  news	  ar)cles	  found	  on	  the	  web,	  group	  them	  into	  
+set	  of	  ar)cles	  about	  the	  same	  story.	  	  
+Given	  a	  database	  of	  customer	  data,	  automa)cally	  discover	  market	  
+segments	  and	  group	  customers	  into	  diﬀerent	  market	  segments.	  	  
+Given	  a	  dataset	  of	  pa)ents	  diagnosed	  as	  either	  having	  diabetes	  or	  
+not,	  learn	  to	  classify	  new	  pa)ents	  as	  having	  diabetes	  or	  not.	  	  
+
+

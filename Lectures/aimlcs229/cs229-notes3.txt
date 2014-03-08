@@ -1,0 +1,1379 @@
+CS229 Lecture notes
+Andrew Ng
+
+Part V
+
+Support Vector Machines
+This set of notes presents the Support Vector Machine (SVM) learning algorithm. SVMs are among the best (and many believe is indeed the best)
+“off-the-shelf” supervised learning algorithm. To tell the SVM story, we’ll
+need to first talk about margins and the idea of separating data with a large
+“gap.” Next, we’ll talk about the optimal margin classifier, which will lead
+us into a digression on Lagrange duality. We’ll also see kernels, which give
+a way to apply SVMs efficiently in very high dimensional (such as infinitedimensional) feature spaces, and finally, we’ll close off the story with the
+SMO algorithm, which gives an efficient implementation of SVMs.
+
+1
+
+Margins: Intuition
+
+We’ll start our story on SVMs by talking about margins. This section will
+give the intuitions about margins and about the “confidence” of our predictions; these ideas will be made formal in Section 3.
+Consider logistic regression, where the probability p(y = 1|x; θ) is modeled by hθ (x) = g(θ T x). We would then predict “1” on an input x if and
+only if hθ (x) ≥ 0.5, or equivalently, if and only if θ T x ≥ 0. Consider a
+positive training example (y = 1). The larger θ T x is, the larger also is
+hθ (x) = p(y = 1|x; w, b), and thus also the higher our degree of “confidence”
+that the label is 1. Thus, informally we can think of our prediction as being
+a very confident one that y = 1 if θ T x
+0. Similarly, we think of logistic
+regression as making a very confident prediction of y = 0, if θ T x
+0. Given
+a training set, again informally it seems that we’d have found a good fit to
+the training data if we can find θ so that θ T x(i)
+0 whenever y (i) = 1, and
+1
+
+2
+θT x(i)
+0 whenever y (i) = 0, since this would reflect a very confident (and
+correct) set of classifications for all the training examples. This seems to be
+a nice goal to aim for, and we’ll soon formalize this idea using the notion of
+functional margins.
+For a different type of intuition, consider the following figure, in which x’s
+represent positive training examples, o’s denote negative training examples,
+a decision boundary (this is the line given by the equation θ T x = 0, and
+is also called the separating hyperplane) is also shown, and three points
+have also been labeled A, B and C.
+
+A
+
+C
+☎✆
+
+B
+
+ ✁
+
+✂✄
+
+Notice that the point A is very far from the decision boundary. If we are
+asked to make a prediction for the value of y at at A, it seems we should be
+quite confident that y = 1 there. Conversely, the point C is very close to
+the decision boundary, and while it’s on the side of the decision boundary
+on which we would predict y = 1, it seems likely that just a small change to
+the decision boundary could easily have caused out prediction to be y = 0.
+Hence, we’re much more confident about our prediction at A than at C. The
+point B lies in-between these two cases, and more broadly, we see that if
+a point is far from the separating hyperplane, then we may be significantly
+more confident in our predictions. Again, informally we think it’d be nice if,
+given a training set, we manage to find a decision boundary that allows us
+to make all correct and confident (meaning far from the decision boundary)
+predictions on the training examples. We’ll formalize this later using the
+notion of geometric margins.
+
+3
+
+2
+
+Notation
+
+To make our discussion of SVMs easier, we’ll first need to introduce a new
+notation for talking about classification. We will be considering a linear
+classifier for a binary classification problem with labels y and features x.
+From now, we’ll use y ∈ {−1, 1} (instead of {0, 1}) to denote the class labels.
+Also, rather than parameterizing our linear classifier with the vector θ, we
+will use parameters w, b, and write our classifier as
+hw,b (x) = g(w T x + b).
+Here, g(z) = 1 if z ≥ 0, and g(z) = −1 otherwise. This “w, b” notation
+allows us to explicitly treat the intercept term b separately from the other
+parameters. (We also drop the convention we had previously of letting x0 = 1
+be an extra coordinate in the input feature vector.) Thus, b takes the role of
+what was previously θ0 , and w takes the role of [θ1 . . . θn ]T .
+Note also that, from our definition of g above, our classifier will directly
+predict either 1 or −1 (cf. the perceptron algorithm), without first going
+through the intermediate step of estimating the probability of y being 1
+(which was what logistic regression did).
+
+3
+
+Functional and geometric margins
+
+Lets formalize the notions of the functional and geometric margins. Given a
+training example (x(i) , y (i) ), we define the functional margin of (w, b) with
+respect to the training example
+γˆ (i) = y (i) (wT x + b).
+Note that if y (i) = 1, then for the functional margin to be large (i.e., for our
+prediction to be confident and correct), then we need w T x + b to be a large
+positive number. Conversely, if y (i) = −1, then for the functional margin to
+be large, then we need w T x + b to be a large negative number. Moreover,
+if y (i) (wT x + b) > 0, then our prediction on this example is correct. (Check
+this yourself.) Hence, a large functional margin represents a confident and a
+correct prediction.
+For a linear classifier with the choice of g given above (taking values in
+{−1, 1}), there’s one property of the functional margin that makes it not a
+very good measure of confidence, however. Given our choice of g, we note that
+if we replace w with 2w and b with 2b, then since g(w T x + b) = g(2w T x + 2b),
+
+4
+this would not change hw,b (x) at all. I.e., g, and hence also hw,b (x), depends
+only on the sign, but not on the magnitude, of w T x + b. However, replacing
+(w, b) with (2w, 2b) also results in multiplying our functional margin by a
+factor of 2. Thus, it seems that by exploiting our freedom to scale w and b,
+we can make the functional margin arbitrarily large without really changing
+anything meaningful. Intuitively, it might therefore make sense to impose
+some sort of normalization condition such as that ||w||2 = 1; i.e., we might
+replace (w, b) with (w/||w||2 , b/||w||2 ), and instead consider the functional
+margin of (w/||w||2 , b/||w||2 ). We’ll come back to this later.
+Given a training set S = {(x(i) , y (i) ); i = 1, . . . , m}, we also define the
+function margin of (w, b) with respect to S as the smallest of the functional
+margins of the individual training examples. Denoted by γˆ , this can therefore
+be written:
+γˆ = min γˆ (i) .
+i=1,...,m
+
+Next, lets talk about geometric margins. Consider the picture below:
+
+A
+
+w
+
+γ (i)
+B
+
+The decision boundary corresponding to (w, b) is shown, along with the
+vector w. Note that w is orthogonal (at 90◦ ) to the separating hyperplane.
+(You should convince yourself that this must be the case.) Consider the
+point at A, which represents the input x(i) of some training example with
+label y (i) = 1. Its distance to the decision boundary, γ (i) , is given by the line
+segment AB.
+How can we find the value of γ (i) ? Well, w/||w|| is a unit-length vector
+pointing in the same direction as w. Since A represents x(i) , we therefore
+
+5
+find that the point B is given by x(i) − γ (i) · w/||w||. But this point lies on
+the decision boundary, and all points x on the decision boundary satisfy the
+equation w T x + b = 0. Hence,
+wT
+
+x(i) − γ (i)
+
+w
+||w||
+
++ b = 0.
+
+Solving for γ (i) yields
+γ (i) =
+
+wT x(i) + b
+=
+||w||
+
+w
+||w||
+
+T
+
+x(i) +
+
+b
+.
+||w||
+
+This was worked out for the case of a positive training example at A in the
+figure, where being on the “positive” side of the decision boundary is good.
+More generally, we define the geometric margin of (w, b) with respect to a
+training example (x(i) , y (i) ) to be
+γ
+
+(i)
+
+=y
+
+(i)
+
+w
+||w||
+
+T
+
+x(i) +
+
+b
+||w||
+
+.
+
+Note that if ||w|| = 1, then the functional margin equals the geometric
+margin—this thus gives us a way of relating these two different notions of
+margin. Also, the geometric margin is invariant to rescaling of the parameters; i.e., if we replace w with 2w and b with 2b, then the geometric margin
+does not change. This will in fact come in handy later. Specifically, because
+of this invariance to the scaling of the parameters, when trying to fit w and b
+to training data, we can impose an arbitrary scaling constraint on w without
+changing anything important; for instance, we can demand that ||w|| = 1, or
+|w1 | = 5, or |w1 + b| + |w2 | = 2, and any of these can be satisfied simply by
+rescaling w and b.
+Finally, given a training set S = {(x(i) , y (i) ); i = 1, . . . , m}, we also define
+the geometric margin of (w, b) with respect to S to be the smallest of the
+geometric margins on the individual training examples:
+γ = min γ (i) .
+i=1,...,m
+
+4
+
+The optimal margin classifier
+
+Given a training set, it seems from our previous discussion that a natural
+desideratum is to try to find a decision boundary that maximizes the (geometric) margin, since this would reflect a very confident set of predictions
+
+6
+on the training set and a good “fit” to the training data. Specifically, this
+will result in a classifier that separates the positive and the negative training
+examples with a “gap” (geometric margin).
+For now, we will assume that we are given a training set that is linearly
+separable; i.e., that it is possible to separate the positive and negative examples using some separating hyperplane. How we we find the one that
+achieves the maximum geometric margin? We can pose the following optimization problem:
+maxγ,w,b γ
+s.t. y (i) (wT x(i) + b) ≥ γ, i = 1, . . . , m
+||w|| = 1.
+I.e., we want to maximize γ, subject to each training example having functional margin at least γ. The ||w|| = 1 constraint moreover ensures that the
+functional margin equals to the geometric margin, so we are also guaranteed
+that all the geometric margins are at least γ. Thus, solving this problem will
+result in (w, b) with the largest possible geometric margin with respect to the
+training set.
+If we could solve the optimization problem above, we’d be done. But the
+“||w|| = 1” constraint is a nasty (non-convex) one, and this problem certainly
+isn’t in any format that we can plug into standard optimization software to
+solve. So, lets try transforming the problem into a nicer one. Consider:
+γˆ
+||w||
+s.t. y (i) (wT x(i) + b) ≥ γˆ , i = 1, . . . , m
+
+maxγ,w,b
+
+Here, we’re going to maximize γˆ /||w||, subject to the functional margins all
+being at least γˆ . Since the geometric and functional margins are related by
+γ = γˆ /||w|, this will give us the answer we want. Moreover, we’ve gotten rid
+of the constraint ||w|| = 1 that we didn’t like. The downside is that we now
+γ
+ˆ
+function; and, we still don’t
+have a nasty (again, non-convex) objective ||w||
+have any off-the-shelf software that can solve this form of an optimization
+problem.
+Lets keep going. Recall our earlier discussion that we can add an arbitrary
+scaling constraint on w and b without changing anything. This is the key idea
+we’ll use now. We will introduce the scaling constraint that the functional
+margin of w, b with respect to the training set must be 1:
+γˆ = 1.
+
+7
+Since multiplying w and b by some constant results in the functional margin
+being multiplied by that same constant, this is indeed a scaling constraint,
+and can be satisfied by rescaling w, b. Plugging this into our problem above,
+and noting that maximizing γˆ /||w|| = 1/||w|| is the same thing as minimizing
+||w||2 , we now have the following optimization problem:
+1
+||w||2
+2
+s.t. y (i) (wT x(i) + b) ≥ 1, i = 1, . . . , m
+
+minγ,w,b
+
+We’ve now transformed the problem into a form that can be efficiently
+solved. The above is an optimization problem with a convex quadratic objective and only linear constraints. Its solution gives us the optimal margin classifier. This optimization problem can be solved using commercial
+quadratic programming (QP) code.1
+While we could call the problem solved here, what we will instead do is
+make a digression to talk about Lagrange duality. This will lead us to our
+optimization problem’s dual form, which will play a key role in allowing us to
+use kernels to get optimal margin classifiers to work efficiently in very high
+dimensional spaces. The dual form will also allow us to derive an efficient
+algorithm for solving the above optimization problem that will typically do
+much better than generic QP software.
+
+5
+
+Lagrange duality
+
+Lets temporarily put aside SVMs and maximum margin classifiers, and talk
+about solving constrained optimization problems.
+Consider a problem of the following form:
+minw f (w)
+s.t. hi (w) = 0, i = 1, . . . , l.
+Some of you may recall how the method of Lagrange multipliers can be used
+to solve it. (Don’t worry if you haven’t seen it before.) In this method, we
+define the Lagrangian to be
+l
+
+L(w, β) = f (w) +
+1
+
+βi hi (w)
+i=1
+
+You may be familiar with linear programming, which solves optimization problems
+that have linear objectives and linear constraints. QP software is also widely available,
+which allows convex quadratic objectives and linear constraints.
+
+8
+Here, the βi ’s are called the Lagrange multipliers. We would then find
+and set L’s partial derivatives to zero:
+∂L
+∂L
+= 0;
+= 0,
+∂wi
+∂βi
+and solve for w and β.
+In this section, we will generalize this to constrained optimization problems in which we may have inequality as well as equality constraints. Due to
+time constraints, we won’t really be able to do the theory of Lagrange duality
+justice in this class,2 but we will give the main ideas and results, which we
+will then apply to our optimal margin classifier’s optimization problem.
+Consider the following, which we’ll call the primal optimization problem:
+minw f (w)
+s.t. gi (w) ≤ 0, i = 1, . . . , k
+hi (w) = 0, i = 1, . . . , l.
+To solve it, we start by defining the generalized Lagrangian
+k
+
+L(w, α, β) = f (w) +
+
+l
+
+αi gi (w) +
+i=1
+
+βi hi (w).
+i=1
+
+Here, the αi ’s and βi ’s are the Lagrange multipliers. Consider the quantity
+θP (w) = max L(w, α, β).
+α,β : αi ≥0
+
+Here, the “P” subscript stands for “primal.” Let some w be given. If w
+violates any of the primal constraints (i.e., if either gi (w) > 0 or hi (w) = 0
+for some i), then you should be able to verify that
+k
+
+θP (w) =
+
+max f (w) +
+
+α,β : αi ≥0
+
+l
+
+αi gi (w) +
+i=1
+
+βi hi (w)
+
+(1)
+
+i=1
+
+= ∞.
+
+(2)
+
+Conversely, if the constraints are indeed satisfied for a particular value of w,
+then θP (w) = f (w). Hence,
+θP (w) =
+2
+
+f (w) if w satisfies primal constraints
+∞
+otherwise.
+
+Readers interested in learning more about this topic are encouraged to read, e.g., R.
+T. Rockarfeller (1970), Convex Analysis, Princeton University Press.
+
+9
+Thus, θP takes the same value as the objective in our problem for all values of w that satisfies the primal constraints, and is positive infinity if the
+constraints are violated. Hence, if we consider the minimization problem
+min θP (w) = min max L(w, α, β),
+w
+
+w
+
+α,β : αi ≥0
+
+we see that it is the same problem (i.e., and has the same solutions as) our
+original, primal problem. For later use, we also define the optimal value of
+the objective to be p∗ = minw θP (w); we call this the value of the primal
+problem.
+Now, lets look at a slightly different problem. We define
+θD (α, β) = min L(w, α, β).
+w
+
+Here, the “D” subscript stands for “dual.” Note also that whereas in the
+definition of θP we were optimizing (maximizing) with respect to α, β, here
+are are minimizing with respect to w.
+We can now pose the dual optimization problem:
+max θD (α, β) = max min L(w, α, β).
+
+α,β : αi ≥0
+
+α,β : αi ≥0
+
+w
+
+This is exactly the same as our primal problem shown above, except that the
+order of the “max” and the “min” are now exchanged. We also define the
+optimal value of the dual problem’s objective to be d∗ = maxα,β : αi ≥0 θD (w).
+How are the primal and the dual problems related? It can easily be shown
+that
+d∗ = max min L(w, α, β) ≤ min max L(w, α, β) = p∗ .
+α,β : αi ≥0
+
+w
+
+w
+
+α,β : αi ≥0
+
+(You should convince yourself of this; this follows from the “max min” of a
+function always being less than or equal to the “min max.”) However, under
+certain conditions, we will have
+d∗ = p ∗ ,
+so that we can solve the dual problem in lieu of the primal problem. Lets
+see what these conditions are.
+Suppose f and the gi ’s are convex,3 and the hi ’s are affine.4 Suppose
+further that the constraints gi are (strictly) feasible; this means that there
+exists some w so that gi (w) < 0 for all i.
+3
+
+When f has a Hessian, then it is convex if and only if the hessian is positive semidefinite. For instance, f (w) = w T w is convex; similarly, all linear (and affine) functions
+are also convex. (A function f can also be convex without being differentiable, but we
+won’t need those more general definitions of convexity here.)
+4
+I.e., there exists ai , bi , so that hi (w) = aTi w + bi . “Affine” means the same thing as
+linear, except that we also allow the extra intercept term bi .
+
+10
+Under our above assumptions, there must exist w ∗ , α∗ , β ∗ so that w ∗ is the
+solution to the primal problem, α∗ , β ∗ are the solution to the dual problem,
+and moreover p∗ = d∗ = L(w∗ , α∗ , β ∗ ). Moreover, w ∗ , α∗ and β ∗ satisfy the
+Karush-Kuhn-Tucker (KKT) conditions, which are as follows:
+∂
+L(w∗ , α∗ , β ∗ )
+∂wi
+∂
+L(w∗ , α∗ , β ∗ )
+∂βi
+αi∗ gi (w∗ )
+gi (w∗ )
+α∗
+
+= 0, i = 1, . . . , n
+
+(3)
+
+= 0, i = 1, . . . , l
+
+(4)
+
+= 0, i = 1, . . . , k
+≤ 0, i = 1, . . . , k
+≥ 0, i = 1, . . . , k
+
+(5)
+(6)
+(7)
+
+Moreover, if some w ∗ , α∗ , β ∗ satisfy the KKT conditions, then it is also a
+solution to the primal and dual problems.
+We draw attention to Equation (5), which is called the KKT dual complementarity condition. Specifically, it implies that if αi∗ > 0, then gi (w∗ ) =
+0. (I.e., the “gi (w) ≤ 0” constraint is active, meaning it holds with equality
+rather than with inequality.) Later on, this will be key for showing that the
+SVM has only a small number of “support vectors”; the KKT dual complementarity condition will also give us our convergence test when we talk about
+the SMO algorithm.
+
+6
+
+Optimal margin classifiers
+
+Previously, we posed the following (primal) optimization problem for finding
+the optimal margin classifier:
+1
+||w||2
+2
+s.t. y (i) (wT x(i) + b) ≥ 1, i = 1, . . . , m
+
+minγ,w,b
+
+We can write the constraints as
+gi (w) = −y (i) (wT x(i) + b) + 1 ≤ 0.
+We have one such constraint for each training example. Note that from the
+KKT dual complementarity condition, we will have αi > 0 only for the training examples that have functional margin exactly equal to one (i.e., the ones
+
+11
+corresponding to constraints that hold with equality, gi (w) = 0). Consider
+the figure below, in which a maximum margin separating hyperplane is shown
+by the solid line.
+
+The points with the smallest margins are exactly the ones closest to the
+decision boundary; here, these are the three points (one negative and two positive examples) that lie on the dashed lines parallel to the decision boundary.
+Thus, only three of the αi ’s—namely, the ones corresponding to these three
+training examples—will be non-zero at the optimal solution to our optimization problem. These three points are called the support vectors in this
+problem. The fact that the number of support vectors can be much smaller
+than the size the training set will be useful later.
+Lets move on. Looking ahead, as we develop the dual form of the problem,
+one key idea to watch out for is that we’ll try to write our algorithm in terms
+of only the inner product x(i) , x(j) (think of this as (x(i) )T x(j) ) between
+points in the input feature space. The fact that we can express our algorithm
+in terms of these inner products will be key when we apply the kernel trick.
+When we construct the Lagrangian for our optimization problem we have:
+1
+L(w, b, α) = ||w||2 −
+2
+
+m
+
+i=1
+
+αi y (i) (wT x(i) + b) − 1 .
+
+(8)
+
+Note that there’re only “αi ” but no “βi ” Lagrange multipliers, since the
+problem has only inequality constraints.
+Lets find the dual form of the problem. To do so, we need to first minimize
+L(w, b, α) with respect to w and b (for fixed α), to get θD , which we’ll do by
+
+12
+setting the derivatives of L with respect to w and b to zero. We have:
+m
+
+∇w L(w, b, α) = w −
+This implies that
+
+αi y (i) x(i) = 0
+i=1
+
+m
+
+αi y (i) x(i) .
+
+w=
+
+(9)
+
+i=1
+
+As for the derivative with respect to b, we obtain
+∂
+L(w, b, α) =
+∂b
+
+m
+
+αi y (i) = 0.
+
+(10)
+
+i=1
+
+If we take the definition of w in Equation (9) and plug that back into the
+Lagrangian (Equation 8), and simplify, we get
+m
+
+L(w, b, α) =
+
+i=1
+
+m
+
+1
+y (i) y (j) αi αj (x(i) )T x(j) − b
+αi −
+2 i,j=1
+
+m
+
+αi y (i) .
+i=1
+
+But from Equation (10), the last term must be zero, so we obtain
+m
+
+L(w, b, α) =
+
+i=1
+
+m
+
+1
+y (i) y (j) αi αj (x(i) )T x(j) .
+αi −
+2 i,j=1
+
+Recall that we got to the equation above by minimizing L with respect to w
+and b. Putting this together with the constraints αi ≥ 0 (that we always had)
+and the constraint (10), we obtain the following dual optimization problem:
+m
+
+maxα W (α) =
+i=1
+
+m
+
+1
+y (i) y (j) αi αj x(i) , x(j) .
+αi −
+2 i,j=1
+
+s.t. αi ≥ 0, i = 1, . . . , m
+m
+
+αi y (i) = 0,
+i=1
+
+You should also be able to verify that the conditions required for p∗ =
+d∗ and the KKT conditions (Equations 3–7) to hold are indeed satisfied in
+our optimization problem. Hence, we can solve the dual in lieu of solving
+the primal problem. Specifically, in the dual problem above, we have a
+maximization problem in which the parameters are the αi ’s. We’ll talk later
+
+13
+about the specific algorithm that we’re going to use to solve the dual problem,
+but if we are indeed able to solve it (i.e., find the α’s that maximize W (α)
+subject to the constraints), then we can use Equation (9) to go back and find
+the optimal w’s as a function of the α’s. Having found w ∗ , by considering
+the primal problem, it is also straightforward to find the optimal value for
+the intercept term b as
+maxi:y(i) =−1 w∗ T x(i) + mini:y(i) =1 w∗ T x(i)
+.
+(11)
+2
+(Check for yourself that this is correct.)
+Before moving on, lets also take a more careful look at Equation (9), which
+gives the optimal value of w in terms of (the optimal value of) α. Suppose
+we’ve fit our model’s parameters to a training set, and now wish to make a
+prediction at a new point input x. We would then calculate w T x + b, and
+predict y = 1 if and only if this quantity is bigger than zero. But using (9),
+this quantity can also be written:
+b∗ = −
+
+T
+
+m
+(i) (i)
+
+T
+
+w x+b =
+
+αi y x
+
+x+b
+
+(12)
+
+i=1
+m
+
+αi y (i) x(i) , x + b.
+
+=
+
+(13)
+
+i=1
+
+Hence, if we’ve found the αi ’s, in order to make a prediction, we have to
+calculate a quantity that depends only on the inner product between x and
+the points in the training set. Moreover, we saw earlier that the αi ’s will all
+be zero except for the support vectors. Thus, many of the terms in the sum
+above will be zero, and we really need to find only the inner products between
+x and the support vectors (of which there is often only a small number) in
+order calculate (13) and make our prediction.
+By examining the dual form of the optimization problem, we gained significant insight into the structure of the problem, and were also able to write
+the entire algorithm in terms of only inner products between input feature
+vectors. In the next section, we will exploit this property to apply the kernels to our classification problem. The resulting algorithm, support vector
+machines, will be able to efficiently learn in very high dimensional spaces.
+
+7
+
+Kernels
+
+Back in our discussion of linear regression, we had a problem in which the
+input x was the living area of a house, and we considered performing regres-
+
+14
+sion using the features x, x2 and x3 (say) to obtain a cubic function. To
+distinguish between these two sets of variables, we’ll call the “original” input
+value the input attributes of a problem (in this case, x, the living area).
+When that is mapped to some new set of quantities that are then passed to
+the learning algorithm, we’ll call those new quantities the input features.
+(Unfortunately, different authors use different terms to describe these two
+things, but we’ll try to use this terminology consistently in these notes.) We
+will also let φ denote the feature mapping, which maps from the attributes
+to the features. For instance, in our example, we had
+
+
+x
+φ(x) =  x2  .
+x3
+
+Rather than applying SVMs using the original input attributes x, we may
+instead want to learn using some features φ(x). To do so, we simply need to
+go over our previous algorithm, and replace x everywhere in it with φ(x).
+Since the algorithm can be written entirely in terms of the inner products x, z , this means that we would replace all those inner products with
+φ(x), φ(z) . Specificically, given a feature mapping φ, we define the corresponding Kernel to be
+K(x, z) = φ(x)T φ(z).
+
+Then, everywhere we previously had x, z in our algorithm, we could simply
+replace it with K(x, z), and our algorithm would now be learning using the
+features φ.
+Now, given φ, we could easily compute K(x, z) by finding φ(x) and φ(z)
+and taking their inner product. But what’s more interesting is that often,
+K(x, z) may be very inexpensive to calculate, even though φ(x) itself may
+be very expensive to calculate (perhaps because it is an extremely high dimensional vector). In such settings, by using in our algorithm an efficient
+way to calculate K(x, z), we can get SVMs to learn in the high dimensional
+feature space space given by φ, but without ever having to explicitly find or
+represent vectors φ(x).
+Lets see an example. Suppose x, z ∈ Rn , and consider
+K(x, z) = (xT z)2 .
+
+15
+We can also write this as
+n
+
+n
+
+xi z i
+
+K(x, z) =
+
+xi z i
+
+i=1
+n
+
+j=1
+n
+
+xi xj z i z j
+
+=
+i=1 j=1
+n
+
+(xi xj )(zi zj )
+
+=
+i,j=1
+
+Thus, we see that K(x, z) = φ(x)T φ(z), where the feature mapping φ is given
+(shown here for the case of n = 3) by
+
+
+x1 x1
+ x1 x2 
+
+
+ x1 x3 
+
+
+ x2 x1 
+
+
+.
+x
+x
+φ(x) = 
+2
+2
+
+
+ x2 x3 
+
+
+ x3 x1 
+
+
+ x3 x2 
+x3 x3
+
+Note that whereas calculating the high-dimensional φ(x) requires O(n2 ) time,
+finding K(x, z) takes only O(n) time—linear in the dimension of the input
+attributes.
+For a related kernel, also consider
+K(x, z) = (xT z + c)2
+n
+
+=
+
+n
+
+(xi xj )(zi zj ) +
+i,j=1
+
+√
+√
+( 2cxi )( 2czi ) + c2 .
+
+i=1
+
+(Check this yourself.) This corresponds to the feature mapping (again shown
+
+16
+for n = 3)
+
+
+
+
+
+
+
+
+
+
+
+
+φ(x) = 
+
+
+
+
+
+
+
+
+
+
+
+x1 x1
+x1 x2
+x1 x3
+x2 x1
+x2 x2
+x2 x3
+x3 x1
+x3 x2
+x
+√ 3 x3
+√2cx1
+√2cx2
+2cx3
+c
+
+
+
+
+
+
+
+
+
+
+
+
+
+,
+
+
+
+
+
+
+
+
+
+
+
+and the parameter c controls the relative weighting between the xi (first
+order) and the xi xj (second order) terms.
+More broadly, the kernel K(x, z) = (xT z + c)d corresponds to a feature
+feature space, corresponding of all monomials of the
+mapping to an n+d
+d
+form xi1 xi2 . . . xik that are up to order d. However, despite working in this
+O(nd )-dimensional space, computing K(x, z) still takes only O(n) time, and
+hence we never need to explicitly represent feature vectors in this very high
+dimensional feature space.
+Now, lets talk about a slightly different view of kernels. Intuitively, (and
+there are things wrong with this intuition, but nevermind), if φ(x) and φ(z)
+are close together, then we might expect K(x, z) = φ(x)T φ(z) to be large.
+Conversely, if φ(x) and φ(z) are far apart—say nearly orthogonal to each
+other—then K(x, z) = φ(x)T φ(z) will be small. So, we can think of K(x, z)
+as some measurement of how similar are φ(x) and φ(z), or of how similar are
+x and z.
+Given this intuition, suppose that for some learning problem that you’re
+working on, you’ve come up with some function K(x, z) that you think might
+be a reasonable measure of how similar x and z are. For instance, perhaps
+you chose
+||x − z||2
+.
+K(x, z) = exp −
+2σ 2
+This is a resonable measure of x and z’s similarity, and is close to 1 when
+x and z are close, and near 0 when x and z are far apart. Can we use this
+definition of K as the kernel in an SVM? In this particular example, the
+answer is yes. (This kernel is called the Gaussian kernel, and corresponds
+
+17
+to an infinite dimensional feature mapping φ.) But more broadly, given some
+function K, how can we tell if it’s a valid kernel; i.e., can we tell if there is
+some feature mapping φ so that K(x, z) = φ(x)T φ(z) for all x, z?
+Suppose for now that K is indeed a valid kernel corresponding to some
+feature mapping φ. Now, consider some finite set of m points (not necessarily
+the training set) {x(1) , . . . , x(m) }, and let a square, m-by-m matrix K be
+defined so that its (i, j)-entry is given by Kij = K(x(i) , x(j) ). This matrix
+is called the Kernel matrix. Note that we’ve overloaded the notation and
+used K to denote both the kernel function K(x, z) and the kernel matrix K,
+due to their obvious close relationship.
+Now, if K is a valid Kernel, then Kij = K(x(i) , x(j) ) = φ(x(i) )T φ(x(j) ) =
+φ(x(j) )T φ(x(i) ) = K(x(j) , x(i) ) = Kji , and hence K must be symmetric. Moreover, letting φk (x) denote the k-th coordinate of the vector φ(x), we find that
+for any vector z, we have
+z T Kz =
+
+zi Kij zj
+i
+
+j
+
+zi φ(x(i) )T φ(x(j) )zj
+
+=
+i
+
+j
+
+=
+
+φk (x(i) )φk (x(j) )zj
+
+zi
+i
+
+j
+
+k
+
+zi φk (x(i) )φk (x(j) )zj
+
+=
+k
+
+i
+
+j
+2
+(i)
+
+=
+
+zi φk (x )
+k
+
+i
+
+≥ 0.
+The second-to-last step above used the same trick as you saw in Problem
+set 1 Q1. Since z was arbitrary, this shows that K is positive semi-definite
+(K ≥ 0).
+Hence, we’ve shown that if K is a valid kernel (i.e., if it corresponds to
+some feature mapping φ), then the corresponding Kernel matrix K ∈ Rm×m
+is symmetric positive semidefinite. More generally, this turns out to be not
+only a necessary, but also a sufficient, condition for K to be a valid kernel
+(also called a Mercer kernel). The following result is due to Mercer.5
+5
+
+Many texts present Mercer’s theorem in a slightly more complicated form involving
+L functions, but when the input attributes take values in Rn , the version given here is
+equivalent.
+2
+
+18
+Theorem (Mercer). Let K : Rn × Rn → R be given. Then for K
+to be a valid (Mercer) kernel, it is necessary and sufficient that for any
+{x(1) , . . . , x(m) }, (m < ∞), the corresponding kernel matrix is symmetric
+positive semi-definite.
+Given a function K, apart from trying to find a feature mapping φ that
+corresponds to it, this theorem therefore gives another way of testing if it is
+a valid kernel. You’ll also have a chance to play with these ideas more in
+problem set 2.
+In class, we also briefly talked about a couple of other examples of kernels. For instance, consider the digit recognition problem, in which given
+an image (16x16 pixels) of a handwritten digit (0-9), we have to figure out
+which digit it was. Using either a simple polynomial kernel K(x, z) = (x T z)d
+or the Gaussian kernel, SVMs were able to obtain extremely good performance on this problem. This was particularly surprising since the input
+attributes x were just a 256-dimensional vector of the image pixel intensity
+values, and the system had no prior knowledge about vision, or even about
+which pixels are adjacent to which other ones. Another example that we
+briefly talked about in lecture was that if the objects x that we are trying
+to classify are strings (say, x is a list of amino acids, which strung together
+form a protein), then it seems hard to construct a reasonable, “small” set of
+features for most learning algorithms, especially if different strings have different lengths. However, consider letting φ(x) be a feature vector that counts
+the number of occurrences of each length-k substring in x. If we’re considering strings of english alphabets, then there’re 26k such strings. Hence, φ(x)
+is a 26k dimensional vector; even for moderate values of k, this is probably
+too big for us to efficiently work with. (e.g., 264 ≈ 460000.) However, using
+(dynamic programming-ish) string matching algorithms, it is possible to efficiently compute K(x, z) = φ(x)T φ(z), so that we can now implicitly work
+in this 26k -dimensional feature space, but without ever explicitly computing
+feature vectors in this space.
+The application of kernels to support vector machines should already
+be clear and so we won’t dwell too much longer on it here. Keep in mind
+however that the idea of kernels has significantly broader applicability than
+SVMs. Specifically, if you have any learning algorithm that you can write
+in terms of only inner products x, z between input attribute vectors, then
+by replacing this with K(x, z) where K is a kernel, you can “magically”
+allow your algorithm to work efficiently in the high dimensional feature space
+corresponding to K. For instance, this kernel trick can be applied with
+the perceptron to to derive a kernel perceptron algorithm. Many of the
+
+19
+algorithms that we’ll see later in this class will also be amenable to this
+method, which has come to be known as the “kernel trick.”
+
+8
+
+Regularization and the non-separable case
+
+The derivation of the SVM as presented so far assumed that the data is
+linearly separable. While mapping data to a high dimensional feature space
+via φ does generally increase the likelihood that the data is separable, we
+can’t guarantee that it always will be so. Also, in some cases it is not clear
+that finding a separating hyperplane is exactly what we’d want to do, since
+that might be susceptible to outliers. For instance, the left figure below
+shows an optimal margin classifier, and when a single outlier is added in the
+upper-left region (right figure), it causes the decision boundary to make a
+dramatic swing, and the resulting classifier has a much smaller margin.
+
+To make the algorithm work for non-linearly separable datasets as well
+as be less sensitive to outliers, we reformulate our optimization (using 1
+regularization) as follows:
+minγ,w,b
+
+1
+||w||2 + C
+2
+
+m
+
+ξi
+i=1
+
+s.t. y (i) (wT x(i) + b) ≥ 1 − ξi , i = 1, . . . , m
+ξi ≥ 0, i = 1, . . . , m.
+Thus, examples are now permitted to have (functional) margin less than 1,
+and if an example whose functional margin is 1 − ξi , we would pay a cost of
+the objective function being increased by Cξi . The parameter C controls the
+relative weighting between the twin goals of making the ||w||2 large (which
+we saw earlier makes the margin small) and of ensuring that most examples
+have functional margin at least 1.
+
+20
+As before, we can form the Lagrangian:
+1
+L(w, b, ξ, α, r) = wT w + C
+2
+
+m
+
+m
+
+m
+
+i=1
+
+ξi −
+
+i=1
+
+αi y (i) (xT w + b) − 1 + ξi −
+
+ri ξ i .
+i=1
+
+Here, the αi ’s and ri ’s are our Lagrange multipliers (constrained to be ≥ 0).
+We won’t go through the derivation of the dual again in detail, but after
+setting the derivatives with respect to w and b to zero as before, substituting
+them back in, and simplifying, we obtain the following dual form of the
+problem:
+m
+
+maxα W (α) =
+i=1
+
+m
+
+1
+αi −
+y (i) y (j) αi αj x(i) , x(j)
+2 i,j=1
+
+s.t. 0 ≤ αi ≤ C, i = 1, . . . , m
+m
+
+αi y (i) = 0,
+i=1
+
+As before, we also have that w can be expressed in terms of the αi ’s
+as given in Equation (9), so that after solving the dual problem, we can
+continue to use Equation (13) to make our predictions. Note that, somewhat
+surprisingly, in adding 1 regularization, the only change to the dual problem
+is that what was originally a constraint that 0 ≤ αi has now become 0 ≤
+αi ≤ C. The calculation for b∗ also has to be modified (Equation 11 is no
+longer valid); see the comments in the next section/Platt’s paper.
+Also, the KKT dual-complementarity conditions (which in the next section will be useful for testing for the convergence of the SMO algorithm)
+are:
+αi = 0 ⇒ y (i) (wT x(i) + b) ≥ 1
+αi = C ⇒ y (i) (wT x(i) + b) ≤ 1
+0 < αi < C ⇒ y (i) (wT x(i) + b) = 1.
+
+(14)
+(15)
+(16)
+
+Now, all that remains is to give an algorithm for actually solving the dual
+problem, which we will do in the next section.
+
+9
+
+The SMO algorithm
+
+The SMO (sequential minimal optimization) algorithm, due to John Platt,
+gives an efficient way of solving the dual problem arising from the derivation
+
+21
+of the SVM. Partly to motivate the SMO algorithm, and partly because it’s
+interesting in its own right, lets first take another digression to talk about
+the coordinate ascent algorithm.
+
+9.1
+
+Coordinate ascent
+
+Consider trying to solve the unconstrained optimization problem
+max W (α1 , α2 , . . . , αm ).
+α
+
+Here, we think of W as just some function of the parameters αi ’s, and for now
+ignore any relationship between this problem and SVMs. We’ve already seen
+two optimization algorithms, gradient ascent and Newton’s method. The
+new algorithm we’re going to consider here is called coordinate ascent:
+Loop until convergence: {
+For i = 1, . . . , m, {
+
+ˆ i , αi+1 , . . . , αm ).
+αi := arg maxαˆ i W (α1 , . . . , αi−1 , α
+
+}
+}
+Thus, in the innermost loop of this algorithm, we will hold all the variables except for some αi fixed, and reoptimize W with respect to just the
+parameter αi . In the version of this method presented here, the inner-loop
+reoptimizes the variables in order α1 , α2 , . . . , αm , α1 , α2 , . . .. (A more sophisticated version might choose other orderings; for instance, we may choose
+the next variable to update according to which one we expect to allow us to
+make the largest increase in W (α).)
+When the function W happens to be of such a form that the “arg max”
+in the inner loop can be performed efficiently, then coordinate ascent can be
+a fairly efficient algorithm. Here’s a picture of coordinate ascent in action:
+
+22
+2.5
+
+2
+
+1.5
+
+1
+
+0.5
+
+0
+
+−0.5
+
+−1
+
+−1.5
+
+−2
+
+−2
+
+−1.5
+
+−1
+
+−0.5
+
+0
+
+0.5
+
+1
+
+1.5
+
+2
+
+2.5
+
+The ellipses in the figure are the contours of a quadratic function that
+we want to optimize. Coordinate ascent was initialized at (2, −2), and also
+plotted in the figure is the path that it took on its way to the global maximum.
+Notice that on each step, coordinate ascent takes a step that’s parallel to one
+of the axes, since only one variable is being optimized at a time.
+
+9.2
+
+SMO
+
+We close off the discussion of SVMs by sketching the derivation of the SMO
+algorithm. Some details will be left to the homework, and for others you
+may refer to the paper excerpt handed out in class.
+Here’s the (dual) optimization problem that we want to solve:
+m
+
+maxα W (α) =
+i=1
+
+m
+
+1
+αi −
+y (i) y (j) αi αj x(i) , x(j) .
+2 i,j=1
+
+s.t. 0 ≤ αi ≤ C, i = 1, . . . , m
+
+(17)
+(18)
+
+m
+
+αi y (i) = 0.
+
+(19)
+
+i=1
+
+Lets say we have set of αi ’s that satisfy the constraints (18-19). Now,
+suppose we want to hold α2 , . . . , αm fixed, and take a coordinate ascent step
+and reoptimize the objective with respect to α1 . Can we make any progress?
+The answer is no, because the constraint (19) ensures that
+m
+
+α1 y
+
+(1)
+
+=−
+
+αi y (i) .
+i=2
+
+23
+Or, by multiplying both sides by y (1) , we equivalently have
+m
+
+α1 = −y (1)
+
+αi y (i) .
+i=2
+
+(This step used the fact that y (1) ∈ {−1, 1}, and hence (y (1) )2 = 1.) Hence,
+α1 is exactly determined by the other αi ’s, and if we were to hold α2 , . . . , αm
+fixed, then we can’t make any change to α1 without violating the constraint (19) in the optimization problem.
+Thus, if we want to update some subject of the αi ’s, we must update at
+least two of them simultaneously in order to keep satisfying the constraints.
+This motivates the SMO algorithm, which simply does the following:
+Repeat till convergence {
+1. Select some pair αi and αj to update next (using a heuristic that
+tries to pick the two that will allow us to make the biggest progress
+towards the global maximum).
+2. Reoptimize W (α) with respect to αi and αj , while holding all the
+other αk ’s (k = i, j) fixed.
+}
+To test for convergence of this algorithm, we can check whether the KKT
+conditions (Equations 14-16) are satisfied to within some tol. Here, tol is
+the convergence tolerance parameter, and is typically set to around 0.01 to
+0.001. (See the paper and pseudocode for details.)
+The key reason that SMO is an efficient algorithm is that the update to
+αi , αj can be computed very efficiently. Lets now briefly sketch the main
+ideas for deriving the efficient update.
+Lets say we currently have some setting of the αi ’s that satisfy the constraints (18-19), and suppose we’ve decided to hold α3 , . . . , αm fixed, and
+want to reoptimize W (α1 , α2 , . . . , αm ) with respect to α1 and α2 (subject to
+the constraints). From (19), we require that
+m
+
+α1 y
+
+(1)
+
++ α2 y
+
+(2)
+
+=−
+
+αi y (i) .
+i=3
+
+Since the right hand side is fixed (as we’ve fixed α3 , . . . αm ), we can just let
+it be denoted by some constant ζ:
+α1 y (1) + α2 y (2) = ζ.
+We can thus picture the constraints on α1 and α2 as follows:
+
+(20)
+
+24
+
+C
+
+α1y(1)+ α2y(2)=ζ
+
+H
+α2
+
+L
+α1
+
+C
+
+From the constraints (18), we know that α1 and α2 must lie within the box
+[0, C] × [0, C] shown. Also plotted is the line α1 y (1) + α2 y (2) = ζ, on which we
+know α1 and α2 must lie. Note also that, from these constraints, we know
+L ≤ α2 ≤ H; otherwise, (α1 , α2 ) can’t simultaneously satisfy both the box
+and the straight line constraint. In this example, L = 0. But depending on
+what the line α1 y (1) + α2 y (2) = ζ looks like, this won’t always necessarily be
+the case; but more generally, there will be some lower-bound L and some
+upper-bound H on the permissable values for α2 that will ensure that α1 , α2
+lie within the box [0, C] × [0, C].
+Using Equation (20), we can also write α1 as a function of α2 :
+α1 = (ζ − α2 y (2) )y (1) .
+(Check this derivation yourself; we again used the fact that y (1) ∈ {−1, 1} so
+that (y (1) )2 = 1.) Hence, the objective W (α) can be written
+W (α1 , α2 , . . . , αm ) = W ((ζ − α2 y (2) )y (1) , α2 , . . . , αm ).
+Treating α3 , . . . , αm as constants, you should be able to verify that this is
+just some quadratic function in α2 . I.e., this can also be expressed in the
+form aα22 + bα2 + c for some appropriate a, b, and c. If we ignore the “box”
+constraints (18) (or, equivalently, that L ≤ α2 ≤ H), then we can easily
+maximize this quadratic function by setting its derivative to zero and solving.
+We’ll let α2new,unclipped denote the resulting value of α2 . You should also be
+able to convince yourself that if we had instead wanted to maximize W with
+respect to α2 but subject to the box constraint, then we can find the resulting
+value optimal simply by taking α2new,unclipped and “clipping” it to lie in the
+
+25
+[L, H] interval, to get
+
+ H
+α2new =
+αnew,unclipped
+ 2
+L
+
+if α2new,unclipped > H
+if L ≤ α2new,unclipped ≤ H
+if α2new,unclipped < L
+
+Finally, having found the α2new , we can use Equation (20) to go back and find
+the optimal value of α1new .
+There’re a couple more details that are quite easy but that we’ll leave you
+to read about yourself in Platt’s paper: One is the choice of the heuristics
+used to select the next αi , αj to update; the other is how to update b as the
+SMO algorithm is run.
+
+

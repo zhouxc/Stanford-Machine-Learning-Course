@@ -1,0 +1,265 @@
+Clustering	  
+Unsupervised	  learning	  
+introduc3on	  
+Machine	  Learning	  
+
+Supervised	  learning	  
+
+Training	  set:	  
+
+	  
+
+	  
+
+	  
+
+	  
+
+	  
+
+	  	  	  	  	  	  
+
+Andrew	  Ng	  
+
+Unsupervised	  learning	  
+
+Training	  set:	  
+
+	  
+
+	  	  
+
+Andrew	  Ng	  
+
+Applica2ons	  of	  clustering	  
+
+Market	  segmenta3on	  
+
+Social	  network	  analysis	  
+
+Image	  credit:	  NASA/JPL-­‐Caltech/E.	  Churchwell	  (Univ.	  of	  Wisconsin,	  Madison)	  	  
+
+Organize	  compu3ng	  clusters	  
+
+Astronomical	  data	  analysis	  
+
+Andrew	  Ng	  
+
+Clustering	  
+Machine	  Learning	  
+
+K-­‐means	  	  
+algorithm	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+K-­‐means	  algorithm	  
+Input:	  
+-­‐  	  	  	  	  (number	  of	  clusters)	  
+-­‐  Training	  set	  
+	  
+	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  (drop	  	  	  	  	  	  	  	  	  	  	  	  	  conven3on)	  
+
+Andrew	  Ng	  
+
+K-­‐means	  algorithm	  
+Randomly	  ini3alize	  	  	  	  	  	  cluster	  centroids	  
+Repeat	  {	  
+	  for	  	  	  =	  1	  to	  	  
+	  
+	  :=	  index	  (from	  1	  to	  	  	  	  	  )	  of	  cluster	  centroid	  	  
+	  
+	  	  	  	  	  closest	  to	  	  
+	  for	  	  	  	  =	  1	  to	  	  
+	  
+	  :=	  average	  (mean)	  of	  points	  assigned	  to	  cluster	  
+	  	  
+	  
+	  }	  
+
+Andrew	  Ng	  
+
+K-­‐means	  for	  non-­‐separated	  clusters	  
+
+Weight	  
+
+T-­‐shirt	  sizing	  
+
+Height	  
+
+Andrew	  Ng	  
+
+Clustering	  
+Op3miza3on	  
+objec3ve	  
+Machine	  Learning	  
+
+K-­‐means	  op2miza2on	  objec2ve	  
+=	  index	  of	  cluster	  (1,2,…,	  	  	  )	  to	  which	  example	  	  	  	  	  	  	  	  	  	  is	  currently	  
+assigned	  
+=	  cluster	  centroid	  	  	  	  	  (	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+=	  cluster	  centroid	  of	  cluster	  to	  which	  example	  	  	  	  	  	  	  	  	  	  has	  been	  
+assigned	  
+Op3miza3on	  objec3ve:	  
+	  
+
+Andrew	  Ng	  
+
+K-­‐means	  algorithm	  
+Randomly	  ini3alize	  	  	  	  	  	  cluster	  centroids	  
+
+Repeat	  {	  
+	  for	  	  	  =	  1	  to	  	  
+	  
+	  :=	  index	  (from	  1	  to	  	  	  	  	  )	  of	  cluster	  centroid	  	  
+	  
+	  	  	  	  	  closest	  to	  	  
+	  for	  	  	  	  =	  1	  to	  	  
+	  
+	  :=	  average	  (mean)	  of	  points	  assigned	  to	  cluster	  
+	  }	  
+
+Andrew	  Ng	  
+
+Clustering	  
+Random	  
+ini3aliza3on	  
+Machine	  Learning	  
+
+K-­‐means	  algorithm	  
+Randomly	  ini3alize	  	  	  	  	  	  cluster	  centroids	  
+
+Repeat	  {	  
+	  for	  	  	  =	  1	  to	  	  
+	  
+	  :=	  index	  (from	  1	  to	  	  	  	  	  )	  of	  cluster	  centroid	  	  
+	  
+	  	  	  	  	  closest	  to	  	  
+	  for	  	  	  	  =	  1	  to	  	  
+	  
+	  :=	  average	  (mean)	  of	  points	  assigned	  to	  cluster	  
+	  }	  
+
+Andrew	  Ng	  
+
+Random	  ini2aliza2on	  
+Should	  have	  	  	  
+	  
+Randomly	  pick	  	  	  	  	  training	  	  
+examples.	  
+	  
+Set	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  equal	  to	  these	  	  
+	  	  	  	  examples.	  
+
+Andrew	  Ng	  
+
+Local	  op2ma	  
+
+Andrew	  Ng	  
+
+Random	  ini2aliza2on	  
+For	  i	  =	  1	  to	  100	  {	  
+	  	  
+	  Randomly	  ini3alize	  K-­‐means.	  
+	  Run	  K-­‐means.	  Get	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+	  Compute	  cost	  func3on	  (distor3on)	  	  
+	  
+
+	  }	  
+
+Pick	  clustering	  that	  gave	  lowest	  cost	  
+
+Andrew	  Ng	  
+
+Clustering	  
+Choosing	  the	  
+number	  of	  clusters	  
+Machine	  Learning	  
+
+What	  is	  the	  right	  value	  of	  K?	  
+
+Andrew	  Ng	  
+
+Choosing	  the	  value	  of	  K	  
+
+Cost	  func3on	  	  
+
+Cost	  func3on	  	  
+
+Elbow	  method:	  
+
+1	  
+
+2	  
+
+3	  
+
+4	  
+
+5	  
+
+6	  
+
+(no.	  of	  clusters)	  
+
+7	  
+
+8	  
+
+1	  
+
+2	  
+
+3	  
+
+4	  
+
+5	  
+
+6	  
+
+7	  
+
+8	  
+
+(no.	  of	  clusters)	  
+
+Andrew	  Ng	  
+
+Weight	  
+
+Weight	  
+
+Choosing	  the	  value	  of	  K	  
+Some3mes,	  you’re	  running	  K-­‐means	  to	  get	  clusters	  to	  use	  for	  some	  
+later/downstream	  purpose.	  Evaluate	  K-­‐means	  based	  on	  a	  metric	  for	  
+how	  well	  it	  performs	  for	  that	  later	  purpose.	  
+	  
+E.g.	  
+T-­‐shirt	  sizing	  
+T-­‐shirt	  sizing	  
+
+Height	  
+
+Height	  
+
+Andrew	  Ng	  
+
+

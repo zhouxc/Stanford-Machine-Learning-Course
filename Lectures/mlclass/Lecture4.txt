@@ -1,0 +1,373 @@
+Linear	  Regression	  with	  
+mul2ple	  variables	  
+
+Mul2ple	  features	  
+Machine	  Learning	  
+
+Mul4ple	  features	  (variables).	  
+Size	  (feet2)	   Price	  ($1000)	  
+	  
+	  
+
+	  
+2104	  
+1416	  
+1534	  
+852	  
+…	  
+
+	  
+460	  
+232	  
+315	  
+178	  
+…	  
+
+Andrew	  Ng	  
+
+Mul4ple	  features	  (variables).	  
+Size	  (feet2)	   Number	  of	   Number	  of	  
+	  
+bedrooms	  
+ﬂoors	  
+
+	  
+
+	  
+
+	  
+
+2104	  
+1416	  
+1534	  
+852	  
+…	  
+
+5	  
+3	  
+3	  
+2	  
+…	  
+
+1	  
+2	  
+2	  
+1	  
+…	  
+
+Age	  of	  home	  
+(years)	  
+
+Price	  ($1000)	  
+	  
+
+45	  
+40	  
+30	  
+36	  
+…	  
+
+460	  
+232	  
+315	  
+178	  
+…	  
+
+	  
+
+	  
+
+Nota2on:	  
+=	  number	  of	  features	  
+=	  input	  (features)	  of	  	  	  	  	  	  	  	  training	  example.	  
+=	  value	  of	  feature	  	  	  	  in	  	  	  	  	  	  	  	  training	  example.	  
+
+Andrew	  Ng	  
+
+Hypothesis:	  
+	  Previously:	  
+
+Andrew	  Ng	  
+
+For	  convenience	  of	  nota2on,	  deﬁne	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+
+Mul2variate	  linear	  regression.	  
+
+Andrew	  Ng	  
+
+Linear	  Regression	  with	  
+mul2ple	  variables	  
+
+Gradient	  descent	  for	  
+mul2ple	  variables	  
+Machine	  Learning	  
+
+Hypothesis:	  
+Parameters:	  
+Cost	  func2on:	  
+
+Gradient	  descent:	  
+Repeat	  
+(simultaneously	  update	  for	  every	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+Gradient	  Descent	  
+Previously	  (n=1):	  
+
+New	  algorithm	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  :	  
+Repeat	  
+
+Repeat	  
+
+(simultaneously	  update	  	  	  	  	  	  	  	  for	  	  	  	  	  	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+(simultaneously	  update	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+Linear	  Regression	  with	  
+mul2ple	  variables	  
+Gradient	  descent	  in	  
+prac2ce	  I:	  Feature	  Scaling	  
+Machine	  Learning	  
+
+Feature	  Scaling	  
+Idea:	  Make	  sure	  features	  are	  on	  a	  similar	  scale.	  
+E.g.	  	  	  	  	  	  	  =	  size	  (0-­‐2000	  feet2)	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  =	  number	  of	  bedrooms	  (1-­‐5)	  
+
+size	  (feet2)	  
+number	  of	  bedrooms	  
+
+Andrew	  Ng	  
+
+Feature	  Scaling	  
+Get	  every	  feature	  into	  approximately	  a	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  range.	  
+
+Andrew	  Ng	  
+
+Mean	  normaliza4on	  
+Replace	  	  	  	  	  	  with	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  to	  make	  features	  have	  approximately	  zero	  mean	  
+(Do	  not	  apply	  to	  	  	  	  	  	  	  	  	  	  	  	  	  	  ).	  
+E.g.	  	  
+
+Andrew	  Ng	  
+
+Linear	  Regression	  with	  
+mul2ple	  variables	  
+Gradient	  descent	  in	  
+prac2ce	  II:	  Learning	  rate	  
+Machine	  Learning	  
+
+Gradient	  descent	  
+
+-­‐  “Debugging”:	  How	  to	  make	  sure	  gradient	  
+descent	  is	  working	  correctly.	  
+-­‐  How	  to	  choose	  learning	  rate	  	  	  	  	  .	  
+
+Andrew	  Ng	  
+
+Making	  sure	  gradient	  descent	  is	  working	  correctly.	  
+
+Example	  automa2c	  
+convergence	  test:	  
+
+0	  
+
+100	  
+
+200	  
+
+300	  
+
+400	  
+
+Declare	  convergence	  if	  	  	  	  	  	  	  
+decreases	  by	  less	  than	  	  	  	  	  	  	  
+in	  one	  itera2on.	  
+
+No.	  of	  itera2ons	  
+
+Andrew	  Ng	  
+
+Making	  sure	  gradient	  descent	  is	  working	  correctly.	  
+Gradient	  descent	  not	  working.	  	  
+Use	  smaller	  	  	  	  .	  	  
+No.	  of	  itera2ons	  
+
+No.	  of	  itera2ons	  
+
+No.	  of	  itera2ons	  
+
+-­‐  For	  suﬃciently	  small	  	  	  	  	  ,	  	  	  	  	  	  	  	  	  	  	  	  	  should	  decrease	  on	  every	  itera2on.	  
+-­‐  But	  if	  	  	  	  	  	  is	  too	  small,	  gradient	  descent	  can	  be	  slow	  to	  converge.	  
+
+Andrew	  Ng	  
+
+Summary:	  
+-­‐  If	  	  	  	  	  is	  too	  small:	  slow	  convergence.	  
+-­‐  If	  	  	  	  	  is	  too	  large:	  	  	  	  	  	  	  	  	  may	  not	  decrease	  on	  
+every	  itera2on;	  may	  not	  converge.	  
+
+To	  choose	  	  	  	  ,	  try	  
+
+Andrew	  Ng	  
+
+Linear	  Regression	  with	  
+mul2ple	  variables	  
+Features	  and	  
+polynomial	  regression	  
+Machine	  Learning	  
+
+Housing	  prices	  predic4on	  
+
+Andrew	  Ng	  
+
+Polynomial	  regression	  
+
+Price	  
+(y)	  
+
+Size	  (x)	  
+
+Andrew	  Ng	  
+
+Choice	  of	  features	  
+
+Price	  
+(y)	  
+
+Size	  (x)	  
+
+Andrew	  Ng	  
+
+Linear	  Regression	  with	  
+mul2ple	  variables	  
+
+Normal	  equa2on	  
+Machine	  Learning	  
+
+Gradient	  Descent	  
+
+Normal	  equa2on:	  Method	  to	  solve	  for	  	  
+analy2cally.	  
+
+Andrew	  Ng	  
+
+Intui2on:	  If	  1D	  
+
+(for	  every	  	  	  )	  
+Solve	  for	  	  
+
+Andrew	  Ng	  
+
+Examples:	  	  
+Size	  (feet2)	   Number	  of	   Number	  of	  
+	  
+bedrooms	  
+ﬂoors	  
+
+1	  
+1	  
+1	  
+1	  
+
+	  
+
+	  
+
+	  
+
+2104	  
+1416	  
+1534	  
+852	  
+
+5	  
+3	  
+3	  
+2	  
+
+1	  
+2	  
+2	  
+1	  
+
+Age	  of	  home	  
+(years)	  
+
+Price	  ($1000)	  
+	  
+
+45	  
+40	  
+30	  
+36	  
+
+460	  
+232	  
+315	  
+178	  
+
+	  
+
+	  
+
+Andrew	  Ng	  
+
+	  	  	  	  	  	  examples	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ;	  	  	  	  	  	  features.	  
+
+E.g.	  	  	  	  If	  
+
+Andrew	  Ng	  
+
+is	  inverse	  of	  matrix	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+
+Octave:	  	   pinv(X’*X)*X’*y
+
+Andrew	  Ng	  
+
+	  	  	  	  	  	  training	  examples,	  	  	  	  	  features.	  
+Gradient	  Descent	  
+Normal	  Equa2on	  
+•  Need	  to	  choose	  	  	  	  .	  	  
+•  Needs	  many	  itera2ons.	  
+• 	   Works	  well	  even	  
+when	  	  	  	  	  is	  large.	  
+
+•  No	  need	  to	  choose	  	  	  	  .	  
+•  Don’t	  need	  to	  iterate.	  
+•  Need	  to	  compute	  
+•  Slow	  if	  	  	  	  	  is	  very	  large.	  
+
+Andrew	  Ng	  
+
+Linear	  Regression	  with	  
+mul2ple	  variables	  
+
+Machine	  Learning	  
+
+Normal	  equa2on	  
+and	  non-­‐inver2bility	  
+(op2onal)	  
+
+Normal	  equa2on	  
+
+-­‐  What	  if	  	  	  	  	  	  	  	  	  	  	  	  	  is	  non-­‐inver2ble?	  (singular/	  
+degenerate)	  
+-­‐  Octave:	  	  pinv(X’*X)*X’*y
+
+Andrew	  Ng	  
+
+What	  if	  	  	  	  	  	  	  	  	  	  	  is	  non-­‐inver2ble?	  
+•  Redundant	  features	  (linearly	  dependent).	  
+E.g.	  	  	  	  	  	  	  	  	  	  	  	  size	  in	  feet2	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  size	  in	  m2	  
+•  Too	  many	  features	  (e.g.	  	  	  	  	  	  	  	  	  	  	  	  	  ).	  
+-­‐  Delete	  some	  features,	  or	  use	  regulariza2on.	  
+
+Andrew	  Ng	  
+
+
