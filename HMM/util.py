@@ -4,20 +4,24 @@ import time
 import random
 from os import path
 
+
 def normalize_filename(filename):
     return path.join(path.dirname(__file__), filename)
+
 
 def print_timing(func):
     def wrapper(*arg):
         t1 = time.time()
         res = func(*arg)
         t2 = time.time()
-        print '%s took %0.3f ms' % (func.func_name, (t2-t1)*1000.0)
+        print '%s took %0.3f ms' % (func.func_name, (t2 - t1) * 1000.0)
         return res
     return wrapper
 
+
 def array_to_string(a):
     return [str(x) for x in a]
+
 
 def normalize(a):
     """Normalize the 1d array a.  Must have non-zero sum"""
@@ -37,6 +41,7 @@ def random_from_dist(ps):
             return i
     raise Exception("random_from_dist shouldn't run off the end of the array")
 
+
 def custom_flatten(xs):
     """flatten a list that looks like [a,[b,[c,[d,[e]]]]]
     needed because the list can be hundreds of thousands of elements long,
@@ -48,6 +53,7 @@ def custom_flatten(xs):
     if len(xs) == 1:
         result.append(xs[0])
     return result
+
 
 def flatten(x):
     """flatten(sequence) -> list
@@ -69,4 +75,3 @@ def flatten(x):
         else:
             result.append(el)
     return result
-
