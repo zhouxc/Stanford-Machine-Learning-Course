@@ -1,0 +1,338 @@
+Logis&c	  
+Regression	  
+
+Classiﬁca&on	  
+Machine	  Learning	  
+
+Classiﬁca(on	  
+Email:	  Spam	  /	  Not	  Spam?	  
+Online	  Transac&ons:	  Fraudulent	  (Yes	  /	  No)?	  
+Tumor:	  Malignant	  /	  Benign	  ?	  
+0:	  “Nega&ve	  Class”	  (e.g.,	  benign	  tumor)	  
+	  
+1:	  “Posi&ve	  Class”	  (e.g.,	  malignant	  tumor)	  
+	  
+
+Andrew	  Ng	  
+
+(Yes)	  1	  
+
+Malignant	  ?	  
+(No)	  0	  
+
+Tumor	  Size	  
+
+Tumor	  Size	  
+
+Threshold	  classiﬁer	  output	  	  	  	  	  	  	  	  	  	  	  	  	  at	  0.5:	  
+If	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  predict	  “y	  =	  1”	  
+If	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  predict	  “y	  =	  0”	  
+
+Andrew	  Ng	  
+
+Classiﬁca&on:	  	  	  	  y	  	  	  =	  	  	  0	  	  	  or	  	  	  1	  
+can	  be	  >	  1	  or	  <	  0	  
+Logis&c	  Regression:	  
+
+Andrew	  Ng	  
+
+Logis&c	  
+Regression	  
+Hypothesis	  
+Representa&on	  
+Machine	  Learning	  
+
+Logis(c	  Regression	  Model	  
+Want	  
+
+1	  
+0.5	  
+
+Sigmoid	  func&on	  
+Logis&c	  func&on	  
+
+0	  
+
+Andrew	  Ng	  
+
+Interpreta(on	  of	  Hypothesis	  Output	  
+=	  es&mated	  probability	  that	  y	  =	  1	  on	  input	  x	  	  
+Example:	  	  If	  	  
+
+Tell	  pa&ent	  that	  70%	  chance	  of	  tumor	  being	  malignant	  	  
+“probability	  that	  y	  =	  1,	  given	  x,	  
+	  	  parameterized	  by	  	  	  	  ”	  
+
+Andrew	  Ng	  
+
+Logis&c	  
+Regression	  
+Decision	  boundary	  
+Machine	  Learning	  
+
+Logis(c	  regression	  
+
+1	  
+
+z	  
+	  	  Suppose	  predict	  “	  	  	  	  	  	  	  	  	  	  “	  if	  
+
+	  	  	  	  	  predict	  “	  	  	  	  	  	  	  	  	  	  “	  	  if	  
+
+Andrew	  Ng	  
+
+Decision	  Boundary	  
+x2	  
+3
+2
+1
+1
+
+2
+
+3
+
+x1	  
+
+Predict	  “	  	  	  	  	  	  	  	  	  	  “	  if	  	  
+
+Andrew	  Ng	  
+
+Non-­‐linear	  decision	  boundaries	  
+x2	  
+1	  
+
+1	  
+
+-­‐1	  
+
+x1	  
+
+Predict	  “	  	  	  	  	  	  	  	  	  	  “	  if	  	  
+
+-­‐1	  
+
+x2	  
+
+x1	  
+
+Andrew	  Ng	  
+
+Logis&c	  
+Regression	  
+Cost	  func&on	  
+Machine	  Learning	  
+
+Training	  
+set:	  
+m	  examples	  
+
+How	  to	  choose	  parameters	  	  	  	  ?	  
+
+Andrew	  Ng	  
+
+Cost	  func(on	  
+Linear	  regression:	  
+
+“non-­‐convex”	  
+
+“convex”	  
+
+Andrew	  Ng	  
+
+Logis(c	  regression	  cost	  func(on	  
+
+If	  y	  =	  1	  
+
+0	  
+
+1	  
+
+Andrew	  Ng	  
+
+Logis(c	  regression	  cost	  func(on	  
+
+If	  y	  =	  0	  
+
+0	  
+
+1	  
+
+Andrew	  Ng	  
+
+Logis&c	  
+Regression	  
+Simpliﬁed	  cost	  func&on	  
+and	  gradient	  descent	  
+Machine	  Learning	  
+
+Logis(c	  regression	  cost	  func(on	  
+
+Andrew	  Ng	  
+
+Logis(c	  regression	  cost	  func(on	  
+
+To	  ﬁt	  parameters	  	  	  	  :	  	  
+To	  make	  a	  predic&on	  given	  new	  	  	  :	  
+Output	  	  
+
+Andrew	  Ng	  
+
+Gradient	  Descent	  
+
+Want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  :	  
+Repeat	  
+
+(simultaneously	  update	  all	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+Gradient	  Descent	  
+
+Want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  :	  
+Repeat	  
+
+(simultaneously	  update	  all	  	  	  	  	  )	  
+
+Algorithm	  looks	  iden&cal	  to	  linear	  regression!	  
+
+Andrew	  Ng	  
+
+Logis&c	  
+Regression	  
+
+Advanced	  	  
+op&miza&on	  
+Machine	  Learning	  
+
+Op(miza(on	  algorithm	  
+Cost	  func&on	  	  	  	  	  	  	  	  	  .	  Want	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+Given	  	  	  	  ,	  we	  have	  code	  that	  can	  compute	  
+-­‐  	  	  
+-­‐  	  	  
+(for	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+Gradient	  descent:	  
+Repeat	  
+
+Andrew	  Ng	  
+
+Op(miza(on	  algorithm	  
+Given	  	  	  	  ,	  we	  have	  code	  that	  can	  compute	  
+-­‐  	  	  
+-­‐  	  	  
+(for	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+Op&miza&on	  algorithms:	  
+	  -­‐  Gradient	  descent	  
+-­‐  Conjugate	  gradient	  
+-­‐  BFGS	  
+-­‐  L-­‐BFGS	  
+
+Advantages:	  
+-­‐  No	  need	  to	  manually	  pick	  	  
+-­‐  Oeen	  faster	  than	  gradient	  
+descent.	  
+Disadvantages:	  
+-­‐  More	  complex	  
+	  
+
+Andrew	  Ng	  
+
+Example:	  
+
+function [jVal, gradient]
+= costFunction(theta)
+jVal = (theta(1)-5)^2 + ...
+(theta(2)-5)^2;
+gradient = zeros(2,1);
+gradient(1) = 2*(theta(1)-5);
+gradient(2) = 2*(theta(2)-5);
+
+options = optimset(‘GradObj’, ‘on’, ‘MaxIter’, ‘100’);
+initialTheta = zeros(2,1);
+[optTheta, functionVal, exitFlag] ...
+= fminunc(@costFunction, initialTheta, options);
+
+Andrew	  Ng	  
+
+theta =
+
+function [jVal, gradient] = costFunction(theta)
+jVal = [ code	  to	  compute	  
+
+];
+
+gradient(1) = [code	  to	  compute	  
+
+];
+
+gradient(2) = [code	  to	  compute	  
+
+];
+
+gradient(n+1) = [ code	  to	  compute	  
+
+];
+
+Andrew	  Ng	  
+
+Logis&c	  
+Regression	  
+Mul&-­‐class	  classiﬁca&on:	  
+One-­‐vs-­‐all	  
+Machine	  Learning	  
+
+Mul(class	  classiﬁca(on	  
+Email	  foldering/tagging:	  Work,	  Friends,	  Family,	  Hobby	  
+
+Medical	  diagrams:	  Not	  ill,	  Cold,	  Flu	  
+
+Weather:	  Sunny,	  Cloudy,	  Rain,	  Snow	  
+
+Andrew	  Ng	  
+
+Binary	  classiﬁca&on:	  
+
+x2	  
+
+Mul&-­‐class	  classiﬁca&on:	  
+
+x2	  
+
+x1	  
+
+x1	  
+
+Andrew	  Ng	  
+
+One-­‐vs-­‐all	  (one-­‐vs-­‐rest):	  
+
+x2	  
+
+x2	  
+
+x1	  
+
+Class	  1:	  
+Class	  2:	  
+Class	  3:	  
+
+x2	  
+
+x1	  
+
+x1	  
+x2	  
+
+x1	  
+
+Andrew	  Ng	  
+
+One-­‐vs-­‐all	  
+Train	  a	  logis&c	  regression	  classiﬁer	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  for	  each	  
+class	  	  	  	  to	  predict	  the	  probability	  that	  	  	  	  	  	  	  	  	  	  	  .	  
+On	  a	  new	  input	  	  	  	  ,	  to	  make	  a	  predic&on,	  pick	  the	  
+class	  	  	  	  that	  maximizes	  
+
+Andrew	  Ng	  
+
+

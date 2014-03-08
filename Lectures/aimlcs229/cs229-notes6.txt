@@ -1,0 +1,114 @@
+CS229 Lecture notes
+Andrew Ng
+
+1
+
+The perceptron and large margin classifiers
+
+In this final set of notes on learning theory, we will introduce a different
+model of machine learning. Specifically, we have so far been considering
+batch learning settings in which we are first given a training set to learn
+with, and our hypothesis h is then evaluated on separate test data. In this set
+of notes, we will consider the online learning setting in which the algorithm
+has to make predictions continuously even while it’s learning.
+In this setting, the learning algorithm is given a sequence of examples
+(x(1) , y (1) ), (x(2) , y (2) ), . . . (x(m) , y (m) ) in order. Specifically, the algorithm first
+sees x(1) and is asked to predict what it thinks y (1) is. After making its prediction, the true value of y (1) is revealed to the algorithm (and the algorithm
+may use this information to perform some learning). The algorithm is then
+shown x(2) and again asked to make a prediction, after which y (2) is revealed,
+and it may again perform some more learning. This proceeds until we reach
+(x(m) , y (m) ). In the online learning setting, we are interested in the total
+number of errors made by the algorithm during this process. Thus, it models
+applications in which the algorithm has to make predictions even while it’s
+still learning.
+We will give a bound on the online learning error of the perceptron algorithm. To make our subsequent derivations easier, we will use the notational
+convention of denoting the class labels by y =∈ {−1, 1}.
+Recall that the perceptron algorithm has parameters θ ∈ Rn+1 , and makes
+its predictions according to
+hθ (x) = g(θ T x)
+where
+g(z) =
+
+1
+if z ≥ 0
+−1 if z < 0.
+1
+
+(1)
+
+2
+
+CS229 Winter 2003
+
+Also, given a training example (x, y), the perceptron learning rule updates
+the parameters as follows. If hθ (x) = y, then it makes no change to the
+parameters. Otherwise, it performs the update1
+θ := θ + yx.
+The following theorem gives a bound on the online learning error of the
+perceptron algorithm, when it is run as an online algorithm that performs
+an update each time it gets an example wrong. Note that the bound below
+on the number of errors does not have an explicit dependence on the number
+of examples m in the sequence, or on the dimension n of the inputs (!).
+Theorem (Block, 1962, and Novikoff, 1962). Let a sequence of examples (x(1) , y (1) ), (x(2) , y (2) ), . . . (x(m) , y (m) ) be given. Suppose that ||x(i) || ≤ D
+for all i, and further that there exists a unit-length vector u (||u|| 2 = 1) such
+that y (i) · (uT x(i) ) ≥ γ for all examples in the sequence (i.e., uT x(i) ≥ γ if
+y (i) = 1, and uT x(i) ≤ −γ if y (i) = −1, so that u separates the data with a
+margin of at least γ). Then the total number of mistakes that the perceptron
+algorithm makes on this sequence is at most (D/γ)2 .
+Proof. The perceptron updates its weights only on those examples on which
+it makes a mistake. Let θ (k) be the weights that were being used when it made
+its k-th mistake. So, θ (1) = 0 (since the weights are initialized to zero), and
+if the k-th mistake was on the example (x(i) , y (i) ), then g((x(i) )T θ(k) ) = y (i) ,
+which implies that
+(x(i) )T θ(k) y (i) ≤ 0.
+(2)
+
+Also, from the perceptron learning rule, we would have that θ (k+1) = θ(k) +
+y (i) x(i) .
+We then have
+(θ(k+1) )T u = (θ(k) )T u + y (i) (x(i) )T u
+≥ (θ(k) )T u + γ
+By a straightforward inductive argument, implies that
+(θ(k+1) )T u ≥ kγ.
+1
+
+(3)
+
+This looks slightly different from the update rule we had written down earlier in the
+quarter because here we have changed the labels to be y ∈ {−1, 1}. Also, the learning rate
+parameter α was dropped. The only effect of the learning rate is to scale all the parameters
+θ by some fixed constant, which does not affect the behavior of the perceptron.
+
+3
+
+CS229 Winter 2003
+Also, we have that
+||θ(k+1) ||2 =
+=
+≤
+≤
+
+||θ(k) + y (i) x(i) ||2
+||θ(k) ||2 + ||x(i) ||2 + 2y (i) (x(i) )T θ(i)
+||θ(k) ||2 + ||x(i) ||2
+||θ(k) ||2 + D2
+
+(4)
+
+The third step above used Equation (2). Moreover, again by applying a
+straightfoward inductive argument, we see that (4) implies
+||θ(k+1) ||2 ≤ kD2 .
+
+(5)
+
+Putting together (3) and (4) we find that
+√
+kD ≥ ||θ (k+1) ||
+≥ (θ(k+1) )T u
+≥ kγ.
+The second inequality above follows from the fact that u is a unit-length
+vector (and z T u = ||z|| · ||u|| cos φ ≤ ||z|| · ||u||, where φ is the angle between
+z and u). Our result implies that k ≤ (D/γ)2 . Hence, if the perceptron made
+a k-th mistake, then k ≤ (D/γ)2 .
+
+

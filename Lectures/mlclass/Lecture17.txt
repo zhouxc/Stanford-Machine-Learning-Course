@@ -1,0 +1,299 @@
+Large	  scale	  
+machine	  learning	  
+
+Learning	  with	  
+large	  datasets	  
+Machine	  Learning	  
+
+Classify	  between	  confusable	  words.	  
+E.g.,	  {to,	  two,	  too},	  {then,	  than}.	  
+	  
+For	  breakfast	  I	  ate	  _____	  eggs.	  
+
+	  	  	  	  	  Accuracy	  	  	  	  	  	  
+
+Machine	  learning	  and	  data	  
+
+Training	  set	  size	  (millions)	  
+
+“It’s	  not	  who	  has	  the	  best	  algorithm	  that	  wins.	  	  
+	   	  It’s	  who	  has	  the	  most	  data.”	  
+[Figure	  from	  Banko	  and	  Brill,	  2001]	  
+
+Andrew	  Ng	  
+
+error	  
+
+error	  
+
+Learning	  with	  large	  datasets	  
+
+(training	  set	  size)	  
+
+(training	  set	  size)	  
+
+Andrew	  Ng	  
+
+Large	  scale	  
+machine	  learning	  
+StochasQc	  
+gradient	  descent	  
+Machine	  Learning	  
+
+Linear	  regression	  with	  gradient	  descent	  
+
+Repeat	  {	  
+	  
+	  
+	  	  	  	  	  	  (for	  every	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+}	  
+
+Andrew	  Ng	  
+
+Linear	  regression	  with	  gradient	  descent	  
+
+Repeat	  {	  
+	  
+	  
+	  	  	  	  	  	  (for	  every	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+}	  
+
+Andrew	  Ng	  
+
+Batch	  gradient	  descent	  
+
+Repeat	  {	  
+	  
+	  
+	  	  	  	  	  	  	  
+	  
+	  	  	  	  	  	  
+	  	  (for	  every
+}	  
+
+Stochas4c	  gradient	  descent	  
+
+	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+Stochas4c	  gradient	  descent	  
+1.  Randomly	  shuﬄe	  (reorder)	  
+training	  examples	  
+2.  Repeat	  {	  
+	  	  	  for	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  {	  
+	  	  	  
+
+	  	  	  	  	  	  	  	  	  	  	  	  (for	  
+every	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+	  	  	  	  	  	  	  	  	  	  }	  
+	  	  	  	  	  	  	  }	  
+
+Andrew	  Ng	  
+
+Large	  scale	  
+machine	  learning	  
+Mini-­‐batch	  
+gradient	  descent	  
+Machine	  Learning	  
+
+Mini-­‐batch	  gradient	  descent	  
+Batch	  gradient	  descent:	  Use	  all	  	  	  	  	  examples	  in	  each	  iteraQon	  
+StochasQc	  gradient	  descent:	  Use	  1	  example	  in	  each	  iteraQon	  
+Mini-­‐batch	  gradient	  descent:	  Use	  	  	  	  examples	  in	  each	  iteraQon	  
+
+Andrew	  Ng	  
+
+Mini-­‐batch	  gradient	  descent	  
+Say 	  
+	  
+	  	  	  .	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  
+Repeat	  {	  
+	  	  	  	  for	  	  	  	  
+	  
+	  
+	  	  	  	  	  	  {	  
+	  
+	  
+	  	  	  	  	  (for	  every	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+	  	  	  }	  
+}	  
+
+Andrew	  Ng	  
+
+Machine	  Learning	  
+
+Large	  scale	  
+machine	  learning	  
+StochasQc	  
+gradient	  descent	  
+convergence	  
+
+Checking	  for	  convergence	  
+Batch	  gradient	  descent:	  
+Plot	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  as	  a	  funcQon	  of	  the	  number	  of	  iteraQons	  of	  
+gradient	  descent.	  
+StochasQc	  gradient	  descent:	  
+	  
+During	  learning,	  compute	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	   	  	  	  	  	  before	  updaQng	  	  
+using	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+Every	  1000	  iteraQons	  (say),	  plot 	  
+	  	  
+	  	  averaged	  
+over	  the	  last	  1000	  examples	  processed	  by	  algorithm.	  
+
+Andrew	  Ng	  
+
+Checking	  for	  convergence	  
+Plot
+
+	  
+
+	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  averaged	  over	  the	  last	  1000	  (say)	  examples	  
+
+No.	  of	  iteraQons	  
+
+No.	  of	  iteraQons	  
+
+No.	  of	  iteraQons	  
+
+No.	  of	  iteraQons	  
+
+Andrew	  Ng	  
+
+Stochas4c	  gradient	  descent	  
+
+1.  Randomly	  shuﬄe	  dataset.	  
+2.  Repeat	  {	  
+	  	  	  	  for	  
+	  
+	  {	  
+	  	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  (for	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+	  	  	  	  }	  
+}	  
+
+Learning	  rate	  	  	  	  	  is	  typically	  held	  constant.	  Can	  slowly	  decrease	  	  	  	  
+const1
+over	  Qme	  if	  we	  want	  	  	  	  	  to	  converge.	  (E.g. 	   iterationNumber
+	  
+	  	  	  	  	  	  )	  
++ const2
+
+Andrew	  Ng	  
+
+Stochas4c	  gradient	  descent	  
+
+1.  Randomly	  shuﬄe	  dataset.	  
+2.  Repeat	  {	  
+	  	  	  	  for	  
+	  
+	  {	  
+	  	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  (for	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+	  	  	  	  }	  
+}	  
+
+Learning	  rate	  	  	  	  	  is	  typically	  held	  constant.	  Can	  slowly	  decrease	  	  	  	  
+const1
+over	  Qme	  if	  we	  want	  	  	  	  	  to	  converge.	  (E.g. 	   iterationNumber
+	  
+	  	  	  	  	  	  )	  
++ const2
+
+Andrew	  Ng	  
+
+Large	  scale	  
+machine	  learning	  
+
+Online	  learning	  
+Machine	  Learning	  
+
+Online	  learning	  
+Shipping	  service	  website	  where	  user	  comes,	  speciﬁes	  origin	  and	  
+desQnaQon,	  you	  oﬀer	  to	  ship	  their	  package	  for	  some	  asking	  price,	  
+and	  users	  someQmes	  choose	  to	  use	  your	  shipping	  service	  (	  	  	  	  	  	  	  	  	  ),	  
+someQmes	  not	  (	  	  	  	  	  	  	  	  	  	  ).	  
+Features	  	  	  	  	  	  capture	  properQes	  of	  user,	  of	  origin/desQnaQon	  and	  
+asking	  price.	  We	  want	  to	  learn
+	  	  	  	  	  	  	  	  	  	  	  	  	  to	  opQmize	  price.	  	  
+
+Andrew	  Ng	  
+
+Other	  online	  learning	  example:	  
+Product	  search	  (learning	  to	  search)	  
+User	  searches	  for	  “Android	  phone	  1080p	  camera”	  
+Have	  100	  phones	  in	  store.	  Will	  return	  10	  results.	  
+	  	  	  	  	  	  	  features	  of	  phone,	  how	  many	  words	  in	  user	  query	  match	  
+name	  of	  phone,	  how	  many	  words	  in	  query	  match	  descripQon	  
+of	  phone,	  etc.	  
+	  	  	  	  if	  user	  clicks	  on	  link.	  
+	  	  	  	  	  	  	  	  	  	  	  	  otherwise.	  
+Learn	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+Use	  to	  show	  user	  the	  10	  phones	  they’re	  most	  likely	  to	  click	  on.	  
+Other	  examples:	  Choosing	  special	  oﬀers	  to	  show	  user;	  customized	  
+selecQon	  of	  news	  arQcles;	  product	  recommendaQon;	  …	  
+
+Andrew	  Ng	  
+
+Large	  scale	  
+machine	  learning	  
+Map-­‐reduce	  and	  
+data	  parallelism	  
+Machine	  Learning	  
+
+Map-­‐reduce	  
+Batch	  gradient	  descent:	  
+Machine	  1:	  Use	  
+
+Machine	  2:	  Use	  
+Machine	  3:	  Use	  
+Machine	  4:	  Use	  
+
+[	  Jeﬀrey	  Dean	  and	  Sanjay	  Ghemawat]	  
+
+Andrew	  Ng	  
+
+Map-­‐reduce	  
+Computer	  1	  
+
+Training	  set	  
+
+	  Computer	  2	  
+
+Combine	  results	  
+
+Computer	  3	  
+
+[hkp://openclipart.org/detail/17924/computer-­‐by-­‐aj]	  
+
+Computer	  4	  
+
+Andrew	  Ng	  
+
+Map-­‐reduce	  and	  summa4on	  over	  the	  training	  set	  
+Many	  learning	  algorithms	  can	  be	  expressed	  as	  compuQng	  sums	  
+of	  funcQons	  over	  the	  training	  set.	  	  
+E.g.	  for	  advanced	  opQmizaQon,	  with	  logisQc	  regression,	  need:	  
+
+Andrew	  Ng	  
+
+Mul4-­‐core	  machines	  
+Core	  1	  
+
+Training	  set	  
+
+	  Core	  2	  
+
+Combine	  results	  
+
+Core	  3	  
+
+[hkp://openclipart.org/detail/100267/cpu-­‐
+(central-­‐processing-­‐unit)-­‐by-­‐ivak-­‐100267]	  
+
+Core	  4	  
+
+Andrew	  Ng	  
+
+

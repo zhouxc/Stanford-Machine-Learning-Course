@@ -1,0 +1,1058 @@
+1
+
+CS229 Problem Set #4 Solutions
+
+CS 229, Public Course
+Problem Set #4 Solutions: Unsupervised Learning and Reinforcement Learning
+1. EM for supervised learning
+In class we applied EM to the unsupervised learning setting. In particular, we represented
+p(x) by marginalizing over a latent random variable
+p(x) =
+
+p(x, z) =
+z
+
+p(x|z)p(z).
+z
+
+However, EM can also be applied to the supervised learning setting, and in this problem we
+discuss a “mixture of linear regressors” model; this is an instance of what is often call the
+Hierarchical Mixture of Experts model. We want to represent p(y|x), x ∈ Rn and y ∈ R,
+and we do so by again introducing a discrete latent random variable
+p(y|x) =
+
+p(y, z|x) =
+z
+
+p(y|x, z)p(z|x).
+z
+
+For simplicity we’ll assume that z is binary valued, that p(y|x, z) is a Gaussian density,
+and that p(z|x) is given by a logistic regression model. More formally
+= g(φT x)z (1 − g(φT x))1−z
+−(y − θiT x)2
+1
+exp
+p(y|x, z = i; θi ) = √
+2σ 2
+2πσ
+p(z|x; φ)
+
+i = 1, 2
+
+where σ is a known parameter and φ, θ0 , θ1 ∈ Rn are parameters of the model (here we
+use the subscript on θ to denote two different parameter vectors, not to index a particular
+entry in these vectors).
+Intuitively, the process behind model can be thought of as follows. Given a data point x,
+we first determine whether the data point belongs to one of two hidden classes z = 0 or
+z = 1, using a logistic regression model. We then determine y as a linear function of x
+(different linear functions for different values of z) plus Gaussian noise, as in the standard
+linear regression model. For example, the following data set could be well-represented by
+the model, but not by standard linear regression.
+
+2
+
+CS229 Problem Set #4 Solutions
+
+(a) Suppose x, y, and z are all observed, so that we obtain a training set
+{(x(1) , y (1) , z (1) ), . . . , (x(m) , y (m) , z (m) )}. Write the log-likelihood of the parameters,
+and derive the maximum likelihood estimates for φ, θ0 , and θ1 . Note that because
+p(z|x) is a logistic regression model, there will not exist a closed form estimate of φ.
+In this case, derive the gradient and the Hessian of the likelihood with respect to φ;
+in practice, these quantities can be used to numerically compute the ML esimtate.
+Answer: The log-likelihood is given by
+m
+
+ℓ(φ, θ0 , θ1)
+
+=
+
+p(y (i) |x(i) , z (i) ; θ0 , θ1 )p(z (i) |x(i) ; φ)
+
+log
+i=1
+
+log (1 − g(φT x)) √
+
+=
+i:z (i) =0
+
++
+
+1
+exp
+2πσ
+
+1
+exp
+log (g(φT x) √
+2πσ
+(i)
+i:z =1
+
+−(y (i) − θ0T x(i) )2
+2σ 2
+
+−(y (i) − θ1T x(i) )2
+2σ 2
+
+Differentiating with respect to θ1 and setting it to 0,
+set
+
+0
+
+∇θ0 ℓ(φ, θ0 , θ1 )
+
+=
+
+∇θ
+
+=
+
+i:z (i) =0
+
+−(y (i) − θ0T x(i) )2
+
+But this is just a least-squares problem on a subset of the data. In particular, if we let X0
+and y0 be the design matrices formed by considering only those examples with z (i) = 0,
+then using the same logic as for the derivation of the least squares solution we get the
+maximum likelihood estimate of θ0 ,
+θ0 = (X0T X0 )−1 X0T y0 .
+The derivation for θ1 proceeds in the identical manner.
+Differentiating with respect to φ, and ignoring terms that do not depend on φ
+∇φ ℓ(φ, θ0 , θ1 ) = ∇φ
+= ∇φ
+
+m
+
+i=1
+
+i : z (i) = 0 log(1 − g(φT x)) +
+
+i : z (i) = 1 log g(φT x)
+
+(1 − z (i) ) log(1 − g(φT x)) + z (i) log g(φT x)
+
+This is just the standard logistic regression objective function, for which we already know
+the gradient and Hessian
+∇φ ℓ(φ, θ0 , θ1 ) = X T (z − h),
+H = X T DX,
+
+hi = g(φT x(i) ),
+
+Dii = g(φT x(i) )(1 − g(φT x(i) )).
+
+(b) Now suppose z is a latent (unobserved) random variable. Write the log-likelihood of
+the parameters, and derive an EM algorithm to maximize the log-likelihood. Clearly
+specify the E-step and M-step (again, the M-step will require a numerical solution,
+so find the appropriate gradients and Hessians).
+
+3
+
+CS229 Problem Set #4 Solutions
+
+The log likelihood is now:
+
+Answer:
+
+m
+
+ℓ(φ, θ0 , θ1 )
+
+=
+
+log
+i=1 z (i)
+
+p(y (i) |x(i) , z (i) ; θ1 , θ2 )p(z (i) |x(i) ; φ)
+
+m
+
+=
+i=1
+
+log (1 − g(φT x(i) ))1−z
++ g(φT x(i) )z
+
+(i)
+
+(i)
+
+1
+√
+exp
+2πσ
+
+1
+√
+exp
+2πσ
+
+−(y (i) − θ0T x(i) )2
+2σ 2
+
+−(y (i) − θ1T x(i) )2
+2σ 2
+
+In the E-step of the EM algorithm we compute
+Qi (z (i) ) = p(z (i) |x(i) , y (i) ; φ, θ0 , θ1 ) =
+
+p(y (i) |x(i) , z (i) ; θ0 , θ1 )p(z (i) |x(i) ; φ)
+(i) (i)
+(i)
+z p(y |x , z; θ0 , θ1 )p(z|x ; φ)
+
+Every propability in this term can be computed using the probability densities defined in
+the problem, so the E-step is tractable.
+(i)
+
+For the M-step, we first define wj = p(z (i) = j|x(i) , y (i) ; φ, θ0 , θ1 ) for j = 0, 1 as
+computed in the E-step (of course we only need to compute one of these terms in the
+(i)
+(i)
+real E-step, since w0 = 1 − w1 , but we define both to simplify the expressions).
+Differentiating our lower bound on the likelihood with respect to θ0 , removing terms that
+don’t depend on θ0 , and setting the expression equal to zero, we get
+m
+set
+
+0
+
+(i)
+
+∇θ0
+
+=
+
+wj log
+
+p(y (i) |x(i) , z (i) = j; θj )p(z (i) = j|x(i) ; φ)
+(i)
+
+i=1 j=0,1
+m
+(i)
+∇θ0
+w0 log p(y (i) |x(i) , z (i)
+i=1
+m
+(i)
+∇θ0
+−w0 (y (i) − θ0T x(i) )2
+i=1
+
+=
+=
+
+wj
+
+= j; θj )
+
+This is just a weighted least-squares problem, which has solution
+θ0 = (X0T W X0 )−1 X0T W y0 ,
+
+(1)
+
+(m)
+
+W = diag(w0 , . . . , w0
+
+.
+
+The derivation for θ1 proceeds similarly.
+Finally, as before, we can’t compute the M-step update for φ in closed form, so we instead
+find the gradient and Hessian. However, to do this we note that
+m
+
+∇φ
+
+(i)
+
+wj log
+
+p(y (i) |x(i) , z (i) = j; θj )p(z (i) = j|x(i) ; φ)
+
+(i)
+
+(i)
+
+wj log p(z (i) = j|x(i) ; φ) =
+i=1 j=0,1
+
+=
+
+m
+
+m
+
+∇φ
+
+(i)
+
+wj
+
+i=1 j=0,1
+
+i=1
+
+(i)
+
+w0 log g(φT x) + (1 − w0 ) log(1 − g(φT x(i) ))
+
+This term is the same as the objective for logistic regression task, but with the w(i)
+quantity replacing y (i) . Therefore, the gradient and Hessian are given by
+
+4
+
+CS229 Problem Set #4 Solutions
+
+m
+
+∇φ
+
+(i)
+
+i=1 j=0,1
+
+wj log p(z (i) = j|x(i) ; φ) = X T (w − h),
+
+H = X T DX,
+
+hi = g(φT x(i) ),
+
+Dii = g(φT x(i) )(1 − g(φT x(i) )).
+
+2. Factor Analysis and PCA
+In this problem we look at the relationship between two unsupervised learning algorithms
+we discussed in class: Factor Analysis and Principle Component Analysis.
+Consider the following joint distribution over (x, z) where z ∈ Rk is a latent random
+variable
+z
+x|z
+
+∼
+
+N (0, I)
+
+N (U z, σ 2 I).
+
+∼
+
+where U ∈ Rn×k is a model parameters and σ 2 is assumed to be a known constant. This
+model is often called Probabilistic PCA. Note that this is nearly identical to the factor
+analysis model except we assume that the variance of x|z is a known scaled identity matrix
+rather than the diagonal parameter matrix, Φ, and we do not add an additional µ term to
+the mean (though this last difference is just for simplicity of presentation). However, as
+we will see, it turns out that as σ 2 → 0, this model is equivalent to PCA.
+For simplicity, you can assume for the remainder of the problem that k = 1, i.e., that U is
+a column vector in Rn .
+
+(a) Use the rules for manipulating Gaussian distributions to determine the joint distribution over (x, z) and the conditional distribution of z|x. [Hint: for later parts of
+this problem, it will help significantly if you simplify your soluting for the conditional
+distribution using the identity we first mentioned in problem set #1: (λI +BA)−1 B =
+B(λI + AB)−1 .]
+Answer:
+To compute the joint distribution, we compute the means and covariances
+of x and z. First, E[z] = 0 and
+E[x] = E[U z + ǫ] = U E[z] + E[ǫ] = 0,
+
+(where ǫ ∼ N (0, σ 2 I)).
+
+Since both x and z have zero mean
+Σzz
+
+= E[zz T ] = I (= 1, since z is a scalar when k = 1)
+
+Σzx
+Σxx
+
+= E[(U z + ǫ)z T ] = U E[zz T ] + E[ǫz T ] = U
+= E[(U z + ǫ)(U z + ǫ)T ] = E[U zz T U T + ǫz T U T + U zǫT + ǫǫT ]
+= U E[zz T ]U T + E[ǫǫT ] = U U T + σ 2 I
+
+Therefore,
+z
+x
+
+∼N
+
+0
+0
+
+,
+
+1
+U
+
+UT
+U U T + σ2 I
+
+.
+
+Using the rules for conditional Gaussian distributions, z|x is also Gaussian with mean and
+covariance
+µz|x
+
+= U T (U U T + σ 2 I)−1 x =
+
+Σz|x
+
+=
+
+UT x
++ σ2
+
+UT U
+
+1 − U T (U U T + σ 2 I)−1 U = 1 −
+
+UT U
+U T U + σ2
+
+5
+
+CS229 Problem Set #4 Solutions
+
+where in both cases the last equality comes from the identity in the hint.
+(b) Using these distributions, derive an EM algorithm for the model. Clearly state the
+E-step and the M-step of the algorithm.
+Answer:
+Even though z (i) is a scalar value, in this problem we continue to use the
+(i)T
+notation z
+, etc, to make the similarities to the Factor anlysis case obvious.
+For the E-step, we compute the distribution Qi (z (i) ) = p(z (i) |x(i) ; U ) by computing
+µz(i) |x(i) and Σz(i) |x(i) using the above formulas.
+For the M-step, we need to maximize
+m
+
+Qi (z (i) ) log
+i=1
+
+z (i)
+
+p(x(i) , |z (i) ; U )p(z (i) )
+Qi (z (i) )
+
+m
+
+=
+i=1
+
+Ez(i) ∼Qi log p(x(i) |z (i) ; U ) + log p(z (i) ) − log Qi (z (i) ) .
+
+Taking the gradient with respect to U equal to zero, dropping terms that don’t depend
+on U , and omitting the subscript on the expectation, this becomes
+m
+
+∇U
+
+i=1
+
+m
+
+E log p(x(i) |z (i) ; U )
+
+= ∇U
+
+i=1
+
+1
+= − 2
+2σ
+= −
+=
+
+1
+2σ 2
+
+1
+2σ 2
+
+E −
+
+1
+(x(i) − U z (i) )T (x(i) − U z (i) )
+2σ 2
+
+m
+T
+
+i=1
+m
+
+T
+
+i=1
+m
+
+T
+
+∇U E trz (i) U T U z (i) − 2trz (i) U T x(i)
+E U z (i) z (i) − x(i) z (i)
+
+T
+
+T
+
+i=1
+
+T
+
+−U E[z (i) z (i) ] + x(i) E[z (i) ]
+
+using the same reasoning as in the Factor Analysis class notes. Setting this derivative to
+zero gives
+m
+
+U
+
+=
+
+x E[z
+
+(i)T
+
+]
+
+i=1
+
+E[z
+
+z
+
+]
+−1
+
+m
+
+x(i) µTz(i |x(i)
+i=1
+
+(i) (i)T
+
+i=1
+
+m
+
+=
+
+−1
+
+m
+(i)
+
+Σz(i) |x(i) +
+
+µz(i |x(i) µTz(i |x(i)
+
+i=1
+
+All these terms were calcuated in the E step, so this is our final M step update.
+(c) As σ 2 → 0, show that if the EM algorithm convergences to a parameter vector U ⋆
+(and such convergence is guarenteed by the argument presented in class), then U ⋆
+m
+1
+(i) (i) T
+— i.e.,
+must be an eigenvector of the sample covariance matrix Σ = m
+i=1 x x
+⋆
+U must satisfy
+λU ⋆ = ΣU ⋆ .
+[Hint: When σ 2 → 0, Σz|x → 0, so the E step only needs to compute the means
+µz|x and not the variances. Let w ∈ Rm be a vector containing all these means,
+
+6
+
+CS229 Problem Set #4 Solutions
+
+wi = µz(i) |x(i) , and show that the E step and M step can be expressed as
+w=
+
+XU
+,
+UT U
+
+U=
+
+XT w
+wT w
+
+respectively. Finally, show that if U doesn’t change after this update, it must satisfy
+the eigenvector equation shown above. ]
+Answer:
+For the E step, when σ 2 → 0, µz(i) |x(i) =
+hint we have
+XU
+w= T
+U U
+as desired.
+
+U T x(i)
+,
+UT U
+
+so using w as defined in the
+
+As mentioned in the hint, when σ 2 → 0, Σz(i) |x(i) = 0, so
+x(i) µTz(i |x(i)
+
+=
+
+Σz(i) |x(i) + µz(i |x(i) µTz(i |x(i)
+i=1
+
+i=1
+m
+
+m
+
+x(i) wi
+
+=
+
+−1
+
+m
+
+m
+
+U
+
+i=1
+
+wi wi )−1 =
+
+(
+i=1
+
+XT w
+wT w
+
+For U to remain unchanged after an update requires that
+U=
+
+X T UXU
+TU
+U T X T XU
+UT U UT U
+
+= X T XU
+
+UT U
+U T X T XU
+
+= X T XU
+
+1
+λ
+
+proving the desired equation.
+3. PCA and ICA for Natural Images
+In this problem we’ll apply Principal Component Analysis and Independent Component
+Analysis to images patches collected from “natural” image scenes (pictures of leaves, grass,
+etc). This is one of the classical applications of the ICA algorithm, and sparked a great
+deal of interest in the algorithm; it was observed that the bases recovered by ICA closely
+resemble image filters present in the first layer of the visual cortex.
+The q3/ directory contains the data and several useful pieces of code for this problem. The
+raw images are stored in the images/ subdirectory, though you will not need to work with
+these directly, since we provide code for loading and normalizing the images.
+Calling the function [X ica, X pca] = load images; will load the images, break them
+into 16x16 images patches, and place all these patches into the columns of the matrices X ica and X pca. We create two different data sets for PCA and ICA because the
+algorithms require slightly different methods of preprocessing the data.1
+For this problem you’ll implement the ica.m and pca.m functions, using the PCA and
+ICA algorithms described in the class notes. While the PCA implementation should be
+straightforward, getting a good implementation of ICA can be a bit trickier. Here is some
+general advice to getting a good implementation on this data set:
+1 Recall that the first step of performing PCA is to subtract the mean and normalize the variance of the features.
+For the image data we’re using, the preprocessing step for the ICA algorithm is slightly different, though the
+precise mechanism and justification is not imporant for the sake of this problem. Those who are curious about
+the details should read Bell and Sejnowki’s paper “The ’Independent Components’ of Natural Scenes are Edge
+Filters,” which provided the basis for the implementation we use in this problem.
+
+CS229 Problem Set #4 Solutions
+
+7
+
+• Picking a good learning rate is important. In our experiments we used α = 0.0005 on
+this data set.
+• Batch gradient descent doesn’t work well for ICA (this has to do with the fact that
+ICA objective function is not concave), but the pure stochastic gradient described in
+the notes can be slow (There are about 20,000 16x16 images patches in the data set,
+so one pass over the data using the stochastic gradient rule described in the notes
+requires inverting the 256x256 W matrix 20,000 times). Instead, a good compromise
+is to use a hybrid stochastic/batch gradient descent where we calculate the gradient
+with respect to several examples at a time (100 worked well for us), and use this to
+update W . Our implementation makes 10 total passes over the entire data set.
+• It is a good idea to randomize the order of the examples presented to stochastic
+gradient descent before each pass over the data.
+• Vectorize your Matlab code as much as possible. For general examples of how to do
+this, look at the Matlab review session.
+For reference, computing the ICA W matrix for the entire set of image patches takes about
+5 minutes on a 1.6 Ghz laptop using our implementation.
+After you’ve learned the U matrix for PCA (the columns of U should contain the principal
+components of the data) and the W matrix of ICA, you can plot the basis functions using
+the plot ica bases(W); and plot pca bases(U); functions we have provide. Comment
+briefly on the difference between the two sets of basis functions.
+Answer:
+
+The following are our implementations of pca.m and ica.m:
+
+function U = pca(X)
+[U,S,V] = svd(X*X’);
+function W = ica(X)
+[n,m] = size(X);
+chunk = 100;
+alpha = 0.0005;
+W = eye(n);
+for iter=1:10,
+disp([num2str(iter)]);
+X = X(:,randperm(m));
+for i=1:floor(m/chunk),
+Xc = X(:,(i-1)*chunk+1:i*chunk);
+dW = (1 - 2./(1+exp(-W*Xc)))*Xc’ + chunk*inv(W’);
+W = W + alpha*dW;
+end
+end
+
+PCA produces the following bases:
+
+8
+
+CS229 Problem Set #4 Solutions
+
+while ICA produces the following bases
+
+The PCA bases capture global features of the images, while the ICA bases capture more local
+features.
+4. Convergence of Policy Iteration
+In this problem we show that the Policy Iteration algorithm, described in the lecture notes,
+is guarenteed to find the optimal policy for an MDP. First, define B π to be the Bellman
+operator for policy π, defined as follows: if V ′ = B(V ), then
+V ′ (s) = R(s) + γ
+
+Psπ(s) (s′ )V (s′ ).
+s′ ∈S
+
+9
+
+CS229 Problem Set #4 Solutions
+
+(a) Prove that if V1 (s) ≤ V2 (s) for all s ∈ S, then B(V1 )(s) ≤ B(V2 )(s) for all s ∈ S.
+Answer:
+B(V1 )(s)
+
+Psπ(s) (s′ )V1 (s′ )
+
+= R(s) + γ
+s′ ∈S
+
+≤ R(s) + γ
+
+Psπ(s) (s′ )V2 (s′ ) = B(V2 )(s)
+s′ ∈S
+
+where the inequality holds because Psπ(s) (s′ ) ≥ 0.
+
+(b) Prove that for any V ,
+
+B π (V ) − V π
+
+∞
+
+≤γ V −Vπ
+
+∞
+
+where V ∞ = maxs∈S |V (s)|. Intuitively, this means that applying the Bellman
+operator B π to any value function V , brings that value function “closer” to the value
+function for π, V π . This also means that applying B π repeatedly (an infinite number
+of times)
+B π (B π (. . . B π (V ) . . .))
+will result in the value function V π (a little bit more is needed to make this completely
+formal, but we won’t worry about that here).
+[Hint: Use the fact that for any α, x ∈ Rn , if i αi = 1 and αi ≥ 0, then i αi xi ≤
+maxi xi .] Answer:
+B π (V ) − V π
+
+∞
+
+=
+
+max
+R(s) + γ
+′
+s ∈S
+
+s′ ∈S
+
+= γ max
+′
+s ∈∫
+
+s′ ∈S
+
+≤ γ V −Vπ
+
+Psπ(s) (s′ )V (s′ ) − R(s) − γ
+
+Psπ(s) (s′ )V π (s′ )
+s′ ∈S
+
+Psπ(s) (s′ ) (V (s′ ) − V π (s′ ))
+∞
+
+where the inequality follows from the hint above.
+(c) Now suppose that we have some policy π, and use Policy Iteration to choose a new
+policy π ′ according to
+Psa (s′ )V π (s′ ).
+
+π ′ (s) = arg max
+a∈A
+
+s′ ∈S
+
+Show that this policy will never perform worse that the previous one — i.e., show
+′
+that for all s ∈ S, V π (s) ≤ V π (s).
+′
+[Hint: First show that V π (s) ≤ B π (V π )(s), then use the proceeding excercises to
+π′
+π
+π′
+show that B (V )(s) ≤ V (s).]
+Answer:
+V π (s)
+
+Psπ(s) (s′ )V π (s′ )
+
+= R(s) + γ
+s′ ∈S
+
+≤ R(s) + γ max
+a∈A
+
+Psa (s′ )V π (s′ )
+s′ ∈S
+′
+
+Psπ′ (s) (s′ )V π (s′ ) = B π (V π )(s)
+
+= R(s) + γ
+s′ ∈S
+
+10
+
+CS229 Problem Set #4 Solutions
+
+Applying part (a),
+′
+
+′
+
+′
+
+′
+
+V π (s) ≤ B π (V π )(s) ⇒ B π (V π )(s) ≤ B π (B π (V π ))(s)
+Continually applying this property, and applying part (b), we obtain
+′
+
+′
+
+′
+
+′
+
+′
+
+′
+
+′
+
+V π (s) ≤ B π (V π )(s) ≤ B π (B π (V π ))(s) ≤ . . . ≤ B π (B π (. . . B π (V π ) . . .))(s) = V π (s).
+(d) Use the proceeding exercises to show that policy iteration will eventually converge
+(i.e., produce a policy π ′ = π). Furthermore, show that it must converge to the
+optimal policy π ⋆ . For the later part, you may use the property that if some value
+function satisfies
+s′ ∈ SPsa (s′ )V (s′ )
+
+V (s) = R(s) + γ max
+a∈A
+
+then V = V ⋆ .
+Answer: We know that policy iteration must converge because there are only a finite
+number of possible policies (if there are |S| states, each with |A| actions, then that leads
+to a |S||A| total possible policies). Since the policies are monotonically improving, as we
+showed in part (c), at some point we must stop generating new policies, so the algorithm
+must produce π ′ = π. Using the assumptions stated in the question, it is easy to show
+convergence to the optimal policy. If π ′ = π, then using the same logic as in part (c)
+′
+
+Psa (s′ )V π (s),
+
+V π (s) = V π (s) = R(s) + γ max
+a∈A
+
+s′ ∈∫
+
+So V = V ⋆ , and therefore π = π ⋆ .
+5. Reinforcement Learning: The Mountain Car
+In this problem you will implement the Q-Learning reinforcement learning algorithm described in class on a standard control domain known as the Mountain Car.2 The Mountain
+Car domain simulates a car trying to drive up a hill, as shown in the figure below.
+
+0.6
+
+0.4
+
+0.2
+
+0
+
+−0.2
+
+−0.4
+
+−0.6
+
+−1.2
+
+2 The
+
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+dynamics of this domain were taken from Sutton and Barto, 1998.
+
+0.4
+
+0.6
+
+11
+
+CS229 Problem Set #4 Solutions
+
+All states except those at the top of the hill have a constant reward R(s) = −1, while the
+goal state at the hilltop has reward R(s) = 0; thus an optimal agent will try to get to the
+top of the hill as fast as possible (when the car reaches the top of the hill, the episode is
+over, and the car is reset to its initial position). However, when starting at the bottom
+of the hill, the car does not have enough power to reach the top by driving forward, so
+it must first accerlaterate accelerate backwards, building up enough momentum to reach
+the top of the hill. This strategy of moving away from the goal in order to reach the goal
+makes the problem difficult for many classical control algorithms.
+As discussed in class, Q-learning maintains a table of Q-values, Q(s, a), for each state and
+action. These Q-values are useful because, in order to select an action in state s, we only
+need to check to see which Q-value is greatest. That is, in state s we take the action
+arg max Q(s, a).
+a∈A
+
+The Q-learning algorithm adjusts its estimates of the Q-values as follows. If an agent is in
+state s, takes action a, then ends up in state s′ , Q-learning will update Q(s, a) by
+Q(s, a) = (1 − α)Q(s, a) + γ(R(s′ ) + γ max
+Q(s′ , a′ ).
+′
+a ∈A
+
+At each time, your implementation of Q-learning can execute the greedy policy π(s) =
+arg maxa∈A Q(s, a)
+Implement the [q, steps per episode] = qlearning(episodes) function in the q5/
+directory. As input, the function takes the total number of episodes (each episode starts
+with the car at the bottom of the hill, and lasts until the car reaches the top), and outputs
+a matrix of the Q-values and a vector indicating how many steps it took before the car was
+able to reach the top of the hill. You should use the [x, s, absorb] = mountain car(x,
+actions(a)) function to simulate one control cycle for the task — the x variable describes
+the true (continuous) state of the system, whereas the s variable describes the discrete
+index of the state, which you’ll use to build the Q values.
+Plot a graph showing the average number of steps before the car reaches the top of the
+hill versus the episode number (there is quite a bit of variation in this quantity, so you will
+probably want to average these over a large number of episodes, as this will give you a
+better idea of how the number of steps before reaching the hilltop is decreasing). You can
+also visualize your resulting controller by calling the draw mountain car(q) function.
+Answer:
+
+The following is our implementation of qlearning.m:
+
+function [q, steps_per_episode] = qlearning(episodes)
+% set up parameters and initialize q values
+alpha = 0.05;
+gamma = 0.99;
+num_states = 100;
+num_actions = 2;
+actions = [-1, 1];
+q = zeros(num_states, num_actions);
+for i=1:episodes,
+
+12
+
+CS229 Problem Set #4 Solutions
+
+[x, s, absorb] = mountain_car([0.0 -pi/6], 0);
+[maxq, a] = max(q(s,:));
+if (q(s,1) == q(s,2)) a = ceil(rand*num_actions); end;
+steps = 0;
+while (~absorb)
+% execute the best action or a random action
+[x, sn, absorb] = mountain_car(x, actions(a));
+reward = -double(absorb == 0);
+% find the best action for the next state and update q value
+[maxq, an] = max(q(sn,:));
+if (q(sn,1) == q(sn,2)) an = ceil(rand*num_actions); end
+q(s,a) = (1 - alpha)*q(s,a) + alpha*(reward + gamma*maxq);
+a = an;
+s = sn;
+steps = steps + 1;
+end
+steps_per_episode(i) = steps;
+end
+Within 10000 episodes, the algorithm converges to a policy that usually gets the car up the hill
+in around 52-53 steps. The following plot shows the number of steps per episode (averaged
+over 500 episodes) versus the number of episodes. We generated the plot using the following
+code:
+for i=1:10,
+[q, ep_steps] = qlearning(10000);
+all_ep_steps(i,:) = ep_steps;
+end
+plot(mean(reshape(mean(all_ep_steps), 500, 20)));
+
+250
+
+Average Steps per Episode
+
+200
+
+150
+
+100
+
+50
+
+0
+
+1000
+
+2000
+
+3000
+
+4000 5000 6000
+Episode Number
+
+7000
+
+8000
+
+9000 10000
+
+

@@ -1,0 +1,339 @@
+Dimensionality	  
+Reduc1on	  
+Mo1va1on	  I:	  	  
+Data	  Compression	  
+Machine	  Learning	  
+
+Data	  Compression	  
+(inches)	  
+
+Reduce	  data	  from	  	  
+2D	  to	  1D	  
+
+(cm)	  
+
+Andrew	  Ng	  
+
+Data	  Compression	  
+(inches)	  
+
+Reduce	  data	  from	  	  
+2D	  to	  1D	  
+
+(cm)	  
+
+Andrew	  Ng	  
+
+Data	  Compression	  
+Reduce	  data	  from	  3D	  to	  2D	  
+
+Andrew	  Ng	  
+
+Dimensionality	  
+Reduc1on	  
+Mo1va1on	  II:	  	  
+Data	  Visualiza1on	  
+Machine	  Learning	  
+
+Data	  Visualiza2on	  
+Mean	  
+Poverty	   household	  
+Index	  
+income	  
+
+Country	  
+Canada	  
+China	  
+India	  
+Russia	  
+Singapore	  
+USA	  
+…	  
+
+Per	  capita	  
+Human	  
+GDP	  
+GDP	  	  
+Life	  
+(trillions	  of	   (thousands	   Develop-­‐
+	  (Gini	  as	   (thousands	  
+of	  intl.	  $)	   ment	  Index	  expectancy	  percentage)	   of	  US$)	  
+US$)	  
+…	  
+
+1.577	  
+5.878	  
+1.632	  
+1.48	  
+0.223	  
+14.527	  
+…	  
+
+39.17	  
+7.54	  
+3.41	  
+19.84	  
+56.69	  
+46.86	  
+…	  
+
+[resources	  from	  en.wikipedia.org]	  
+
+0.908	  
+0.687	  
+0.547	  
+0.755	  
+0.866	  
+0.91	  
+…	  
+
+80.7	  
+73	  
+64.7	  
+65.5	  
+80	  
+78.3	  
+…	  
+
+32.6	  
+46.9	  
+36.8	  
+39.9	  
+42.5	  
+40.8	  
+…	  
+
+67.293	  
+10.22	  
+0.735	  
+0.72	  
+67.1	  
+84.3	  
+…	  
+
+…	  
+…	  
+…	  
+…	  
+…	  
+…	  
+
+Andrew	  Ng	  
+
+Data	  Visualiza2on	  
+Country	  
+Canada	  
+
+1.6	  
+
+1.2	  
+
+China	  
+India	  
+Russia	  
+Singapore	  
+USA	  
+…	  
+
+1.7	  
+1.6	  
+1.4	  
+0.5	  
+2	  
+…	  
+
+0.3	  
+0.2	  
+0.5	  
+1.7	  
+1.5	  
+…	  
+
+Andrew	  Ng	  
+
+Data	  Visualiza2on	  
+
+Andrew	  Ng	  
+
+Dimensionality	  
+Reduc1on	  
+Principal	  Component	  
+Analysis	  problem	  
+formula1on	  
+Machine	  Learning	  
+
+Principal	  Component	  Analysis	  (PCA)	  problem	  formula2on	  
+
+Andrew	  Ng	  
+
+Principal	  Component	  Analysis	  (PCA)	  problem	  formula2on	  
+
+Reduce	  from	  2-­‐dimension	  to	  1-­‐dimension:	  Find	  a	  direc1on	  (a	  vector	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )	  
+onto	  which	  to	  project	  the	  data	  so	  as	  to	  minimize	  the	  projec1on	  error.	  
+Reduce	  from	  n-­‐dimension	  to	  k-­‐dimension:	  Find	  	  	  	  vectors	  	  
+onto	  which	  to	  project	  the	  data,	  so	  as	  to	  minimize	  the	  projec1on	  error.	  
+
+Andrew	  Ng	  
+
+PCA	  is	  not	  linear	  regression	  
+
+Andrew	  Ng	  
+
+PCA	  is	  not	  linear	  regression	  
+
+Andrew	  Ng	  
+
+Dimensionality	  
+Reduc1on	  
+Principal	  Component	  
+Analysis	  algorithm	  
+Machine	  Learning	  
+
+Data	  preprocessing	  
+Training	  set:	  
+Preprocessing	  (feature	  scaling/mean	  normaliza1on):	  
+
+Replace	  each	  	  	  	  	  	  	  	  with	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  .	  
+If	  diﬀerent	  features	  on	  diﬀerent	  scales	  (e.g.,	  	  	  	  	  	  	  	  	  	  	  size	  of	  house,	  	  
+	  	  	  	  	  	  	  	  	  	  number	  of	  bedrooms),	  scale	  features	  to	  have	  comparable	  
+range	  of	  values.	  
+
+Andrew	  Ng	  
+
+Principal	  Component	  Analysis	  (PCA)	  algorithm	  
+
+Reduce	  data	  from	  2D	  to	  1D	  
+
+Reduce	  data	  from	  3D	  to	  2D	  
+
+Andrew	  Ng	  
+
+Principal	  Component	  Analysis	  (PCA)	  algorithm	  
+Reduce	  data	  from	  	  	  -­‐dimensions	  to	  	  	  -­‐dimensions	  
+Compute	  “covariance	  matrix”:	  
+	  
+	  
+Compute	  “eigenvectors”	  of	  matrix	  	  	  	  	  :	  
+	  [U,S,V] = svd(Sigma);	  
+
+Andrew	  Ng	  
+
+Principal	  Component	  Analysis	  (PCA)	  algorithm	  
+From [U,S,V]
+	  
+	   = svd(Sigma)
+	  
+	  	  	  	  ,	  we	  get:	  	  
+
+Andrew	  Ng	  
+
+Principal	  Component	  Analysis	  (PCA)	  algorithm	  summary	  
+Ader	  mean	  normaliza1on	  (ensure	  every	  feature	  has	  
+zero	  mean)	  and	  op1onally	  feature	  scaling:	  	  
+Sigma =
+[U,S,V] = svd(Sigma);
+Ureduce = U(:,1:k);
+z = Ureduce’*x;	  
+
+Andrew	  Ng	  
+
+Dimensionality	  
+Reduc1on	  
+Reconstruc1on	  from	  
+compressed	  
+representa1on	  
+Machine	  Learning	  
+
+Reconstruc2on	  from	  compressed	  representa2on	  
+
+Andrew	  Ng	  
+
+Dimensionality	  
+Reduc1on	  
+Choosing	  the	  number	  of	  
+principal	  components	  
+Machine	  Learning	  
+
+Choosing	  	  	  	  	  	  (number	  of	  principal	  components)	  
+Average	  squared	  projec1on	  error:	  
+Total	  varia1on	  in	  the	  data:	  
+	  Typically,	  choose	  	  	  	  to	  be	  smallest	  value	  so	  that	  
+	  
+	  
+	  
+	  
+“99%	  of	  variance	  is	  retained”	  
+
+(1%)	  
+
+Andrew	  Ng	  
+
+Choosing	  	  	  	  	  	  (number	  of	  principal	  components)	  
+Algorithm:	  
+[U,S,V] = svd(Sigma)	  
+Try	  PCA	  with	  	  
+Compute	  
+	  
+Check	  if	  
+
+Andrew	  Ng	  
+
+Choosing	  	  	  	  	  	  (number	  of	  principal	  components)	  
+[U,S,V] = svd(Sigma)	  
+Pick	  smallest	  value	  of	  	  	  	  	  for	  which	  
+	  
+	  
+	  
+(99%	  of	  variance	  retained)	  
+
+Andrew	  Ng	  
+
+Dimensionality	  
+Reduc1on	  
+Advice	  for	  
+applying	  PCA	  
+Machine	  Learning	  
+
+Supervised	  learning	  speedup	  
+Extract	  inputs:	  
+	  Unlabeled	  dataset:	  
+
+New	  training	  set:	  
+Note:	  Mapping	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  should	  be	  deﬁned	  by	  running	  PCA	  
+only	  on	  the	  training	  set.	  This	  mapping	  can	  be	  applied	  as	  well	  to	  
+the	  examples	  	  	  	  	  	  	  	  	  	  	  and	  	  	  	  	  	  	  	  	  	  	  	  in	  the	  cross	  valida1on	  and	  test	  
+
+Andrew	  Ng	  
+
+Applica2on	  of	  PCA	  
+-­‐  Compression	  
+-­‐  Reduce	  memory/disk	  needed	  to	  store	  data	  
+-­‐  Speed	  up	  learning	  algorithm	  
+-­‐  Visualiza1on	  
+
+Andrew	  Ng	  
+
+Bad	  use	  of	  PCA:	  To	  prevent	  overﬁEng	  
+Use	  	  	  	  	  	  	  	  	  instead	  of	  	  	  	  	  	  	  	  	  to	  reduce	  the	  number	  of	  
+features	  to	  	  
+Thus,	  fewer	  features,	  less	  likely	  to	  overﬁt.	  
+This	  might	  work	  OK,	  but	  isn’t	  a	  good	  way	  to	  address	  
+overﬁlng.	  Use	  regulariza1on	  instead.	  
+
+Andrew	  Ng	  
+
+PCA	  is	  some2mes	  used	  where	  it	  shouldn’t	  be	  
+Design	  of	  ML	  system:	  
+-­‐  Get	  training	  set	  
+-­‐  Run	  PCA	  to	  reduce	  	  	  	  	  	  	  	  	  in	  dimension	  to	  get	  
+-­‐  Train	  logis1c	  regression	  on	  
+-­‐  Test	  on	  test	  set:	  Map	  	  	  	  	  	  	  	  	  	  to	  	  	  	  	  	  	  	  	  .	  Run	  	  	  	  	  	  	  	  	  	  	  	  on	  
+	  
+How	  about	  doing	  the	  whole	  thing	  without	  using	  PCA?	  
+Before	  implemen1ng	  PCA,	  ﬁrst	  try	  running	  whatever	  you	  want	  to	  
+do	  with	  the	  original/raw	  data	  	  	  	  	  	  .	  Only	  if	  that	  doesn’t	  do	  what	  
+you	  want,	  then	  implement	  PCA	  and	  consider	  using	  	  	  	  	  	  .	  
+
+Andrew	  Ng	  
+
+

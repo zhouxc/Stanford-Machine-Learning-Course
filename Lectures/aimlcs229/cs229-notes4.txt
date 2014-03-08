@@ -1,0 +1,635 @@
+CS229 Lecture notes
+Andrew Ng
+
+Part VI
+
+Learning Theory
+1
+
+Bias/variance tradeoff
+
+When talking about linear regression, we discussed the problem of whether
+to fit a “simple” model such as the linear “y = θ0 +θ1 x,” or a more “complex”
+model such as the polynomial “y = θ0 + θ1 x + · · · θ5 x5 .” We saw the following
+example:
+4.5
+
+4.5
+
+4
+
+4
+
+4.5
+
+4
+
+3.5
+
+3.5
+
+3.5
+
+y
+
+3
+
+2.5
+
+y
+
+3
+
+2.5
+
+y
+
+3
+
+2.5
+
+2
+
+2
+
+2
+
+1.5
+
+1.5
+
+1.5
+
+1
+
+1
+
+1
+
+0.5
+
+0.5
+
+0.5
+
+0
+
+0
+
+1
+
+2
+
+3
+
+4
+x
+
+5
+
+6
+
+7
+
+0
+
+0
+
+1
+
+2
+
+3
+
+4
+x
+
+5
+
+6
+
+7
+
+0
+
+0
+
+1
+
+2
+
+3
+
+4
+
+5
+
+6
+
+7
+
+x
+
+Fitting a 5th order polynomial to the data (rightmost figure) did not
+result in a good model. Specifically, even though the 5th order polynomial
+did a very good job predicting y (say, prices of houses) from x (say, living
+area) for the examples in the training set, we do not expect the model shown
+to be a good one for predicting the prices of houses not in the training set. In
+other words, what’s has been learned from the training set does not generalize
+well to other houses. The generalization error (which will be made formal
+shortly) of a hypothesis is its expected error on examples not necessarily in
+the training set.
+Both the models in the leftmost and the rightmost figures above have
+large generalization error. However, the problems that the two models suffer
+from are very different. If the relationship between y and x is not linear,
+1
+
+2
+then even if we were fitting a linear model to a very large amount of training
+data, the linear model would still fail to accurately capture the structure
+in the data. Informally, we define the bias of a model to be the expected
+generalization error even if we were to fit it to a very (say, infinitely) large
+training set. Thus, for the problem above, the linear model suffers from large
+bias, and may underfit (i.e., fail to capture structure exhibited by) the data.
+Apart from bias, there’s a second component to the generalization error,
+consisting of the variance of a model fitting procedure. Specifically, when
+fitting a 5th order polynomial as in the rightmost figure, there is a large risk
+that we’re fitting patterns in the data that happened to be present in our
+small, finite training set, but that do not reflect the wider pattern of the
+relationship between x and y. This could be, say, because in the training set
+we just happened by chance to get a slightly more-expensive-than-average
+house here, and a slightly less-expensive-than-average house there, and so
+on. By fitting these “spurious” patterns in the training set, we might again
+obtain a model with large generalization error. In this case, we say the model
+has large variance.1
+Often, there is a tradeoff between bias and variance. If our model is too
+“simple” and has very few parameters, then it may have large bias (but small
+variance); if it is too “complex” and has very many parameters, then it may
+suffer from large variance (but have smaller bias). In the example above,
+fitting a quadratic function does better than either of the extremes of a first
+or a fifth order polynomial.
+
+2
+
+Preliminaries
+
+In this set of notes, we begin our foray into learning theory. Apart from
+being interesting and enlightening in its own right, this discussion will also
+help us hone our intuitions and derive rules of thumb about how to best
+apply learning algorithms in different settings. We will also seek to answer
+a few questions: First, can we make formal the bias/variance tradeoff that
+was just discussed? The will also eventually lead us to talk about model
+selection methods, which can, for instance, automatically decide what order
+polynomial to fit to a training set. Second, in machine learning it’s really
+1
+
+In these notes, we will not try to formalize the definitions of bias and variance beyond
+this discussion. While bias and variance are straightforward to define formally for, e.g.,
+linear regression, there have been several proposals for the definitions of bias and variance
+for classification, and there is as yet no agreement on what is the “right” and/or the most
+useful formalism.
+
+3
+generalization error that we care about, but most learning algorithms fit their
+models to the training set. Why should doing well on the training set tell us
+anything about generalization error? Specifically, can we relate error on the
+training set to generalization error? Third and finally, are there conditions
+under which we can actually prove that learning algorithms will work well?
+We start with two simple but very useful lemmas.
+Lemma. (The union bound). Let A1 , A2 , . . . , Ak be k different events (that
+may not be independent). Then
+P (A1 ∪ · · · ∪ Ak ) ≤ P (A1 ) + . . . + P (Ak ).
+In probability theory, the union bound is usually stated as an axiom
+(and thus we won’t try to prove it), but it also makes intuitive sense: The
+probability of any one of k events happening is at most the sums of the
+probabilities of the k different events.
+Lemma. (Hoeffding inequality) Let Z1 , . . . , Zm be m independent and identically distributed (iid) random variables drawn from a Bernoulli(φ) distribution. I.e., P (Zi = 1) = φ, and P (Zi = 0) = 1 − φ. Let φˆ = (1/m) m
+i=1 Zi
+be the mean of these random variables, and let any γ > 0 be fixed. Then
+ˆ > γ) ≤ 2 exp(−2γ 2 m)
+P (|φ − φ|
+This lemma (which in learning theory is also called the Chernoff bound)
+ˆ
+says that if we take φ—the
+average of m Bernoulli(φ) random variables—to
+be our estimate of φ, then the probability of our being far from the true value
+is small, so long as m is large. Another way of saying this is that if you have
+a biased coin whose chance of landing on heads is φ, then if you toss it m
+times and calculate the fraction of times that it came up heads, that will be
+a good estimate of φ with high probability (if m is large).
+Using just these two lemmas, we will be able to prove some of the deepest
+and most important results in learning theory.
+To simplify our exposition, lets restrict our attention to binary classification in which the labels are y ∈ {0, 1}. Everything we’ll say here generalizes
+to other, including regression and multi-class classification, problems.
+We assume we are given a training set S = {(x(i) , y (i) ); i = 1, . . . , m}
+of size m, where the training examples (x(i) , y (i) ) are drawn iid from some
+probability distribution D. For a hypothesis h, we define the training error
+(also called the empirical risk or empirical error in learning theory) to
+be
+m
+1
+1{h(x(i) ) = y (i) }.
+εˆ(h) =
+m i=1
+
+4
+This is just the fraction of training examples that h misclassifies. When we
+want to make explicit the dependence of εˆ(h) on the training set S, we may
+also write this a εˆS (h). We also define the generalization error to be
+ε(h) = P(x,y)∼D (h(x) = y).
+I.e. this is the probability that, if we now draw a new example (x, y) from
+the distribution D, h will misclassify it.
+Note that we have assumed that the training data was drawn from the
+same distribution D with which we’re going to evaluate our hypotheses (in
+the definition of generalization error). This is sometimes also referred to as
+one of the PAC assumptions.2
+Consider the setting of linear classification, and let hθ (x) = 1{θ T x ≥ 0}.
+What’s a reasonable way of fitting the parameters θ? One approach is to try
+to minimize the training error, and pick
+θˆ = arg min εˆ(hθ ).
+θ
+
+We call this process empirical risk minimization (ERM), and the resulting
+ˆ = h ˆ. We think of ERM
+hypothesis output by the learning algorithm is h
+θ
+as the most “basic” learning algorithm, and it will be this algorithm that we
+focus on in these notes. (Algorithms such as logistic regression can also be
+viewed as approximations to empirical risk minimization.)
+In our study of learning theory, it will be useful to abstract away from
+the specific parameterization of hypotheses and from issues such as whether
+we’re using a linear classifier. We define the hypothesis class H used by a
+learning algorithm to be the set of all classifiers considered by it. For linear
+classification, H = {hθ : hθ (x) = 1{θ T x ≥ 0}, θ ∈ Rn+1 } is thus the set of
+all classifiers over X (the domain of the inputs) where the decision boundary
+is linear. More broadly, if we were studying, say, neural networks, then we
+could let H be the set of all classifiers representable by some neural network
+architecture.
+Empirical risk minimization can now be thought of as a minimization over
+the class of functions H, in which the learning algorithm picks the hypothesis:
+ˆ = arg min εˆ(h)
+h
+h∈H
+
+2
+
+PAC stands for “probably approximately correct,” which is a framework and set of
+assumptions under which numerous results on learning theory were proved. Of these, the
+assumption of training and testing on the same distribution, and the assumption of the
+independently drawn training examples, were the most important.
+
+5
+
+3
+
+The case of finite H
+
+Lets start by considering a learning problem in which we have a finite hypothesis class H = {h1 , . . . , hk } consisting of k hypotheses. Thus, H is just a
+set of k functions mapping from X to {0, 1}, and empirical risk minimization
+ˆ to be whichever of these k functions has the smallest training error.
+selects h
+ˆ Our
+We would like to give guarantees on the generalization error of h.
+strategy for doing so will be in two parts: First, we will show that εˆ(h) is a
+reliable estimate of ε(h) for all h. Second, we will show that this implies an
+ˆ
+upper-bound on the generalization error of h.
+Take any one, fixed, hi ∈ H. Consider a Bernoulli random variable Z
+whose distribution is defined as follows. We’re going to sample (x, y) ∼ D.
+Then, we set Z = 1{hi (x) = y}. I.e., we’re going to draw one example,
+and let Z indicate whether hi misclassifies it. Similarly, we also define Zj =
+1{hi (x(j) ) = y (j) }. Since our training set was drawn iid from D, Z and the
+Zj ’s have the same distribution.
+We see that the misclassification probability on a randomly drawn example—
+that is, ε(h)—is exactly the expected value of Z (and Zj ). Moreover, the
+training error can be written
+1
+εˆ(hi ) =
+m
+
+m
+
+Zj .
+j=1
+
+Thus, εˆ(hi ) is exactly the mean of the m random variables Zj that are drawn
+iid from a Bernoulli distribution with mean ε(hi ). Hence, we can apply the
+Hoeffding inequality, and obtain
+P (|ε(hi ) − εˆ(hi )| > γ) ≤ 2 exp(−2γ 2 m).
+This shows that, for our particular hi , training error will be close to
+generalization error with high probability, assuming m is large. But we
+don’t just want to guarantee that ε(hi ) will be close to εˆ(hi ) (with high
+probability) for just only one particular hi . We want to prove that this will
+be true for simultaneously for all h ∈ H. To do so, let Ai denote the event
+that |ε(hi ) − εˆ(hi )| > γ. We’ve already show that, for any particular Ai , it
+holds true that P (Ai ) ≤ 2 exp(−2γ 2 m). Thus, using the union bound, we
+
+6
+have that
+P (∃ h ∈ H.|ε(hi ) − εˆ(hi )| > γ) = P (A1 ∪ · · · ∪ Ak )
+k
+
+≤
+≤
+
+P (Ai )
+i=1
+k
+
+2 exp(−2γ 2 m)
+i=1
+
+= 2k exp(−2γ 2 m)
+If we subtract both sides from 1, we find that
+P (¬∃ h ∈ H.|ε(hi ) − εˆ(hi )| > γ) = P (∀h ∈ H.|ε(hi ) − εˆ(hi )| ≤ γ)
+≥ 1 − 2k exp(−2γ 2 m)
+(The “¬” symbol means “not.”) So, with probability at least 1−2k exp(−2γ 2 m),
+we have that ε(h) will be within γ of εˆ(h) for all h ∈ H. This is called a uniform convergence result, because this is a bound that holds simultaneously
+for all (as opposed to just one) h ∈ H.
+In the discussion above, what we did was, for particular values of m and
+γ, given a bound on the probability that, for some h ∈ H, |ε(h) − εˆ(h)| > γ.
+There are three quantities of interest here: m, γ, and the probability of error;
+we can bound either one in terms of the other two.
+For instance, we can ask the following question: Given γ and some δ > 0,
+how large must m be before we can guarantee that with probability at least
+1 − δ, training error will be within γ of generalization error? By setting
+δ = 2k exp(−2γ 2 m) and solving for m, [you should convince yourself this is
+the right thing to do!], we find that if
+m≥
+
+2k
+1
+log
+,
+2γ 2
+δ
+
+then with probability at least 1 − δ, we have that |ε(h) − εˆ(h)| ≤ γ for all
+h ∈ H. (Equivalently, this show that the probability that |ε(h) − εˆ(h)| > γ
+for some h ∈ H is at most δ.) This bound tells us how many training
+examples we need in order make a guarantee. The training set size m that
+a certain method or algorithm requires in order to achieve a certain level of
+performance is also called the algorithm’s sample complexity.
+The key property of the bound above is that the number of training
+examples needed to make this guarantee is only logarithmic in k, the number
+of hypotheses in H. This will be important later.
+
+7
+Similarly, we can also hold m and δ fixed and solve for γ in the previous
+equation, and show [again, convince yourself that this is right!] that with
+probability 1 − δ, we have that for all h ∈ H,
+|ˆ
+ε(h) − ε(h)| ≤
+
+1
+2k
+log .
+2m
+δ
+
+Now, lets assume that uniform convergence holds, i.e., that |ε(h)− εˆ(h)| ≤
+γ for all h ∈ H. What can we prove about the generalization of our learning
+ˆ = arg minh∈H εˆ(h)?
+algorithm that picked h
+Define h∗ = arg minh∈H ε(h) to be the best possible hypothesis in H. Note
+that h∗ is the best that we could possibly do given that we are using H, so
+it makes sense to compare our performance to that of h∗ . We have:
+ˆ ≤ εˆ(h)
+ˆ +γ
+ε(h)
+≤ εˆ(h∗ ) + γ
+≤ ε(h∗ ) + 2γ
+ˆ εˆ(h)|
+ˆ ≤ γ (by our uniform convergence
+The first line used the fact that |ε(h)−
+ˆ was chosen to minimize εˆ(h),
+assumption). The second used the fact that h
+ˆ ≤ εˆ(h) for all h, and in particular εˆ(h)
+ˆ ≤ εˆ(h∗ ). The third
+and hence εˆ(h)
+line used the uniform convergence assumption again, to show that εˆ(h∗ ) ≤
+ε(h∗ ) + γ. So, what we’ve shown is the following: If uniform convergence
+ˆ is at most 2γ worse than the best
+occurs, then the generalization error of h
+possible hypothesis in H!
+Lets put all this together into a theorem.
+Theorem. Let |H| = k, and let any m, δ be fixed. Then with probability at
+least 1 − δ, we have that
+ˆ ≤
+ε(h)
+
+min ε(h) + 2
+h∈H
+
+1
+2k
+log .
+2m
+δ
+
+√
+This is proved by letting γ equal the · term, using our previous argument that uniform convergence occurs with probability at least 1 − δ, and
+then noting that uniform convergence implies ε(h) is at most 2γ higher than
+ε(h∗ ) = minh∈H ε(h) (as we showed previously).
+This also quantifies what we were saying previously saying about the
+bias/variance tradeoff in model selection. Specifically, suppose we have some
+hypothesis class H, and are considering switching to some much larger hypothesis class H ⊇ H. If we switch to H , then the first term minh ε(h)
+
+8
+can only decrease (since we’d then be taking a min over a larger set of functions). Hence, by learning using a larger hypothesis class,
+√ our “bias” can
+only decrease. However, if k increases, then the second 2 · term would also
+increase. This increase corresponds to our “variance” increasing when we use
+a larger hypothesis class.
+By holding γ and δ fixed and solving for m like we did before, we can
+also obtain the following sample complexity bound:
+ˆ ≤
+Corollary. Let |H| = k, and let any δ, γ be fixed. Then for ε(h)
+minh∈H ε(h) + 2γ to hold with probability at least 1 − δ, it suffices that
+2k
+1
+log
+2γ 2
+δ
+k
+1
+log
+= O
+γ2
+δ
+
+m ≥
+
+4
+
+,
+
+The case of infinite H
+
+We have proved some useful theorems for the case of finite hypothesis classes.
+But many hypothesis classes, including any parameterized by real numbers
+(as in linear classification) actually contain an infinite number of functions.
+Can we prove similar results for this setting?
+Lets start by going through something that is not the “right” argument.
+Better and more general arguments exist, but this will be useful for honing
+our intuitions about the domain.
+Suppose we have an H that is parameterized by d real numbers. Since we
+are using a computer to represent real numbers, and IEEE double-precision
+floating point (double’s in C) uses 64 bits to represent a floating point number, this means that our learning algorithm, assuming we’re using doubleprecision floating point, is parameterized by 64d bits. Thus, our hypothesis
+class really consists of at most k = 264d different hypotheses. From the Corollary at the end of the previous section, we therefore find that, to guarantee
+ˆ ≤ ε(h∗ ) + 2γ, with to hold with probability at least 1 − δ, it suffices
+ε(h)
+64d
+= O γd2 log 1δ = Oγ,δ (d). (The γ, δ subscripts are
+that m ≥ O γ12 log 2 δ
+to indicate that the last big-O is hiding constants that may depend on γ and
+δ.) Thus, the number of training examples needed is at most linear in the
+parameters of the model.
+The fact that we relied on 64-bit floating point makes this argument not
+entirely satisfying, but the conclusion is nonetheless roughly correct: If what
+we’re going to do is try to minimize training error, then in order to learn
+
+9
+“well” using a hypothesis class that has d parameters, generally we’re going
+to need on the order of a linear number of training examples in d.
+(At this point, it’s worth noting that these results were proved for an algorithm that uses empirical risk minimization. Thus, while the linear dependence of sample complexity on d does generally hold for most discriminative
+learning algorithms that try to minimize training error or some approximation to training error, these conclusions do not always apply as readily to
+discriminative learning algorithms. Giving good theoretical guarantees on
+many non-ERM learning algorithms is still an area of active research.)
+The other part of our previous argument that’s slightly unsatisfying is
+that it relies on the parameterization of H. Intuitively, this doesn’t seem like
+it should matter: We had written the class of linear classifiers as hθ (x) =
+1{θ0 + θ1 x1 + · · · θn xn ≥ 0}, with n + 1 parameters θ0 , . . . , θn . But it could
+also be written hu,v (x) = 1{(u20 − v02 ) + (u21 − v12 )x1 + · · · (u2n − vn2 )xn ≥ 0}
+with 2n + 2 parameters ui , vi . Yet, both of these are just defining the same
+H: The set of linear classifiers in n dimensions.
+To derive a more satisfying argument, lets define a few more things.
+Given a set S = {x(i) , . . . , x(d) } (no relation to the training set) of points
+x(i) ∈ X , we say that H shatters S if H can realize any labeling on S.
+I.e., if for any set of labels {y (1) , . . . , y (d) }, there exists some h ∈ H so that
+h(x(i) ) = y (i) for all i = 1, . . . d.
+Given a hypothesis class H, we then define its Vapnik-Chervonenkis
+dimension, written VC(H), to be the size of the largest set that is shattered
+by H. (If H can shatter arbitrarily large sets, then VC(H) = ∞.)
+For instance, consider the following set of three points:
+
+ ✁
+
+☎✆
+
+x2
+✂✄
+
+x1
+Can the set H of linear classifiers in two dimensions (h(x) = 1{θ0 +θ1 x1 +
+θ2 x2 ≥ 0}) can shatter the set above? The answer is yes. Specifically, we
+
+10
+see that, for any of the eight possible labelings of these points, we can find a
+linear classifier that obtains “zero training error” on them:
+
+x2
+
+x2
+x1
+
+x2
+x1
+
+x1
+
+x1
+
+x1
+
+x1
+
+x2
+
+x2
+
+x2
+
+x2
+
+x2
+
+x1
+
+x1
+
+Moreover, it is possible to show that there is no set of 4 points that this
+hypothesis class can shatter. Thus, the largest set that H can shatter is of
+size 3, and hence VC(H) = 3.
+Note that the VC dimension of H here is 3 even though there may be
+sets of size 3 that it cannot shatter. For instance, if we had a set of three
+points lying in a straight line (left figure), then there is no way to find a linear
+separator for the labeling of the three points shown below (right figure):
+
+ ✁
+
+✂✄
+
+x2
+
+x2
+☎✆
+
+x1
+
+x1
+
+In order words, under the definition of the VC dimension, in order to
+prove that VC(H) is at least d, we need to show only that there’s at least
+one set of size d that H can shatter.
+The following theorem, due to Vapnik, can then be shown. (This is, many
+would argue, the most important theorem in all of learning theory.)
+
+11
+Theorem. Let H be given, and let d = VC(H). Then with probability at
+least 1 − δ, we have that for all h ∈ H,
+|ε(h) − εˆ(h)| ≤ O
+
+m
+1
+1
+d
+log + log
+m
+d
+m
+δ
+
+.
+
+Thus, with probability at least 1 − δ, we also have that:
+ˆ ≤ ε(h∗ ) + O
+ε(h)
+
+m
+1
+1
+d
+log + log
+m
+d
+m
+δ
+
+.
+
+In other words, if a hypothesis class has finite VC dimension, then uniform
+convergence occurs as m becomes large. As before, this allows us to give a
+bound on ε(h) in terms of ε(h∗ ). We also have the following corollary:
+ˆ ≤
+Corollary. For |ε(h) − εˆ(h)| ≤ γ to hold for all h ∈ H (and hence ε(h)
+ε(h∗ ) + 2γ) with probability at least 1 − δ, it suffices that m = Oγ,δ (d).
+
+In other words, the number of training examples needed to learn “well”
+using H is linear in the VC dimension of H. It turns out that, for “most”
+hypothesis classes, the VC dimension (assuming a “reasonable” parameterization) is also roughly linear in the number of parameters. Putting these
+together, we conclude that (for an algorithm that tries to minimize training
+error) the number of training examples needed is usually roughly linear in
+the number of parameters of H.
+
+

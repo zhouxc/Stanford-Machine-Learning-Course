@@ -1,0 +1,663 @@
+Convex Optimization Overview
+Zico Kolter
+October 19, 2007
+
+1
+
+Introduction
+
+Many situations arise in machine learning where we would like to optimize the value of
+some function. That is, given a function f : Rn → R, we want to find x ∈ Rn that minimizes
+(or maximizes) f (x). We have already seen several examples of optimization problems in
+class: least-squares, logistic regression, and support vector machines can all be framed as
+optimization problems.
+It turns out that in the general case, finding the global optimum of a function can be a
+very difficult task. However, for a special class of optimization problems, known as convex
+optimization problems, we can efficiently find the global solution in many cases. Here,
+“efficiently” has both practical and theoretical connotations: it means that we can solve
+many real-world problems in a reasonable amount of time, and it means that theoretically
+we can solve problems in time that depends only polynomially on the problem size.
+The goal of these section notes and the accompanying lecture is to give a very brief
+overview of the field of convex optimization. Much of the material here (including some
+of the figures) is heavily based on the book Convex Optimization [1] by Stephen Boyd and
+Lieven Vandenberghe (available for free online), and EE364, a class taught here at Stanford
+by Stephen Boyd. If you are interested in pursuing convex optimization further, these are
+both excellent resources.
+
+2
+
+Convex Sets
+
+We begin our look at convex optimization with the notion of a convex set.
+Definition 2.1 A set C is convex if, for any x, y ∈ C and θ ∈ R with 0 ≤ θ ≤ 1,
+θx + (1 − θ)y ∈ C.
+Intuitively, this means that if we take any two elements in C, and draw a line segment
+between these two elements, then every point on that line segment also belongs to C. Figure
+1 shows an example of one convex and one non-convex set. The point θx + (1 − θ)y is called
+a convex combination of the points x and y.
+1
+
+(a)
+
+(b)
+
+Figure 1: Examples of a convex set (a) and a non-convex set (b).
+
+2.1
+
+Examples
+
+• All of Rn . It should be fairly obvious that given any x, y ∈ Rn , θx + (1 − θ)y ∈ Rn .
+• The non-negative orthant, Rn+ . The non-negative orthant consists of all vectors in
+Rn whose elements are all non-negative: Rn+ = {x : xi ≥ 0 ∀i = 1, . . . , n}. To show
+that this is a convex set, simply note that given any x, y ∈ Rn+ and 0 ≤ θ ≤ 1,
+(θx + (1 − θ)y)i = θxi + (1 − θ)yi ≥ 0 ∀i.
+• Norm balls. Let · be some norm on Rn (e.g., the Euclidean norm, x 2 =
+n
+n
+2
+i=1 xi ). Then the set {x : x ≤ 1} is a convex set. To see this, suppose x, y ∈ R ,
+with x ≤ 1, y ≤ 1, and 0 ≤ θ ≤ 1. Then
+θx + (1 − θ)y ≤ θx + (1 − θ)y = θ x + (1 − θ) y ≤ 1
+where we used the triangle inequality and the positive homogeneity of norms.
+• Affine subspaces and polyhedra. Given a matrix A ∈ Rm×n and a vector b ∈ Rm ,
+an affine subspace is the set {x ∈ Rn : Ax = b} (note that this could possibly be empty
+if b is not in the range of A). Similarly, a polyhedron is the (again, possibly empty)
+set {x ∈ Rn : Ax b}, where ‘ ’ here denotes componentwise inequality (i.e., all the
+entries of Ax are less than or equal to their corresponding element in b).1 To prove
+this, first consider x, y ∈ Rn such that Ax = Ay = b. Then for 0 ≤ θ ≤ 1,
+A(θx + (1 − θ)y) = θAx + (1 − θ)Ay = θb + (1 − θ)b = b.
+Similarly, for x, y ∈ Rn that satisfy Ax ≤ b and Ay ≤ b and 0 ≤ θ ≤ 1,
+A(θx + (1 − θ)y) = θAx + (1 − θ)Ay ≤ θb + (1 − θ)b = b.
+1
+Similarly, for two vectors x, y ∈ Rn , x y denotes that each element of X is greater than or equal to the
+corresponding element in b. Note that sometimes ‘≤’ and ‘≥’ are used in place of ‘ ’ and ‘ ’; the meaning
+must be determined contextually (i.e., both sides of the inequality will be vectors).
+
+2
+
+• Intersections of convex sets. Suppose C1 , C2 , . . . , Ck are convex sets. Then their
+intersection
+k
+
+Ci = {x : x ∈ Ci ∀i = 1, . . . , k}
+i=1
+k
+i=1
+
+is also a convex set. To see this, consider x, y ∈
+
+Ci and 0 ≤ θ ≤ 1. Then,
+
+θx + (1 − θ)y ∈ Ci ∀i = 1, . . . , k
+by the definition of a convex set. Therefore
+k
+
+θx + (1 − θ)y ∈
+
+Ci .
+i=1
+
+Note, however, that the union of convex sets in general will not be convex.
+• Positive semidefinite matrices. The set of all symmetric positive semidefinite
+matrices, often times called the positive semidefinite cone and denoted Sn+ , is a convex
+set (in general, Sn ⊂ Rn×n denotes the set of symmetric n × n matrices). Recall that
+a matrix A ∈ Rn×n is symmetric positive semidefinite if and only if A = AT and for
+all x ∈ Rn , xT Ax ≥ 0. Now consider two symmetric positive semidefinite matrices
+A, B ∈ Sn+ and 0 ≤ θ ≤ 1. Then for any x ∈ Rn ,
+xT (θA + (1 − θ)B)x = θxT Ax + (1 − θ)xT Bx ≥ 0.
+The same logic can be used to show that the sets of all positive definite, negative
+definite, and negative semidefinite matrices are each also convex.
+
+3
+
+Convex Functions
+
+A central element in convex optimization is the notion of a convex function.
+Definition 3.1 A function f : Rn → R is convex if its domain (denoted D(f )) is a convex
+set, and if, for all x, y ∈ D(f ) and θ ∈ R, 0 ≤ θ ≤ 1,
+f (θx + (1 − θ)y) ≤ θf (x) + (1 − θ)f (y).
+Intuitively, the way to think about this definition is that if we pick any two points on the
+graph of a convex function and draw a straight line between then, then the portion of the
+function between these two points will lie below this straight line. This situation is pictured
+in Figure 2.2
+We say a function is strictly convex if Definition 3.1 holds with strict inequality for
+x = y and 0 < θ < 1. We say that f is concave if −f is convex, and likewise that f is
+strictly concave if −f is strictly convex.
+2
+
+Don’t worry too much about the requirement that the domain of f be a convex set. This is just a
+technicality to ensure that f (θx + (1 − θ)y) is actually defined (if D(f ) were not convex, then it could be
+that f (θx + (1 − θ)y) is undefined even though x, y ∈ D(f )).
+
+3
+
+Figure 2: Graph of a convex function. By the definition of convex functions, the line connecting two points on the graph must lie above the function.
+
+3.1
+
+First Order Condition for Convexity
+
+Suppose a function f : Rn → R is differentiable (i.e., the gradient3 ∇x f (x) exists at all
+points x in the domain of f ). Then f is convex if and only if D(f ) is a convex set and for
+all x, y ∈ D(f ),
+f (y) ≥ f (x) + ∇x f (x)T (y − x).
+The function f (x) + ∇x f (x)T (y − x) is called the first-order approximation to the
+function f at the point x. Intuitively, this can be thought of as approximating f with its
+tangent line at the point x. The first order condition for convexity says that f is convex if
+and only if the tangent line is a global underestimator of the function f . In other words, if
+we take our function and draw a tangent line at any point, then every point on this line will
+lie below the corresponding point on f .
+Similar to the definition of convexity, f will be strictly convex if this holds with strict
+inequality, concave if the inequality is reversed, and strictly concave if the reverse inequality
+is strict.
+
+Figure 3: Illustration of the first-order condition for convexity.
+3
+
+Recall that the gradient is defined as ∇x f (x) ∈ Rn , (∇x f (x))i =
+Hessians, see the previous section notes on linear algebra.
+
+4
+
+∂f (x)
+∂xi .
+
+For a review on gradients and
+
+3.2
+
+Second Order Condition for Convexity
+
+Suppose a function f : Rn → R is twice differentiable (i.e., the Hessian4 ∇2x f (x) is defined
+for all points x in the domain of f ). Then f is convex if and only if D(f ) is a convex set and
+its Hessian is positive semidefinite: i.e., for any x ∈ D(f ),
+∇2x f (x)
+
+0.
+
+Here, the notation ‘ ’ when used in conjunction with matrices refers to positive semidefiniteness, rather than componentwise inequality. 5 In one dimension, this is equivalent to the
+condition that the second derivative f ′′ (x) always be positive (i.e., the function always has
+positive curvature).
+Again analogous to both the definition and first order conditions for convexity, f is strictly
+convex if its Hessian is positive definite, concave if the Hessian is negative semidefinite, and
+strictly concave if the Hessian is negative definite.
+
+3.3
+
+Jensen’s Inequality
+
+Suppose we start with the inequality in the basic definition of a convex function
+f (θx + (1 − θ)y) ≤ θf (x) + (1 − θ)f (y) for 0 ≤ θ ≤ 1.
+Using induction, this can be fairly easily extended to convex combinations of more than one
+point,
+k
+
+k
+
+θi x i
+
+f
+i=1
+
+k
+
+≤
+
+θi f (xi ) for
+i=1
+
+θi = 1, θi ≥ 0 ∀i.
+i=1
+
+In fact, this can also be extended to infinite sums or integrals. In the latter case, the
+inequality can be written as
+f
+
+p(x)xdx
+
+≤
+
+p(x)f (x)dx for
+
+p(x)dx = 1, p(x) ≥ 0 ∀x.
+
+Because p(x) integrates to 1, it is common to consider it as a probability density, in which
+case the previous equation can be written in terms of expectations,
+f (E[x]) ≤ E[f (x)].
+This last inequality is known as Jensen’s inequality, and it will come up later in class.6
+2
+
+∂ f (x)
+Recall the Hessian is defined as ∇2x f (x) ∈ Rn×n , (∇2x f (x))ij = ∂x
+i ∂xj
+5
+Similarly, for a symmetric matrix X ∈ Sn , X 0 denotes that X is negative semidefinite. As with vector
+inequalities, ‘≤’ and ‘≥’ are sometimes used in place of ‘ ’ and ‘ ’. Despite their notational similarity to
+vector inequalities, these concepts are very different; in particular, X
+0 does not imply that Xij ≥ 0 for
+all i and j.
+6
+In fact, all four of these equations are sometimes referred to as Jensen’s inequality, due to the fact that
+they are all equivalent. However, for this class we will use the term to refer specifically to the last inequality
+presented here.
+4
+
+5
+
+3.4
+
+Sublevel Sets
+
+Convex functions give rise to a particularly important type of convex set called an α-sublevel
+set. Given a convex function f : Rn → R and a real number α ∈ R, the α-sublevel set is
+defined as
+{x ∈ D(f ) : f (x) ≤ α}.
+In other words, the α-sublevel set is the set of all points x such that f (x) ≤ α.
+To show that this is a convex set, consider any x, y ∈ D(f ) such that f (x) ≤ α and
+f (y) ≤ α. Then
+f (θx + (1 − θ)y) ≤ θf (x) + (1 − θ)f (y) ≤ θα + (1 − θ)α = α.
+
+3.5
+
+Examples
+
+We begin with a few simple examples of convex functions of one variable, then move on to
+multivariate functions.
+• Exponential. Let f : R → R, f (x) = eax for any a ∈ R. To show f is convex, we can
+simply take the second derivative f ′′ (x) = a2 eax , which is positive for all x.
+• Negative logarithm. Let f : R → R, f (x) = − log x with domain D(f ) = R++
+(here, R++ denotes the set of strictly positive real numbers, {x : x > 0}). Then
+f ′′ (x) = 1/x2 > 0 for all x.
+• Affine functions. Let f : Rn → R, f (x) = bT x + c for some b ∈ Rn , c ∈ R. In
+this case the Hessian, ∇2x f (x) = 0 for all x. Because the zero matrix is both positive
+semidefinite and negative semidefinite, f is both convex and concave. In fact, affine
+functions of this form are the only functions that are both convex and concave.
+• Quadratic functions. Let f : Rn → R, f (x) = 12 xT Ax + bT x + c for a symmetric
+matrix A ∈ Sn , b ∈ Rn and c ∈ R. In our previous section notes on linear algebra, we
+showed the Hessian for this function is given by
+∇2x f (x) = A.
+Therefore, the convexity or non-convexity of f is determined entirely by whether or
+not A is positive semidefinite: if A is positive semidefinite then the function is convex
+(and analogously for strictly convex, concave, strictly concave). If A is indefinite then
+f is neither convex nor concave.
+Note that the squared Euclidean norm f (x) = x 22 = xT x is a special case of quadratic
+functions where A = I, b = 0, c = 0, so it is therefore a strictly convex function.
+
+6
+
+• Norms. Let f : Rn → R be some norm on Rn . Then by the triangle inequality and
+positive homogeneity of norms, for x, y ∈ Rn , 0 ≤ θ ≤ 1,
+f (θx + (1 − θ)y) ≤ f (θx) + f ((1 − θ)y) = θf (x) + (1 − θ)f (y).
+This is an example of a convex function where it is not possible to prove convexity based
+on the second or first order conditions, because norms are not generally differentiable
+everywhere (e.g., the 1-norm, ||x||1 = ni=1 |xi |, is non-differentiable at all points where
+any xi is equal to zero).
+• Nonnegative weighted sums of convex functions. Let f1 , f2 , . . . , fk be convex
+functions and w1 , w2 , . . . , wk be nonnegative real numbers. Then
+k
+
+f (x) =
+
+wi fi (x)
+i=1
+
+is a convex function, since
+k
+
+f (θx + (1 − θ)y) =
+
+wi fi (θx + (1 − θ)y)
+i=1
+k
+
+≤
+
+wi (θfi (x) + (1 − θ)fi (y))
+i=1
+k
+
+= θ
+
+k
+
+wi fi (x) + (1 − θ)
+i=1
+
+wi fi (y)
+i=1
+
+= θf (x) + (1 − θ)f (x).
+
+4
+
+Convex Optimization Problems
+
+Armed with the definitions of convex functions and sets, we are now equipped to consider
+convex optimization problems. Formally, a convex optimization problem in an optimization problem of the form
+minimize f (x)
+subject to x ∈ C
+where f is a convex function, C is a convex set, and x is the optimization variable. However,
+since this can be a little bit vague, we often write it often written as
+minimize f (x)
+subject to gi (x) ≤ 0,
+hi (x) = 0,
+
+i = 1, . . . , m
+i = 1, . . . , p
+
+where f is a convex function, gi are convex functions, and hi are affine functions, and x is
+the optimization variable.
+7
+
+Is it imporant to note the direction of these inequalities: a convex function gi must be
+less than zero. This is because the 0-sublevel set of gi is a convex set, so the feasible region,
+which is the intersection of many convex sets, is also convex (recall that affine subspaces are
+convex sets as well). If we were to require that gi ≥ 0 for some convex gi , the feasible region
+would no longer be a convex set, and the algorithms we apply for solving these problems
+would not longer be guaranteed to find the global optimum. Also notice that only affine
+functions are allowed to be equality constraints. Intuitively, you can think of this as being
+due to the fact that an equality constraint is equivalent to the two inequalities hi ≤ 0 and
+hi ≥ 0. However, these will both be valid constraints if and only if hi is both convex and
+concave, i.e., hi must be affine.
+The optimal value of an optimization problem is denoted p⋆ (or sometimes f ⋆ ) and is
+equal to the minimum possible value of the objective function in the feasible region7
+p⋆ = min{f (x) : gi (x) ≤ 0, i = 1, . . . , m, hi (x) = 0, i = 1, . . . , p}.
+We allow p⋆ to take on the values +∞ and −∞ when the problem is either infeasible (the
+feasible region is empty) or unbounded below (there exists feasible points such that f (x) →
+−∞), respectively. We say that x⋆ is an optimal point if f (x⋆ ) = p⋆ . Note that there can
+be more than one optimal point, even when the optimal value is finite.
+
+4.1
+
+Global Optimality in Convex Problems
+
+Before stating the result of global optimality in convex problems, let us formally define
+the concepts of local optima and global optima. Intuitively, a feasible point is called locally
+optimal if there are no “nearby” feasible points that have a lower objective value. Similarly,
+a feasible point is called globally optimal if there are no feasible points at all that have a
+lower objective value. To formalize this a little bit more, we give the following two definitions.
+Definition 4.1 A point x is locally optimal if it is feasible (i.e., it satisfies the constraints
+of the optimization problem) and if there exists some R > 0 such that all feasible points z
+with x − z 2 ≤ R, satisfy f (x) ≤ f (z).
+Definition 4.2 A point x is globally optimal if it is feasible and for all feasible points z,
+f (x) ≤ f (z).
+We now come to the crucial element of convex optimization problems, from which they
+derive most of their utility. The key idea is that for a convex optimization problem
+all locally optimal points are globally optimal .
+Let’s give a quick proof of this property by contradiction. Suppose that x is a locally
+optimal point which is not globally optimal, i.e., there exists a feasible point y such that
+7
+
+Math majors might note that the min appearing below should more correctly be an inf. We won’t worry
+about such technicalities here, and use min for simplicity.
+
+8
+
+f (x) > f (y). By the definition of local optimality, there exist no feasible points z such that
+x − z 2 ≤ R and f (z) < f (x). But now suppose we choose the point
+z = θy + (1 − θ)x with θ =
+
+R
+2 x−y
+
+.
+2
+
+Then
+x−z
+
+2
+
+=
+
+x−
+
+R
+2 x−y
+
+y+ 1−
+2
+
+R
+=
+(x − y)
+2 x−y 2
+= R/2 ≤ R.
+
+R
+2 x−y
+
+x
+2
+
+2
+
+2
+
+In addition, by the convexity of f we have
+f (z) = f (θy + (1 − θ)x) ≤ θf (y) + (1 − θ)f (x) < f (x).
+Furthermore, since the feasible set is a convex set, and since x and y are both feasible
+z = θy + (1 − θ) will be feasible as well. Therefore, z is a feasible point, with x − z 2 < R
+and f (z) < f (x). This contradicts our assumption, showing that x cannot be locally optimal.
+
+4.2
+
+Special Cases of Convex Problems
+
+For a variety of reasons, it is often times convenient to consider special cases of the general
+convex programming formulation. For these special cases we can often devise extremely
+efficient algorithms that can solve very large problems, and because of this you will probably
+see these special cases referred to any time people use convex optimization techniques.
+• Linear Programming. We say that a convex optimization problem is a linear
+program (LP) if both the objective function f and inequality constraints gi are affine
+functions. In other words, these problems have the form
+minimize cT x + d
+subject to Gx h
+Ax = b
+where x ∈ Rn is the optimization variable, c ∈ Rn , d ∈ R, G ∈ Rm×n , h ∈ Rm ,
+A ∈ Rp×n , b ∈ Rp are defined by the problem, and ‘ ’ denotes elementwise inequality.
+• Quadratic Programming. We say that a convex optimization problem is a quadratic
+program (QP) if the inequality constraints gi are still all affine, but if the objective
+function f is a convex quadratic function. In other words, these problems have the
+form,
+minimize 12 xT P x + cT x + d
+subject to Gx h
+Ax = b
+9
+
+where again x ∈ Rn is the optimization variable, c ∈ Rn , d ∈ R, G ∈ Rm×n , h ∈ Rm ,
+A ∈ Rp×n , b ∈ Rp are defined by the problem, but we also have P ∈ Sn+ , a symmetric
+positive semidefinite matrix.
+• Quadratically Constrained Quadratic Programming. We say that a convex
+optimization problem is a quadratically constrained quadratic program (QCQP)
+if both the objective f and the inequality constraints gi are convex quadratic functions,
+minimize
+subject to
+
+1 T
+x P x + cT x + d
+2
+1 T
+x Qi x + riT x + si
+2
+
+≤ 0,
+
+i = 1, . . . , m
+
+Ax = b
+
+where, as before, x ∈ Rn is the optimization variable, c ∈ Rn , d ∈ R, A ∈ Rp×n , b ∈ Rp ,
+P ∈ Sn+ , but we also have Qi ∈ Sn+ , ri ∈ Rn , si ∈ R, for i = 1, . . . , m.
+• Semidefinite Programming. This last example is a bit more complex than the previous ones, so don’t worry if it doesn’t make much sense at first. However, semidefinite
+programming is become more and more prevalent in many different areas of machine
+learning research, so you might encounter these at some point, and it is good to have an
+idea of what they are. We say that a convex optimization problem is a semidefinite
+program (SDP) if it is of the form
+minimize tr(CX)
+subject to tr(Ai X) = bi ,
+X 0
+
+i = 1, . . . , p
+
+where the symmetric matrix X ∈ Sn is the optimization variable, the symmetric matrices C, A1 , . . . , Ap ∈ Sn are defined by the problem, and the constraint X 0 means
+that we are constraining X to be positive semidefinite. This looks a bit different than
+the problems we have seen previously, since the optimization variable is now a matrix
+instead of a vector. If you are curious as to why such a formulation might be useful,
+you should look into a more advanced course or book on convex optimization.
+It should be fairly obvious from the definitions that quadratic programs are more general
+than linear programs (since a linear program is just a special case of a quadratic program
+where P = 0), and likewise that quadratically constrained quadratic programs are more
+general than quadratic programs. However, what is not obvious at all is that semidefinite
+programs are in fact more general than all the previous types. That is, any quadratically
+constrained quadratic program (and hence any quadratic program or linear program) can
+be expressed as a semidefinte program. We won’t discuss this relationship further in this
+document, but this might give you just a small idea as to why semidefinite programming
+could be useful.
+
+10
+
+4.3
+
+Examples
+
+Now that we’ve covered plenty of the boring math and formalisms behind convex optimization, we can finally get to the fun part: using these techniques to solve actual problems.
+We’ve already encountered a few such optimization problems in class, and in nearly every
+field, there is a good chance that someone has tried to apply convex optimization to solve
+some problem.
+• Support Vector Machines. One of the most prevalent applications of convex optimization methods in machine learning is the support vector machine classifier. As
+discussed in class, finding the support vector classifier (in the case with slack variables)
+can be formulated as the optimization problem
+minimize 12 w 22 + C m
+i=1 ξi
+subject to y (i) (wT x(i) + b) ≥ 1 − ξi ,
+ξi ≥ 0,
+
+i = 1, . . . , m
+i = 1, . . . , m
+
+with optimization variables w ∈ Rn , ξ ∈ Rm , b ∈ R, and where C ∈ R and x(i) , y (i) , i =
+1, . . . m are defined by the problem. This is an example of a quadratic program, which
+we try to put the problem into the form described in the previous section. In particular,
+if define k = m + n + 1, let the optimization variable be
+
+
+w
+x ∈ Rk ≡  ξ 
+b
+
+and define the matrices
+
+P ∈ Rk×k
+
+
+
+
+0
+I 0 0
+=  0 0 0  , c ∈ Rk =  C · 1  ,
+0
+0 0 0
+
+
+−1
+−I −y
+, h ∈ R2m =
+0
+−I 0
+all ones, and X and y are defined as in class,
+
+
+
+y (1)
+
+ y (2) 
+
+
+ , y ∈ Rm = 
+ ..  .
+
+
+. 
+
+(m)
+T
+y
+x(m)
+
+−diag(y)X
+0
+where I is the identity, 1 is the vector of
+
+T
+x(1)
+ (2) T
+ x
+m×n
+X∈R
+=
+ ..
+ .
+G ∈ R2m×k =
+
+You should try to convince yourself that the quadratic program described in the previous section, when using these matrices defined above, is equivalent to the SVM
+optimization problem. In reality, it is fairly easy to see that there the SVM optimization problem has a quadratic objective and linear constraints, so we typically don’t
+need to put it into standard form to “prove” that it is a QP, and would only do so if
+we are using an off-the-shelf solver that requires the input to be in standard form.
+11
+
+• Constrained least squares. In class we have also considered the least squares problem, where we want to minimize Ax − b 22 for some matrix A ∈ Rm×n and b ∈ Rm .
+As we saw, this particular problem can actually be solved analytically via the normal
+equations. However, suppose that we also want to constrain the entries in the solution
+x to lie within some predefined ranges. In other words, suppose we weanted to solve
+the optimization problem,
+minimize 12 Ax − b
+subject to l x u
+
+2
+2
+
+with optimization variable x and problem data A ∈ Rm×n , b ∈ Rm , l ∈ Rn , and u ∈ Rn .
+This might seem like a fairly simple additional constraint, but it turns out that there
+will no longer be an analytical solution. However, you should be able to convince
+yourself that this optimization problem is a quadratic program, with matrices defined
+by
+1
+1
+P ∈ Rn×n = AT A, c ∈ Rn = −bT A, d ∈ R = bT b,
+2
+2
+−l
+−I 0
+.
+, h ∈ R2n =
+G ∈ R2n×2n =
+u
+0 I
+• Maximum Likelihood for Logistic Regression. For homework one, you were
+required to show that the log-likelihood of the data in a logistic model was concave.
+This log likehood under such a model is
+n
+
+y (i) ln g(θT x(i) ) + (1 − y (i) ) ln(1 − g(θT x(i) ))
+
+ℓ(θ) =
+i=1
+
+where g(z) denotes the logistic function g(z) = 1/(1 + e−z ). Finding the maximum
+likelihood estimate is then a task of maximizing the log-likelihood (or equivalently,
+minimizing the negative log-likelihood, a convex function), i.e.,
+minimize −ℓ(θ)
+with optimization variable θ ∈ Rn and no constraints.
+Unlike the previous two examples, it turns out that it is not so easy to put this problem into a “standard” form optimization problem. Nevertheless, you’ve seen on the
+homework that the fact that ℓ is a concave function means that you can very efficiently
+find the global solution using an algorithm such as Newton’s method.
+
+References
+[1] Stephen Boyd and Lieven Vandenberghe. Convex Optimization. Cambridge UP, 2004.
+Online: http://www.stanford.edu/∼boyd/cvxbook/
+
+12
+
+

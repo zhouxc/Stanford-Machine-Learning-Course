@@ -1,0 +1,653 @@
+Programming Exercise 4:
+Neural Networks Learning
+Machine Learning
+November 4, 2011
+
+Introduction
+In this exercise, you will implement the backpropagation algorithm for neural
+networks and apply it to the task of hand-written digit recognition. Before
+starting on the programming exercise, we strongly recommend watching the
+video lectures and completing the review questions for the associated topics.
+To get started with the exercise, you will need to download the starter
+code and unzip its contents to the directory where you wish to complete
+the exercise. If needed, use the cd command in Octave to change to this
+directory before starting this exercise.
+
+Files included in this exercise
+ex4.m - Octave script that will help step you through the exercise
+ex4data1.mat - Training set of hand-written digits
+ex4weights.mat - Neural network parameters for exercise 4
+submit.m - Submission script that sends your solutions to our servers
+submitWeb.m - Alternative submission script
+displayData.m - Function to help visualize the dataset
+fmincg.m - Function minimization routine (similar to fminunc)
+sigmoid.m - Sigmoid function
+computeNumericalGradient.m - Numerically compute gradients
+checkNNGradients.m - Function to help check your gradients
+debugInitializeWeights.m - Function for initializing weights
+predict.m - Neural network prediction function
+[ ] sigmoidGradient.m - Compute the gradient of the sigmoid function
+[ ] randInitializeWeights.m - Randomly initialize weights
+1
+
+[ ] nnCostFunction.m - Neural network cost function
+indicates files you will need to complete
+Throughout the exercise, you will be using the script ex4.m. These scripts
+set up the dataset for the problems and make calls to functions that you will
+write. You do not need to modify the script. You are only required to modify
+functions in other files, by following the instructions in this assignment.
+
+Where to get help
+We also strongly encourage using the online Q&A Forum to discuss discuss
+exercises with other students. However, do not look at any source code
+written by others or share your source code with others.
+If you run into network errors using the submit script, you can also use
+an online form for submitting your solutions. To use this alternative submission interface, run the submitWeb script to generate a submission file (e.g.,
+submit ex2 part1.txt). You can then submit this file through the web
+submission form in the programming exercises page (go to the programming
+exercises page, then select the exercise you are submitting for). If you are
+having no problems submitting through the standard submission system using the submit script, you do not need to use this alternative submission
+interface.
+
+1
+
+Neural Networks
+
+In the previous exercise, you implemented feedforward propagation for neural networks and used it to predict handwritten digits with the weights we
+provided. In this exercise, you will implement the backpropagation algorithm
+to learn the parameters for the neural network.
+The provided script, ex4.m, will help you step through this exercise.
+
+1.1
+
+Visualizing the data
+
+In the first part of ex4.m, the code will load the data and display it on a
+2-dimensional plot (Figure 1) by calling the function displayData.
+This is the same dataset that you used in the previous exercise. There are
+5000 training examples in ex3data1.mat, where each training example is a
+2
+
+Figure 1: Examples from the dataset
+20 pixel by 20 pixel grayscale image of the digit. Each pixel is represented by
+a floating point number indicating the grayscale intensity at that location.
+The 20 by 20 grid of pixels is “unrolled” into a 400-dimensional vector. Each
+of these training examples becomes a single row in our data matrix X. This
+gives us a 5000 by 400 matrix X where every row is a training example for a
+handwritten digit image.
+
+
+— (x(1) )T —
+ — (x(2) )T — 
+
+
+X=
+
+..
+
+
+.
+(m) T
+— (x ) —
+The second part of the training set is a 5000-dimensional vector y that
+contains labels for the training set. To make things more compatible with
+Octave/Matlab indexing, where there is no zero index, we have mapped the
+digit zero to the value ten. Therefore, a “0” digit is labeled as “10”, while
+the digits “1” to “9” are labeled as “1” to “9” in their natural order.
+
+1.2
+
+Model representation
+
+Our neural network is shown in Figure 2. It has 3 layers – an input layer,
+a hidden layer and an output layer. Recall that our inputs are pixel values
+of digit images. Since the images are of size 20 × 20, this gives us 400 input
+
+3
+
+layer units (not counting the extra bias unit which always outputs +1). The
+training data will be loaded into the variables X and y by the ex4.m script.
+You have been provided with a set of network parameters (Θ(1) , Θ(2) )
+already trained by us. These are stored in ex4weights.mat and will be
+loaded by ex4.m into Theta1 and Theta2. The parameters have dimensions
+that are sized for a neural network with 25 units in the second layer and 10
+output units (corresponding to the 10 digit classes).
+% Load saved matrices from file
+load('ex4weights.mat');
+% The matrices Theta1 and Theta2 will now be in your workspace
+% Theta1 has size 25 x 401
+% Theta2 has size 10 x 26
+
+Figure 2: Neural network model.
+
+1.3
+
+Feedforward and cost function
+
+Now you will implement the cost function and gradient for the neural network. First, complete the code in nnCostFunction.m to return the cost.
+
+4
+
+Recall that the cost function for the neural network (without regularization) is
+J(θ) =
+
+1
+m
+
+m
+
+K
+(i)
+
+(i)
+
+−yk log((hθ (x(i) ))k ) − (1 − yk ) log(1 − (hθ (x(i) ))k ) ,
+i=1 k=1
+
+where hθ (x(i) ) is computed as shown in the Figure 2 and K = 10 is the total
+(3)
+number of possible labels. Note that hθ (x(i) )k = ak is the activation (output
+value) of the k-th output unit. Also, recall that whereas the original labels
+(in the variable y) were 1, 2, ..., 10, for the purpose of training a neural
+network, we need to recode the labels as vectors containing only values 0 or
+1, so that
+ 
+ 
+ 
+1
+0
+0
+ 0 
+ 1 
+ 0 
+ 
+ 
+ 
+ 
+ 
+ 
+y =  0  ,  0  , . . . or  0  .
+ .. 
+ .. 
+ .. 
+ . 
+ . 
+ . 
+0
+0
+1
+For example, if x(i) is an image of the digit 5, then the corresponding
+y (i) (that you should use with the cost function) should be a 10-dimensional
+vector with y5 = 1, and the other elements equal to 0.
+You should implement the feedforward computation that computes hθ (x(i) )
+for every example i and sum the cost over all examples. Your code should
+also work for a dataset of any size, with any number of labels (you
+can assume that there are always at least K ≥ 3 labels).
+Implementation Note: The matrix X contains the examples in rows
+(i.e., X(i,:)’ is the i-th training example x(i) , expressed as a n × 1
+vector.) When you complete the code in nnCostFunction.m, you will
+need to add the column of 1’s to the X matrix. The parameters for each
+unit in the neural network is represented in Theta1 and Theta2 as one
+row. Specifically, the first row of Theta1 corresponds to the first hidden
+unit in the second layer. You can use a for-loop over the examples to
+compute the cost.
+Once you are done, ex4.m will call your nnCostFunction using the loaded
+set of parameters for Theta1 and Theta2. You should see that the cost is
+about 0.287629.
+
+5
+
+You should now submit the neural network cost function (feedforward).
+
+1.4
+
+Regularized cost function
+
+The cost function for neural networks with regularization is given by
+
+1
+J(θ) =
+m
+
+m
+
+K
+(i)
+
+(i)
+
+−yk log((hθ (x(i) ))k ) − (1 − yk ) log(1 − (hθ (x(i) ))k ) +
+i=1 k=1
+25 400
+
+λ
+2m
+
+10
+(1)
+(Θj,k )2
+
+j=1 k=1
+
+25
+(2)
+
+(Θj,k )2 .
+
++
+j=1 k=1
+
+You can assume that the neural network will only have 3 layers – an input
+layer, a hidden layer and an output layer. However, your code should work
+for any number of input units, hidden units and outputs units. While we
+have explicitly listed the indices above for Θ(1) and Θ(2) for clarity, do note
+that your code should in general work with Θ(1) and Θ(2) of any size.
+Note that you should not be regularizing the terms that correspond to
+the bias. For the matrices Theta1 and Theta2, this corresponds to the first
+column of each matrix. You should now add regularization to your cost
+function. Notice that you can first compute the unregularized cost function
+J using your existing nnCostFunction.m and then later add the cost for the
+regularization terms.
+Once you are done, ex4.m will call your nnCostFunction using the loaded
+set of parameters for Theta1 and Theta2, and λ = 1. You should see that
+the cost is about 0.383770.
+You should now submit the regularized neural network cost function (feedforward).
+
+2
+
+Backpropagation
+
+In this part of the exercise, you will implement the backpropagation algorithm to compute the gradient for the neural network cost function. You
+will need to complete the nnCostFunction.m so that it returns an appropriate value for grad. Once you have computed the gradient, you will be able
+6
+
+to train the neural network by minimizing the cost function J(Θ) using an
+advanced optimizer such as fmincg.
+You will first implement the backpropagation algorithm to compute the
+gradients for the parameters for the (unregularized) neural network. After
+you have verified that your gradient computation for the unregularized case
+is correct, you will implement the gradient for the regularized neural network.
+
+2.1
+
+Sigmoid gradient
+
+To help you get started with this part of the exercise, you will first implement
+the sigmoid gradient function. The gradient for the sigmoid function can be
+computed as
+d
+g (z) = g(z) = g(z)(1 − g(z))
+dz
+where
+1
+.
+1 + e−z
+When you are done, try testing a few values by calling sigmoidGradient(z)
+at the Octave command line. For large values (both positive and negative)
+of z, the gradient should be close to 0. When z = 0, the gradient should be
+exactly 0.25. Your code should also work with vectors and matrices. For a
+matrix, your function should perform the sigmoid gradient function on every
+element.
+sigmoid(z) = g(z) =
+
+You should now submit the sigmoid gradient function.
+
+2.2
+
+Random initialization
+
+When training neural networks, it is important to randomly initialize the parameters for symmetry breaking. One effective strategy for random initialization is to randomly select values for Θ(l) uniformly in the range [− init , init ].
+You should use init = 0.12.1 This range of values ensures that the parameters
+are kept small and makes the learning more efficient.
+Your job is to complete randInitializeWeights.m to initialize the weights
+for Θ; modify the file and fill in the following code:
+1
+
+One effective strategy for choosing init is
+to base it on the number of units in the
+√
+6
+network. A good choice of init is init = √L +L
+, where Lin = sl and Lout = sl+1 are
+in
+
+out
+
+the number of units in the layers adjacent to Θ(l) .
+
+7
+
+% Randomly initialize the weights to small values
+epsilon init = 0.12;
+W = rand(L out, 1 + L in) * 2 * epsilon init − epsilon init;
+
+You do not need to submit any code for this part of the exercise.
+
+2.3
+
+Backpropagation
+
+Figure 3: Backpropagation Updates.
+Now, you will implement the backpropagation algorithm. Recall that
+the intuition behind the backpropagation algorithm is as follows. Given a
+training example (x(t) , y (t) ), we will first run a “forward pass” to compute
+all the activations throughout the network, including the output value of the
+hypothesis hΘ (x). Then, for each node j in layer l, we would like to compute
+(l)
+an “error term” δj that measures how much that node was “responsible”
+for any errors in our output.
+For an output node, we can directly measure the difference between the
+(3)
+network’s activation and the true target value, and use that to define δj
+(since layer 3 is the output layer). For the hidden units, you will compute
+(l)
+δj based on a weighted average of the error terms of the nodes in layer
+(l + 1).
+8
+
+In detail, here is the backpropagation algorithm (also depicted in Figure
+3). You should implement steps 1 to 4 in a loop that processes one example
+at a time. Concretely, you should implement a for-loop for t = 1:m and
+place steps 1-4 below inside the for-loop, with the tth iteration performing
+the calculation on the tth training example (x(t) , y (t) ). Step 5 will divide the
+accumulated gradients by m to obtain the gradients for the neural network
+cost function.
+1. Set the input layer’s values (a(1) ) to the t-th training example x(t) .
+Perform a feedforward pass (Figure 2), computing the activations (z (2) , a(2) , z (3) , a(3) )
+for layers 2 and 3. Note that you need to add a +1 term to ensure that
+the vectors of activations for layers a(1) and a(2) also include the bias
+unit. In Octave, if a 1 is a column vector, adding one corresponds to
+a 1 = [1 ; a 1].
+2. For each output unit k in layer 3 (the output layer), set
+(3)
+
+(3)
+
+δk = (ak − yk ),
+where yk ∈ {0, 1} indicates whether the current training example belongs to class k (yk = 1), or if it belongs to a different class (yk = 0).
+You may find logical arrays helpful for this task (explained in the previous programming exercise).
+3. For the hidden layer l = 2, set
+δ (2) = Θ(2)
+
+T
+
+δ (3) . ∗ g (z (2) )
+
+4. Accumulate the gradient from this example using the following for(2)
+mula. Note that you should skip or remove δ0 . In Octave, removing
+(2)
+δ0 corresponds to delta 2 = delta 2(2:end).
+∆(l) = ∆(l) + δ (l+1) (a(l) )T
+5. Obtain the (unregularized) gradient for the neural network cost function by dividing the accumulated gradients by m1 :
+∂
+(l)
+∂Θij
+
+(l)
+
+J(Θ) = Dij =
+
+9
+
+1 (l)
+∆
+m ij
+
+Octave Tip: You should implement the backpropagation algorithm only
+after you have successfully completed the feedforward and cost functions.
+While implementing the backpropagation algorithm, it is often useful to
+use the size function to print out the sizes of the variables you are working with if you run into dimension mismatch errors (“nonconformant
+arguments” errors in Octave).
+After you have implemented the backpropagation algorithm, the script
+ex4.m will proceed to run gradient checking on your implementation. The
+gradient check will allow you to increase your confidence that your code is
+computing the gradients correctly.
+
+2.4
+
+Gradient checking
+
+In your neural network, you are minimizing the cost function J(Θ). To
+perform gradient checking on your parameters, you can imagine “unrolling”
+the parameters Θ(1) , Θ(2) into a long vector θ. By doing so, you can think of
+the cost function being J(θ) instead and use the following gradient checking
+procedure.
+Suppose you have a function fi (θ) that purportedly computes ∂θ∂ i J(θ);
+you’d like to check if fi is outputting correct derivative values.
+ 
+ 
+0
+0
+ 0 
+ 0 
+ . 
+ . 
+ . 
+ . 
+ . 
+ . 
+and θ(i−) = θ −  
+Let θ(i+) = θ +  
+ 
+ 
+ . 
+ . 
+ .. 
+ .. 
+0
+0
+So, θ(i+) is the same as θ, except its i-th element has been incremented by
+. Similarly, θ(i−) is the corresponding vector with the i-th element decreased
+by . You can now numerically verify fi (θ)’s correctness by checking, for each
+i, that:
+J(θ(i+) ) − J(θ(i−) )
+fi (θ) ≈
+.
+2
+The degree to which these two values should approximate each other will
+depend on the details of J. But assuming = 10−4 , you’ll usually find that
+the left- and right-hand sides of the above will agree to at least 4 significant
+digits (and often many more).
+10
+
+We have implemented the function to compute the numerical gradient for
+you in computeNumericalGradient.m. While you are not required to modify
+the file, we highly encourage you to take a look at the code to understand
+how it works.
+In the next step of ex4.m, it will run the provided function checkNNGradients.m
+which will create a small neural network and dataset that will be used for
+checking your gradients. If your backpropagation implementation is correct,
+you should see a relative difference that is less than 1e-9.
+Practical Tip: When performing gradient checking, it is much more
+efficient to use a small neural network with a relatively small number
+of input units and hidden units, thus having a relatively small number
+of parameters. Each dimension of θ requires two evaluations of the cost
+function and this can be expensive. In the function checkNNGradients,
+our code creates a small random model and dataset which is used with
+computeNumericalGradient for gradient checking. Furthermore, after
+you are confident that your gradient computations are correct, you should
+turn off gradient checking before running your learning algorithm.
+Practical Tip: Gradient checking works for any function where you are
+computing the cost and the gradient. Concretely, you can use the same
+computeNumericalGradient.m function to check if your gradient implementations for the other exercises are correct too (e.g., logistic regression’s
+cost function).
+Once your cost function passes the gradient check for the (unregularized)
+neural network cost function, you should submit the neural network gradient
+function (backpropagation).
+
+2.5
+
+Regularized Neural Networks
+
+After you have successfully implemeted the backpropagation algorithm, you
+will add regularization to the gradient. To account for regularization, it
+turns out that you can add this as an additional term after computing the
+gradients using backpropagation.
+(l)
+Specifically, after you have computed ∆ij using backpropagation, you
+should add regularization using
+∂
+(l)
+∂Θij
+
+(l)
+
+J(Θ) = Dij =
+
+1 (l)
+∆
+m ij
+11
+
+for j = 0
+
+∂
+(l)
+∂Θij
+
+(l)
+
+J(Θ) = Dij =
+
+1 (l) λ (l)
+∆ + Θij
+m ij
+m
+
+for j ≥ 1
+
+Note that you should not be regularizing the first column of Θ(l) which
+(l)
+is used for the bias term. Furthermore, in the parameters Θij , i is indexed
+starting from 1, and j is indexed starting from 0. Thus,
+ (i)
+
+(l)
+Θ1,0 Θ1,1 . . .
+(l)
+ (i)
+
+Θ(l) = Θ2,0 Θ2,1
+.
+..
+..
+.
+.
+Somewhat confusingly, indexing in Octave starts from 1 (for both i and
+(l)
+j), thus Theta1(2, 1) actually corresponds to Θ2,0 (i.e., the entry in the
+second row, first column of the matrix Θ(1) shown above)
+Now modify your code that computes grad in nnCostFunction to account
+for regularization. After you are done, the ex4.m script will proceed to run
+gradient checking on your implementation. If your code is correct, you should
+expect to see a relative difference that is less than 1e-9.
+You should now submit your regularized neural network gradient.
+
+2.6
+
+Learning parameters using fmincg
+
+After you have successfully implemented the neural network cost function
+and gradient computation, the next step of the ex4.m script will use fmincg
+to learn a good set parameters.
+After the training completes, the ex4.m script will proceed to report the
+training accuracy of your classifier by computing the percentage of examples
+it got correct. If your implementation is correct, you should see a reported
+training accuracy of about 95.3% (this may vary by about 1% due to the
+random initialization). It is possible to get higher training accuracies by
+training the neural network for more iterations. We encourage you to try
+training the neural network for more iterations (e.g., set MaxIter to 400) and
+also vary the regularization parameter λ. With the right learning settings, it
+is possible to get the neural network to perfectly fit the training set.
+
+3
+
+Visualizing the hidden layer
+
+One way to understand what your neural network is learning is to visualize
+what the representations captured by the hidden units. Informally, given a
+12
+
+particular hidden unit, one way to visualize what it computes is to find an
+input x that will cause it to activate (that is, to have an activation value
+(l)
+(ai ) close to 1). For the neural network you trained, notice that the ith row
+of Θ(1) is a 401-dimensional vector that represents the parameter for the ith
+hidden unit. If we discard the bias term, we get a 400 dimensional vector
+that represents the weights from each input pixel to the hidden unit.
+Thus, one way to visualize the “representation” captured by the hidden
+unit is to reshape this 400 dimensional vector into a 20 × 20 image and
+display it.2 The next step of ex4.m does this by using the displayData
+function and it will show you an image (similar to Figure 4) with 25 units,
+each corresponding to one hidden unit in the network.
+In your trained network, you should find that the hidden units corresponds roughly to detectors that look for strokes and other patterns in the
+input.
+
+Figure 4: Visualization of Hidden Units.
+
+3.1
+
+Optional (ungraded) exercise
+
+In this part of the exercise, you will get to try out different learning settings
+for the neural network to see how the performance of the neural network
+varies with the regularization parameter λ and number of training steps (the
+MaxIter option when using fmincg).
+Neural networks are very powerful models that can form highly complex
+decision boundaries. Without regularization, it is possible for a neural network to “overfit” a training set so that it obtains close to 100% accuracy on
+2
+
+It turns out that this is equivalent to finding the input that gives the highest activation
+for the hidden unit, given a “norm” constraint on the input (i.e., x 2 ≤ 1).
+
+13
+
+the training set but does not as well on new examples that it has not seen
+before. You can set the regularization λ to a smaller value and the MaxIter
+parameter to a higher number of iterations to see this for youself.
+You will also be able to see for yourself the changes in the visualizations
+of the hidden units when you change the learning parameters λ and MaxIter.
+You do not need to submit any solutions for these optional (ungraded)
+exercise.
+
+14
+
+Submission and Grading
+After completing various parts of the assignment, be sure to use the submit
+function system to submit your solutions to our servers. The following is a
+breakdown of how each part of this exercise is scored.
+Part
+Feedforward and Cost Function
+Regularized Cost Function
+Sigmoid Gradient
+Neural Net Gradient Function
+(Backpropagation)
+Regularized Gradient
+Total Points
+
+Submitted File
+nnCostFunction.m
+nnCostFunction.m
+sigmoidGradient.m
+nnCostFunction.m
+
+Points
+30 points
+15 points
+5 points
+40 points
+
+nnCostFunction.m
+
+10 points
+100 points
+
+You are allowed to submit your solutions multiple times, and we will take
+only the highest score into consideration. To prevent rapid-fire guessing, the
+system enforces a minimum of 5 minutes between submissions.
+All parts of this programming exercise are due Sunday, November 13th
+at 23:59:59 PDT.
+
+15
+
+

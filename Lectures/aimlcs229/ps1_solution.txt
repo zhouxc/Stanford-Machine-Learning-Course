@@ -1,0 +1,1001 @@
+1
+
+CS229 Problem Set #1 Solutions
+
+CS 229, Public Course
+Problem Set #1 Solutions: Supervised Learning
+1. Newton’s method for computing least squares
+In this problem, we will prove that if we use Newton’s method solve the least squares
+optimization problem, then we only need one iteration to converge to θ∗ .
+(a) Find the Hessian of the cost function J(θ) =
+Answer: As shown in the class notes
+∂J(θ)
+=
+∂θj
+
+1
+2
+
+m
+T (i)
+i=1 (θ x
+
+− y (i) )2 .
+
+m
+(i)
+
+(θT x(i) − y (i) )xj .
+i=1
+
+So
+∂ 2 J(θ)
+∂θj ∂θk
+
+m
+
+=
+i=1
+m
+
+∂
+(i)
+(θT x(i) − y (i) )xj
+∂θk
+(i) (i)
+
+xj xk = (X T X)jk
+
+=
+i=1
+
+Therefore, the Hessian of J(θ) is H = X T X. This can also be derived by simply applying
+rules from the lecture notes on Linear Algebra.
+(b) Show that the first iteration of Newton’s method gives us θ⋆ = (X T X)−1 X T y, the
+solution to our least squares problem.
+Answer: Given any θ(0) , Newton’s method finds θ(1) according to
+θ(1)
+
+= θ(0) − H −1 ∇θ J(θ(0) )
+= θ(0) − (X T X)−1 (X T Xθ(0) − X T y)
+= θ(0) − θ(0) + (X T X)−1 X T y
+= (X T X)−1 X T y.
+
+Therefore, no matter what θ(0) we pick, Newton’s method always finds θ⋆ after one
+iteration.
+2. Locally-weighted logistic regression
+In this problem you will implement a locally-weighted version of logistic regression, where
+we weight different training examples differently according to the query point. The locallyweighted logistic regression problem is to maximize
+m
+
+λ
+ℓ(θ) = − θT θ +
+w(i) y (i) log hθ (x(i) ) + (1 − y (i) ) log(1 − hθ (x(i) )) .
+2
+i=1
+
+2
+
+CS229 Problem Set #1 Solutions
+
+The − λ2 θT θ here is what is known as a regularization parameter, which will be discussed
+in a future lecture, but which we include here because it is needed for Newton’s method to
+perform well on this task. For the entirety of this problem you can use the value λ = 0.0001.
+Using this definition, the gradient of ℓ(θ) is given by
+∇θ ℓ(θ) = X T z − λθ
+where z ∈ Rm is defined by
+
+zi = w(i) (y (i) − hθ (x(i) ))
+
+and the Hessian is given by
+H = X T DX − λI
+where D ∈ Rm×m is a diagonal matrix with
+Dii = −w(i) hθ (x(i) )(1 − hθ (x(i) ))
+For the sake of this problem you can just use the above formulas, but you should try to
+derive these results for yourself as well.
+Given a query point x, we choose compute the weights
+w(i) = exp −
+
+||x − x(i) ||2
+2τ 2
+
+.
+
+Much like the locally weighted linear regression that was discussed in class, this weighting
+scheme gives more when the “nearby” points when predicting the class of a new example.
+(a) Implement the Newton-Raphson algorithm for optimizing ℓ(θ) for a new query point
+x, and use this to predict the class of x.
+The q2/ directory contains data and code for this problem. You should implement
+the y = lwlr(X train, y train, x, tau) function in the lwlr.m file. This function takes as input the training set (the X train and y train matrices, in the form
+described in the class notes), a new query point x and the weight bandwitdh tau.
+Given this input the function should 1) compute weights w(i) for each training example, using the formula above, 2) maximize ℓ(θ) using Newton’s method, and finally 3)
+output y = 1{hθ (x) > 0.5} as the prediction.
+We provide two additional functions that might help. The [X train, y train] =
+load data; function will load the matrices from files in the data/ folder. The function plot lwlr(X train, y train, tau, resolution) will plot the resulting classifier (assuming you have properly implemented lwlr.m). This function evaluates the
+locally weighted logistic regression classifier over a large grid of points and plots the
+resulting prediction as blue (predicting y = 0) or red (predicting y = 1). Depending
+on how fast your lwlr function is, creating the plot might take some time, so we
+recommend debugging your code with resolution = 50; and later increase it to at
+least 200 to get a better idea of the decision boundary.
+Answer: Our implementation of lwlr.m:
+function y = lwlr(X_train, y_train, x, tau)
+m = size(X_train,1);
+n = size(X_train,2);
+
+3
+
+CS229 Problem Set #1 Solutions
+
+theta = zeros(n,1);
+% compute weights
+w = exp(-sum((X_train - repmat(x’, m, 1)).^2, 2) / (2*tau));
+% perform Newton’s method
+g = ones(n,1);
+while (norm(g) > 1e-6)
+h = 1 ./ (1 + exp(-X_train * theta));
+g = X_train’ * (w.*(y_train - h)) - 1e-4*theta;
+H = -X_train’ * diag(w.*h.*(1-h)) * X_train - 1e-4*eye(n);
+theta = theta - H \ g;
+end
+% return predicted y
+y = double(x’*theta > 0);
+(b) Evaluate the system with a variety of different bandwidth parameters τ . In particular,
+try τ = 0.01, 0.050.1, 0.51.0, 5.0. How does the classification boundary change when
+varying this parameter? Can you predict what the decision boundary of ordinary
+(unweighted) logistic regression would look like?
+Answer:
+These are the resulting decision boundaries, for the different values of τ .
+tau = 0.01
+
+tau = 0.05
+
+tau = 0.1
+
+tau = 0.5
+
+tau = 0.5
+
+tau = 5
+
+For smaller τ , the classifier appears to overfit the data set, obtaining zero training error,
+but outputting a sporadic looking decision boundary. As τ grows, the resulting decision boundary becomes smoother, eventually converging (in the limit as τ → ∞ to the
+unweighted linear regression solution).
+3. Multivariate least squares
+So far in class, we have only considered cases where our target variable y is a scalar value.
+Suppose that instead of trying to predict a single output, we have a training set with
+
+4
+
+CS229 Problem Set #1 Solutions
+
+multiple outputs for each example:
+{(x(i) , y (i) ), i = 1, . . . , m}, x(i) ∈ Rn , y (i) ∈ Rp .
+Thus for each training example, y (i) is vector-valued, with p entries. We wish to use a linear
+model to predict the outputs, as in least squares, by specifying the parameter matrix Θ in
+y = ΘT x,
+where Θ ∈ Rn×p .
+(a) The cost function for this case is
+J(Θ) =
+
+1
+2
+
+p
+
+m
+
+(i)
+
+(ΘT x(i) )j − yj
+
+2
+
+.
+
+i=1 j=1
+
+Write J(Θ) in matrix-vector notation (i.e., without using any summations). [Hint:
+Start with the m × n design matrix
+
+
+— (x(1) )T —
+ — (x(2) )T — 
+
+
+X=
+
+..
+
+
+.
+—
+
+(x(m) )T
+
+—
+
+—
+ —
+
+Y =
+
+
+(y (1) )T
+(y (2) )T
+..
+.
+
+
+—
+— 
+
+
+
+
+and the m × p target matrix
+
+
+
+(y (m) )T
+
+—
+
+—
+
+and then work out how to express J(Θ) in terms of these matrices.]
+Answer: The objective function can be expressed as
+J(Θ) =
+
+1
+tr (XΘ − Y )T (XΘ − Y ) .
+2
+
+To see this, note that
+J(Θ)
+
+=
+=
+=
+
+=
+
+1
+tr (XΘ − Y )T (XΘ − Y )
+2
+1
+XΘ − Y )T (XΘ − Y )
+2 i
+1
+2
+1
+2
+
+(XΘ − Y )2ij
+i
+m
+
+j
+p
+(i)
+
+(ΘT x(i) )j − yj
+i=1 j=1
+
+2
+
+ii
+
+5
+
+CS229 Problem Set #1 Solutions
+
+(b) Find the closed form solution for Θ which minimizes J(Θ). This is the equivalent to
+the normal equations for the multivariate case.
+Answer: First we take the gradient of J(Θ) with respect to Θ.
+∇Θ J(Θ)
+
+= ∇Θ
+= ∇Θ
+
+1
+tr (XΘ − Y )T (XΘ − Y )
+2
+1
+tr ΘT X T XΘ − ΘT X T Y − Y T XΘ − Y T T
+2
+
+1
+∇Θ tr(ΘT X T XΘ) − tr(ΘT X T Y ) − tr(Y T XΘ) + tr(Y T Y )
+2
+1
+=
+∇Θ tr(ΘT X T XΘ) − 2tr(Y T XΘ) + tr(Y T Y )
+2
+1
+X T XΘ + X T XΘ − 2X T Y
+=
+2
+= X T XΘ − X T Y
+
+=
+
+Setting this expression to zero we obtain
+Θ = (X T X)−1 X T Y.
+This looks very similar to the closed form solution in the univariate case, except now Y
+is a m × p matrix, so then Θ is also a matrix, of size n × p.
+(c) Suppose instead of considering the multivariate vectors y (i) all at once, we instead
+(i)
+compute each variable yj separately for each j = 1, . . . , p. In this case, we have a p
+individual linear models, of the form
+(i)
+
+yj = θjT x(i) , j = 1, . . . , p.
+(So here, each θj ∈ Rn ). How do the parameters from these p independent least
+squares problems compare to the multivariate solution?
+Answer: This time, we construct a set of vectors
+ (1) 
+yj
+ (2) 
+ yj 
+
+yj = 
+ ..  , j = 1, . . . , p.
+ . 
+(m)
+
+yj
+
+Then our j-th linear model can be solved by the least squares solution
+θj = (X T X)−1 X T yj .
+
+If we line up our θj , we see that we have the following equation:
+[θ1 θ2 · · · θp ]
+
+=
+
+(X T X)−1 X T y1 (X T X)−1 X T y2 · · · (X T X)−1 X T yp
+
+= (X T X)−1 X T [y1 y2 · · · yp ]
+= (X T X)−1 X T Y
+= Θ.
+Thus, our p individual least squares problems give the exact same solution as the multivariate least squares.
+
+6
+
+CS229 Problem Set #1 Solutions
+
+4. Naive Bayes
+In this problem, we look at maximum likelihood parameter estimation using the naive
+Bayes assumption. Here, the input features xj , j = 1, . . . , n to our model are discrete,
+binary-valued variables, so xj ∈ {0, 1}. We call x = [x1 x2 · · · xn ]T to be the input vector.
+For each training example, our output targets are a single binary-value y ∈ {0, 1}. Our
+model is then parameterized by φj|y=0 = p(xj = 1|y = 0), φj|y=1 = p(xj = 1|y = 1), and
+φy = p(y = 1). We model the joint distribution of (x, y) according to
+p(y) =
+
+(φy )y (1 − φy )1−y
+n
+
+p(x|y = 0)
+
+p(xj |y = 0)
+
+=
+j=1
+n
+
+(φj|y=0 )xj (1 − φj|y=0 )1−xj
+
+=
+j=1
+n
+
+p(x|y = 1)
+
+p(xj |y = 1)
+
+=
+j=1
+n
+
+(φj|y=1 )xj (1 − φj|y=1 )1−xj
+
+=
+j=1
+
+m
+
+(a) Find the joint likelihood function ℓ(ϕ) = log i=1 p(x(i) , y (i) ; ϕ) in terms of the
+model parameters given above. Here, ϕ represents the entire set of parameters
+{φy , φj|y=0 , φj|y=1 , j = 1, . . . , n}.
+Answer:
+m
+
+ℓ(ϕ)
+
+=
+
+p(x(i) , y (i) ; ϕ)
+
+log
+i=1
+m
+
+=
+
+p(x(i) |y (i) ; ϕ)p(y (i) ; ϕ)
+
+log
+i=1
+m
+
+=
+
+log
+i=1
+m
+
+=
+i=1
+m
+
+
+
+
+
+
+
+n
+
+
+
+j=1
+
+(i)
+
+p(xj |y (i) ; ϕ) p(y (i) ; ϕ)
+n
+
+log p(y (i) ; ϕ) +
+
+(i)
+
+j=1
+
+
+
+log p(xj |y (i) ; ϕ)
+
+y (i) log φy + (1 − y (i) ) log(1 − φy )
+
+=
+i=1
+
+n
+(i)
+xj
+
++
+j=1
+
+log φj|y(i) + (1 −
+
+(i)
+xj ) log(1
+
+
+
+− φj|y(i) ) 
+
+(b) Show that the parameters which maximize the likelihood function are the same as
+
+7
+
+CS229 Problem Set #1 Solutions
+
+those given in the lecture notes; i.e., that
+φj|y=0
+
+=
+
+φj|y=1
+
+=
+
+φy
+
+=
+
+m
+i=1
+
+(i)
+
+1{xj = 1 ∧ y (i) = 0}
+
+m
+(i) = 0}
+i=1 1{y
+(i)
+m
+(i)
+=
+i=1 1{xj = 1 ∧ y
+m
+(i)
+= 1}
+i=1 1{y
+m
+(i)
+= 1}
+i=1 1{y
+
+1}
+
+.
+
+m
+
+Answer: The only terms in ℓ(ϕ) which have non-zero gradient with respect to φj|y=0
+are those which include φj|y(i) . Therefore,
+m
+
+∇φj|y=0 ℓ(ϕ)
+
+(i)
+
+(i)
+
+= ∇φj|y=0
+
+xj log φj|y(i) + (1 − xj ) log(1 − φj|y(i) )
+i=1
+m
+(i)
+
+xj log(φj|y=0 )1{y (i) = 0}
+
+= ∇φj|y=0
+i=1
+
+(i)
+
++ (1 − xj ) log(1 − φj|y=0 )1{y (i) = 0}
+m
+(i)
+
+xj
+
+=
+i=1
+
+1
+1
+(i)
+1{y (i) = 0} − (1 − xj )
+1{y (i) = 0} .
+φj|y=0
+1 − φj|y=0
+
+Setting ∇φj|y=0 ℓ(ϕ) = 0 gives
+m
+
+0
+
+1
+
+(i)
+
+xj
+
+=
+i=1
+m
+
+φj|y=0
+
+(i)
+
+1{y (i) = 0} − (1 − xj )
+
+1
+1{y (i) = 0}
+1 − φj|y=0
+
+(i)
+
+(i)
+
+xj (1 − φj|y=0 )1{y (i) = 0} − (1 − xj )φj|y=0 1{y (i) = 0}
+
+=
+i=1
+m
+
+(i)
+
+(xj − φj|y=0 )1{y (i) = 0}
+
+=
+i=1
+m
+
+m
+(i)
+
+xj · 1{y (i) = 0} − φj|y=0
+
+=
+i=1
+m
+
+1{y (i) = 0}
+i=1
+m
+
+(i)
+
+1{y (i) = 0}.
+
+1{xj = 1 ∧ y (i) = 0} − φj|y=0
+
+=
+
+i=1
+
+i=1
+
+We then arrive at our desired result
+φj|y=0 =
+
+m
+i=1
+
+(i)
+
+1{xj = 1 ∧ y (i) = 0}
+m
+i=1
+
+1{y (i) = 0}
+
+The solution for φj|y=1 proceeds in the identical manner.
+
+8
+
+CS229 Problem Set #1 Solutions
+
+To solve for φy ,
+m
+
+∇φy ℓ(ϕ)
+
+y (i) log φy + (1 − y (i) ) log(1 − φy )
+
+= ∇φy
+i=1
+m
+
+y (i)
+
+=
+i=1
+
+1
+1
+− (1 − y (i) )
+φy
+1 − φy
+
+Then setting ∇φy = 0 gives us
+m
+
+y (i)
+
+0 =
+i=1
+m
+
+1
+1
+− (1 − y (i) )
+φy
+1 − φy
+
+y (i) (1 − φy ) − (1 − y (i) )φy
+
+=
+i=1
+m
+
+m
+
+y (i) −
+
+=
+i=1
+
+Therefore,
+
+φy .
+i=1
+
+m
+i=1
+
+1{y (i) = 1}
+.
+m
+(c) Consider making a prediction on some new data point x using the most likely class
+estimate generated by the naive Bayes algorithm. Show that the hypothesis returned
+by naive Bayes is a linear classifier—i.e., if p(y = 0|x) and p(y = 1|x) are the class
+probabilities returned by naive Bayes, show that there exists some θ ∈ Rn+1 such
+that
+1
+p(y = 1|x) ≥ p(y = 0|x) if and only if θT
+≥ 0.
+x
+φy =
+
+(Assume θ0 is an intercept term.)
+Answer:
+p(y = 1|x) ≥ p(y = 0|x)
+p(y = 1|x)
+⇐⇒
+≥1
+p(y = 0|x)
+⇐⇒
+
+n
+j=1
+
+p(xj |y = 1) p(y = 1)
+
+n
+j=1
+
+p(xj |y = 0) p(y = 0)
+
+n
+xj
+j=1 (φj|y=0 ) (1
+
+⇐⇒
+
+n
+xj
+j=1 (φj|y=1 ) (1
+n
+
+xj log
+
+⇐⇒
+j=1
+n
+
+xj log
+
+⇐⇒
+j=1
+
+⇐⇒ θT
+
+1
+x
+
+φj|y=1
+φj|y=0
+
+≥1
+
+− φj|y=0 )1−xj φy
+
+− φj|y=1 )1−xj (1 − φy )
++ (1 − xj ) log
+
+(φj|y=1 )(1 − φj|y=0 )
+(φj|y=0 )(1 − φj|y=1 )
+≥ 0,
+
+≥1
+
+1 − φj|y=0
+1 − φj |y = 0
+n
+
+log
+
++
+j=1
+
++ log
+
+1 − φj|y=1
+1 − φj|y=0
+
+φy
+1 − φy
+
++ log
+
+≥0
+
+φy
+1 − φy
+
+≥0
+
+9
+
+CS229 Problem Set #1 Solutions
+
+where
+n
+
+θ0
+
+1 − φj|y=1
+1 − φj|y=0
+
+log
+
+=
+j=1
+
+θj
+
+=
+
++ log
+
+(φj|y=1 )(1 − φj|y=0 )
+(φj|y=0 )(1 − φj|y=1 )
+
+log
+
+φy
+1 − φy
+, j = 1, . . . , n.
+
+5. Exponential family and the geometric distribution
+(a) Consider the geometric distribution parameterized by φ:
+p(y; φ) = (1 − φ)y−1 φ, y = 1, 2, 3, . . . .
+Show that the geometric distribution is in the exponential family, and give b(y), η,
+T (y), and a(η).
+Answer:
+p(y; φ)
+
+=
+
+(1 − φ)y−1 φ
+
+=
+=
+
+exp log(1 − φ)y−1 + log φ
+exp [(y − 1) log(1 − φ) + log φ]
+1−φ
+exp y log(1 − φ) − log
+φ
+
+=
+Then
+b(y)
+
+=
+
+1
+
+η = log(1 − φ)
+T (y) = y
+1−φ
+a(η) = log
+φ
+
+= log
+
+eη
+1 − eη
+
+,
+
+where the last line follows becuase η = log(1 − φ) ⇒ eη = 1 − φ ⇒ φ = 1 − eη .
+(b) Consider performing regression using a GLM model with a geometric response variable. What is the canonical response function for the family? You may use the fact
+that the mean of a geometric distribution is given by 1/φ.
+Answer:
+1
+1
+g(η) = E[y; φ] = =
+.
+φ
+1 − eη
+(c) For a training set {(x(i) , y (i) ); i = 1, . . . , m}, let the log-likelihood of an example
+be log p(y (i) |x(i) ; θ). By taking the derivative of the log-likelihood with respect to
+θj , derive the stochastic gradient ascent rule for learning using a GLM model with
+goemetric responses y and the canonical response function.
+Answer: The log-likelihood of an example (x(i) , y (i) ) is defined as ℓ(θ) = log p(y (i) |x(i) ; θ).
+To derive the stochastic gradient ascent rule, use the results from previous parts and the
+standard GLM assumption that η = θT x.
+
+10
+
+CS229 Problem Set #1 Solutions
+
+(i)
+
+T
+
+ℓi (θ)
+
+= log exp θT x(i) · y (i) − log
+= log exp θT x(i) · y (i) − log
+T
+
+(i)
+
+= θ x
+∂
+ℓi (θ)
+∂θj
+
+(i)
+
+·y
+
+(i)
+
+= xj y (i) +
+
+−θ T x(i)
+
++ log e
+e−θ
+
+T
+
+x(i)
+
+eθ x
+1 − eθT x(i)
+1
+e−θT x(i)
+
+−1
+
+(i)
+
+(−xj )
+e−θT x(i) − 1
+1
+(i)
+(i)
+= xj y (i) −
+x
+−θ
+1 − e T x(i) j
+1
+(i)
+=
+y (i) −
+xj .
+1 − eθT x(i)
+
+Thus the stochastic gradient ascent update rule should be
+θj := θj + α
+which is
+θj := θj + α y (i) −
+
+∂ℓi (θ)
+,
+∂θj
+
+1
+1 − eθT x(i)
+
+(i)
+
+xj .
+
+−1
+
+

@@ -1,0 +1,111 @@
+CS 229
+Machine Learning
+Handout #1: Course Information
+Teaching Staff and Contact Info
+Professor: Andrew Ng
+Office: Gates 156
+TA: Paul Baumstarck
+Office: B24B
+TA: Catie Chang
+Office: B24A
+TA: Chuong (Tom) Do
+Office: B24A
+TA: Zico Kolter (head TA)
+Office: Gates 124
+TA: Daniel Ramage
+Office: Gates 114
+
+Course Description
+This course provides a broad introduction to machine learning and statistical
+pattern recognition. Topics include: supervised learning
+(generative/discriminative learning, parametric/non-parametric learning, neural
+networks, support vector machines); unsupervised learning (clustering,
+dimensionality reduction, kernel methods); learning theory (bias/variance
+tradeoffs; VC theory; large margins); reinforcement learning and
+adaptive control. The course will also discuss recent applications of machine
+learning, such as to robotic control, data mining, autonomous navigation,
+bioinformatics, speech recognition, and text and web data processing.
+
+Prerequisites
+Students are expected to have the following background:
+Knowledge of basic computer science principles and skills, at a level
+sufficient to write a reasonably non-trivial computer program.
+Familiarity with the basic probability theory. (Stat 116 is sufficient but not
+necessary.)
+Familiarity with the basic linear algebra (any one of Math 51, Math 103, Math
+113, or CS 205 would be much more than necessary.)
+
+Course Materials
+There is no required text for this course. Notes will be posted periodically on
+the course web site. The following books are recommended as optional reading:
+Christopher Bishop, Pattern Recognition and Machine Learning. Springer, 2006.
+Richard Duda, Peter Hart and David Stork, Pattern Classification, 2nd ed. John Wiley &
+Sons, 2001.
+Tom Mitchell, Machine Learning. McGraw-Hill, 1997.
+Richard Sutton and Andrew Barto, Reinforcement Learning: An introduction. MIT Press,
+1998
+
+Homeworks and Grading
+There will be four written homeworks, one midterm, and one major openended term project. The homeworks will contain written questions and
+questions that require some Matlab programming. In the term project, you will
+investigate some interesting aspect of machine learning or apply machine
+learning to a problem that interests you. We try very hard to make questions
+unambiguous, but some ambiguities may remain. Ask if confused or state your
+assumptions explicitly. Reasonable assumptions will be accepted in case of
+ambiguous questions.
+A note on the honor code: We strongly encourage students to form study
+groups. Students may discuss and work on homework problems in groups.
+However, each student must write down the solutions independently, and
+without referring to written notes from the joint session. In other words, each
+student must understand the solution well enough in order to reconstruct it by
+him/herself. In addition, each student should write on the problem set the
+
+set of people with whom s/he collaborated. Further, because we occasionally
+reuse problem set questions from previous years, we expect students not to
+copy, refer to, or look at the solutions in preparing their answers. It is
+an honor code violation to intentionally refer to a previous year's solutions.
+Late homeworks: Recognizing that students may face unusual circumstances
+and requiresome flexibility in the course of the quarter, each student will have a
+total of seven free late (calendar) days to use as s/he sees fit. Once these late
+days are exhausted, any homework turned in late will be penalized 20% per late
+day. However, no homework will be accepted more than four days after its
+due date, and late days cannot be used for the final project writeup. Each 24
+hours or part thereof that a homework is late uses up one full late day. To
+hand in a late homework, write down the date and time of submission, and
+leave it in the submission box at the bottom of the Gates A-wing stairwell.
+To get into the basement after the building is locked, slide your SUID card in
+the card reader by the main basement entrance.) It is an honor code violation to
+write down the wrong time. Regular (non-SCPD) students should submit
+hardcopies of all four written homeworks. Please do not email your homework
+solutions to us. Off-campus (SCPD) students should fax homework solutions to
+us at the fax number given above, and write "ATTN: CS229 (Machine
+Learning)" on the cover page. The term project may be done in teams of up to
+three persons. The midterm is openbook/ open-notes, and will cover the
+material of the first part of the course. It will take place on 11/8 at 6 pm, exact
+location to be determined.
+Course grades will be based 40% on homeworks (10% each), 20% on the
+midterm, and 40% on the major term project. Up to 3% extra credit may be
+awarded for class participation.
+
+Sections
+To review material from the prerequisites or to supplement the lecture material,
+there will occasionally be extra discussion sections held on Friday. An
+announcement will be made whenever one of these sections is held. Attendance
+at these sections is optional.
+
+Communication with the Teaching Staff
+We strongly encourage students to come to office hours. If that is not possible,
+questions should be sent to the course staff list (consisting of the TAs and
+
+the professor). By having questions sent to all of us, you will get answers much
+more quickly. Of course, more personal questions can still be sent directly to
+Professor Ng or the TAs.
+For grading questions, please talk to us after class or during office hours. If you
+want a regrade, write an explanation and drop the homework and the
+explanation into the submission box at the bottom of the Gates A-wing
+stairwell Answers to commonly asked questions and clarifications to the
+homeworks will be posted on the FAQ. It is each student's responsibility to
+check the FAQ on a regular basis. Major changes (e.g., bugs in the homework)
+will also be posted to the class mailing list.
+
+

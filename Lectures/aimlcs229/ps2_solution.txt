@@ -1,0 +1,720 @@
+1
+
+CS229 Problem Set #2 Solutions
+
+CS 229, Public Course
+Problem Set #2 Solutions:
+Theory
+
+Kernels, SVMs, and
+
+1. Kernel ridge regression
+In contrast to ordinary least squares which has a cost function
+J(θ) =
+
+1
+2
+
+m
+
+(θT x(i) − y (i) )2 ,
+i=1
+
+we can also add a term that penalizes large weights in θ. In ridge regression, our least
+squares cost is regularized by adding a term λ θ 2 , where λ > 0 is a fixed (known) constant
+(regularization will be discussed at greater length in an upcoming course lecutre). The ridge
+regression cost function is then
+J(θ) =
+
+1
+2
+
+m
+
+(θT x(i) − y (i) )2 +
+i=1
+
+λ
+θ 2.
+2
+
+(a) Use the vector notation described in class to find a closed-form expreesion for the
+value of θ which minimizes the ridge regression cost function.
+Answer: Using the design matrix notation, we can rewrite J(θ) as
+J(θ) =
+
+1
+λ
+(Xθ − y)T (Xθ − y) + θT θ.
+2
+2
+
+Then the gradient is
+∇θ J(θ) = X T Xθ − X T y + λθ.
+Setting the gradient to 0 gives us
+= X T Xθ − X T y + λθ
+= (X T X + λI)−1 X T y.
+
+0
+θ
+
+(b) Suppose that we want to use kernels to implicitly represent our feature vectors in a
+high-dimensional (possibly infinite dimensional) space. Using a feature mapping φ,
+the ridge regression cost function becomes
+J(θ) =
+
+1
+2
+
+m
+
+(θT φ(x(i) ) − y (i) )2 +
+i=1
+
+λ
+θ 2.
+2
+
+Making a prediction on a new input xnew would now be done by computing θT φ(xnew ).
+Show how we can use the “kernel trick” to obtain a closed form for the prediction
+on the new input without ever explicitly computing φ(xnew ). You may assume that
+the parameter vector θ can be expressed as a linear combination of the input feature
+m
+vectors; i.e., θ = i=1 αi φ(x(i) ) for some set of parameters αi .
+
+2
+
+CS229 Problem Set #2 Solutions
+
+[Hint: You may find the following identity useful:
+(λI + BA)−1 B = B(λI + AB)−1 .
+If you want, you can try to prove this as well, though this is not required for the
+problem.]
+Answer: Let Φ be the design matrix associated with the feature vectors φ(x(i) ). Then
+from parts (a) and (b),
+θ
+
+=
+=
+=
+
+ΦT Φ + λI
+
+−1
+
+ΦT ΦΦT + λI
+T
+
+−1
+
+Φ (K + λI)
+
+ΦT y
+−1
+
+y
+
+y.
+
+where K is the kernel matrix for the training set (since Φi,j = φ(x(i) )T φ(x(j) ) = Kij .)
+To predict a new value ynew , we can compute
+ynew
+
+= θT φ(xnew )
+= y T (K + λI)−1 Φφ(xnew )
+m
+
+αi K(x(i) , xnew ).
+
+=
+i=1
+−1
+
+where α = (K + λI) y. All these terms can be efficiently computing using the kernel
+function.
+To prove the identity from the hint, we left-multiply by λ(I + BA) and right-multiply by
+λ(I + AB) on both sides. That is,
+(λI + BA)−1 B
+B
+
+= B(λI + AB)−1
+= (λI + BA)B(λI + AB)−1
+
+B(λI + AB) = (λI + BA)B
+λB + BAB = λB + BAB.
+This last line clearly holds, proving the identity.
+2. ℓ2 norm soft margin SVMs
+In class, we saw that if our data is not linearly separable, then we need to modify our
+support vector machine algorithm by introducing an error margin that must be minimized.
+Specifically, the formulation we have looked at is known as the ℓ1 norm soft margin SVM.
+In this problem we will consider an alternative method, known as the ℓ2 norm soft margin
+SVM. This new algorithm is given by the following optimization problem (notice that the
+slack penalties are now squared):
+minw,b,ξ
+s.t.
+
+1
+2
+
+m
+
+w 2 + C2 i=1 ξi2
+.
+(i)
+y (wT x(i) + b) ≥ 1 − ξi , i = 1, . . . , m
+
+(a) Notice that we have dropped the ξi ≥ 0 constraint in the ℓ2 problem. Show that these
+non-negativity constraints can be removed. That is, show that the optimal value of
+the objective will be the same whether or not these constraints are present.
+Answer: Consider a potential solution to the above problem with some ξ < 0. Then
+the constraint y (i) (wT x(i) + b) ≥ 1 − ξi would also be satisfied for ξi = 0, and the
+objective function would be lower, proving that this could not be an optimal solution.
+
+3
+
+CS229 Problem Set #2 Solutions
+
+(b) What is the Lagrangian of the ℓ2 soft margin SVM optimization problem?
+Answer:
+1
+C
+L(w, b, ξ, α) = wT w +
+2
+2
+
+m
+
+m
+
+ξi2
+
+αi [y (i) (wT x(i) + b) − 1 + ξi ],
+
+−
+i=1
+
+i=1
+
+where αi ≥ 0 for i = 1, . . . , m.
+(c) Minimize the Lagrangian with respect to w, b, and ξ by taking the following gradients:
+T
+∇w L, ∂L
+∂b , and ∇ξ L, and then setting them equal to 0. Here, ξ = [ξ1 , ξ2 , . . . , ξm ] .
+Answer: Taking the gradient with respect to w, we get
+m
+
+αi y (i) x(i) ,
+
+0 = ∇w L = w −
+i=1
+
+which gives us
+
+m
+
+αi y (i) x(i) .
+
+w=
+i=1
+
+Taking the derivative with respect to b, we get
+m
+
+0=
+
+∂L
+αi y (i) ,
+=−
+∂b
+i=1
+
+giving us
+
+m
+
+αi y (i) .
+
+0=
+i=1
+
+Finally, taking the gradient with respect to ξ, we have
+0 = ∇ξ L = Cξ − α,
+where α = [α1 , α2 , . . . , αm ]T . Thus, for each i = 1, . . . , m, we get
+0 = Cξi − αi
+
+⇒
+
+Cξi = αi .
+
+(d) What is the dual of the ℓ2 soft margin SVM optimization problem?
+
+4
+
+CS229 Problem Set #2 Solutions
+
+Answer:
+
+The objective function for the dual is
+
+W (α)
+
+=
+=
+
+min L(w, b, ξ, α)
+
+w,b,ξ
+m
+
+1
+2
+
+m
+
+(αi y (i) x(i) )T (αj y (j) x(j) ) +
+i=1 j=1
+m
+
+−
+i=1
+
+= −
+
+1
+2
+
+
+
+
+
+
+
+αi y (i) 
+m
+
+m
+
+i=1 j=1
+m
+
+m
+
+αi −
+
+=
+i=1
+m
+
+αi −
+
+=
+i=1
+
+i=1
+
+1
+2
+1
+2
+
+1
+2
+
+m
+
+αi ξi
+i=1
+
+αi ξi
+
+αi −
+
+b+
+
+i=1
+
+i=1
+
+m
+
+m
+
+
+
+m
+
+m
+
+αi y (i)
+
+i=1
+
+αi 2
+ξ
+ξi i
+
+
+
+
+αj y (j) x(j)  x(i) + b − 1 + ξi 
+
+αi αj y (i) y (j) (x(i) )T x(j) +
+
+−
+
+m
+
+T
+
+m
+
+j=1
+
+1
+2
+
+αi αj y (i) y (j) (x(i) )T x(j) −
+i=1 j=1
+m m
+
+αi αj y (i) y (j) (x(i) )T x(j) −
+i=1 j=1
+
+1
+2
+1
+2
+
+m
+
+αi ξi
+i=1
+m
+
+i=1
+
+αi2
+.
+C
+
+Then the dual formulation of our problem is
+maxα
+s.t.
+
+m
+i=1
+
+m
+
+αi − 12 i=1
+αi ≥ 0, i = 1, . . . , m
+m
+(i)
+=0
+i=1 αi y
+
+m
+j=1
+
+αi αj y (i) y (j) (x(i) )T x(j) −
+
+1
+2
+
+m α2i
+i=1 C
+
+.
+
+3. SVM with Gaussian kernel
+Consider the task of training a support vector machine using the Gaussian kernel K(x, z) =
+exp(− x − z 2 /τ 2 ). We will show that as long as there are no two identical points in the
+training set, we can always find a value for the bandwidth parameter τ such that the SVM
+achieves zero training error.
+(a) Recall from class that the decision function learned by the support vector machine
+can be written as
+m
+
+αi y (i) K(x(i) , x) + b.
+
+f (x) =
+i=1
+(1)
+
+Assume that the training data {(x , y (1) ), . . . , (x(m) , y (m) )} consists of points which
+are separated by at least a distance of ǫ; that is, ||x(j) − x(i) || ≥ ǫ for any i = j.
+Find values for the set of parameters {α1 , . . . , αm , b} and Gaussian kernel width τ
+such that x(i) is correctly classified, for all i = 1, . . . , m. [Hint: Let αi = 1 for all i
+and b = 0. Now notice that for y ∈ {−1, +1} the prediction on x(i) will be correct if
+|f (x(i) ) − y (i) | < 1, so find a value of τ that satisfies this inequality for all i.]
+
+5
+
+CS229 Problem Set #2 Solutions
+
+Answer:
+First we set αi = 1 for all i = 1, . . . , m and b = 0. Then, for a training
+example {x(i) , y (i) }, we get
+m
+
+f (x(i) ) − y (i)
+
+y (j) K(x(j) , x(i) ) − y (i)
+
+=
+j=1
+m
+
+y (j) exp − x(j) − x(i) 2 /τ 2 − y (i)
+
+=
+j=1
+
+=
+
+y (i) +
+
+y (j) exp
+
+x(j) − x(i) 2 /τ 2 − y (i)
+
+j=i
+
+y (j) exp − x(j) − x(i) 2 /τ 2
+
+=
+j=i
+
+y (j) exp − x(j) − x(i) 2 /τ 2
+
+≤
+j=i
+
+y (j) · exp
+
+=
+
+x(j) − x(i) 2 /τ 2
+
+j=i
+
+exp − x(j) − x(i) 2 /τ 2
+
+=
+j=i
+
+exp −ǫ2 /τ 2
+
+≤
+j=i
+
+=
+
+(m − 1) exp −ǫ2 /τ 2 .
+
+The first inequality comes from repeated application of the triangle inequality |a + b| ≤
+|a| + |b|, and the second inequality (1) from the assumption that ||x(j) − x(i) || ≥ ǫ for all
+i = j. Thus we need to choose a γ such that
+(m − 1) exp(−ǫ2 /τ 2 ) < 1,
+or
+τ<
+
+ǫ
+.
+log(m − 1)
+
+By choosing, for example, τ = ǫ/ log m we are done.
+(b) Suppose we run a SVM with slack variables using the parameter τ you found in part
+(a). Will the resulting classifier necessarily obtain zero training error? Why or why
+not? A short explanation (without proof) will suffice.
+Answer: The classifier will obtain zero training error. The SVM without slack variables
+will always return zero training error if it is able to find a solution, so all that remains to
+be shown is that there exists at least one feasible point.
+Consider the constraint y (i) (wT x(i) + b) for some i, and let b = 0. Then
+y (i) (wT x(i) + b) = y (i) · f (x(i) ) > 0
+since f (x(i) ) and y (i) have the same sign, and shown above. Therefore, as we choose all
+the αi ’s large enough, y (i) (wT x(i) + b) > 1, so the optimization problem is feasible.
+
+CS229 Problem Set #2 Solutions
+
+6
+
+(c) Suppose we run the SMO algorithm to train an SVM with slack variables, under
+the conditions stated above, using the value of τ you picked in the previous part,
+and using some arbitrary value of C (which you do not know beforehand). Will this
+necessarily result in a classifier that achieve zero training error? Why or why not?
+Again, a short explanation is sufficient.
+Answer: The resulting classifier will not necessarily obtain zero training error. The C
+m
+parameter controls the relative weights of the (C i=1 ξi ) and ( 12 ||w||2 ) terms of the SVM
+training objective. If the C parameter is sufficiently small, then the former component will
+have relatively little contribution to the objective. In this case, a weight vector which has
+a very small norm but does not achieve zero training error may achieve a lower objective
+value than one which achieves zero training error. For example, you can consider the
+extreme case where C = 0, and the objective is just the norm of w. In this case, w = 0 is
+the solution to the optimization problem regardless of the choise of τ , this this may not
+obtain zero training error.
+4. Naive Bayes and SVMs for Spam Classification
+In this question you’ll look into the Naive Bayes and Support Vector Machine algorithms
+for a spam classification problem. However, instead of implementing the algorithms yourself, you’ll use a freely available machine learning library. There are many such libraries
+available, with different strengths and weaknesses, but for this problem you’ll use the
+WEKA machine learning package, available at http://www.cs.waikato.ac.nz/ml/weka/.
+WEKA implements many standard machine learning algorithms, is written in Java, and
+has both a GUI and a command line interface. It is not the best library for very large-scale
+data sets, but it is very nice for playing around with many different algorithms on medium
+size problems.
+You can download and install WEKA by following the instructions given on the website
+above. To use it from the command line, you first need to install a java runtime environment, then add the weka.jar file to your CLASSPATH environment variable. Finally, you
+can call WEKA using the command:
+java <classifier> -t <training file> -T <test file>
+For example, to run the Naive Bayes classifier (using the multinomial event model) on our
+provided spam data set by running the command:
+java weka.classifiers.bayes.NaiveBayesMultinomial -t spam train 1000.arff -T spam test.arff
+
+The spam classification dataset in the q4/ directory was provided courtesy of Christian
+Shelton (cshelton@cs.ucr.edu). Each example corresponds to a particular email, and each
+feature correspondes to a particular word. For privacy reasons we have removed the actual
+words themselves from the data set, and instead label the features generically as f1, f2, etc.
+However, the data set is from a real spam classification task, so the results demonstrate the
+performance of these algorithms on a real-world problem. The q4/ directory actually contains several different training files, named spam train 50.arff, spam train 100.arff,
+etc (the “.arff” format is the default format by WEKA), each containing the corresponding
+number of training examples. There is also a single test set spam test.arff, which is a
+hold out set used for evaluating the classifier’s performance.
+(a) Run the weka.classifiers.bayes.NaiveBayesMultinomial classifier on the dataset
+and report the resulting error rates. Evaluate the performance of the classifier using
+each of the different training files (but each time using the same test file, spam test.arff).
+Plot the error rate of the classifier versus the number of training examples.
+
+7
+
+CS229 Problem Set #2 Solutions
+
+(b) Repeat the previous part, but using the weka.classifiers.functions.SMO classifier,
+which implements the SMO algorithm to train an SVM. How does the performance
+of the SVM compare to that of Naive Bayes?
+Answer:
+Using the above command line arguments to run the classifier, we obtain
+the following error rates for the two algorithms:
+8
+Support Vector Machine
+Naive Bayes
+
+7
+
+Error (%)
+
+6
+5
+4
+3
+2
+1
+0
+0
+
+200
+
+400
+
+600
+
+800
+
+1000
+
+1200
+
+1400
+
+1600
+
+1800
+
+2000
+
+Num Training Examples
+
+For small amounts of data, Naive Bayes performs better than the Support Vector Machine.
+However, as the amount of data grows, the SVM achieves a better error rate.
+5. Uniform convergence
+In class we proved that for any finite set of hypotheses H = {h1 , . . . , hk }, if we pick the
+ˆ that minimizes the training error on a set of m examples, then with probability
+hypothesis h
+at least (1 − δ),
+1
+2k
+ˆ ≤ min ε(hi ) + 2
+ε(h)
+log ,
+i
+2m
+δ
+where ε(hi ) is the generalization error of hypothesis hi . Now consider a special case (often
+called the realizable case) where we know, a priori, that there is some hypothesis in our
+class H that achieves zero error on the distribution from which the data is drawn. Then
+we could obviously just use the above bound with mini ε(hi ) = 0; however, we can prove a
+better bound than this.
+(a) Consider a learning algorithm which, after looking at m training examples, chooses
+ˆ ∈ H that makes zero mistakes on this training data. (By our
+some hypothesis h
+assumption, there is at least one such hypothesis, possibly more.) Show that with
+probability 1 − δ
+ˆ ≤ 1 log k .
+ε(h)
+m
+δ
+Notice that since we do not have a square root here, this bound is much tighter. [Hint:
+Consider the probability that a hypothesis with generalization error greater than γ
+makes no mistakes on the training data. Instead of the Hoeffding bound, you might
+also find the following inequality useful: (1 − γ)m ≤ e−γm .]
+Answer: Let h ∈ H be a hypothesis with true error greater than γ. Then
+P (“h predicts correctly”) ≤ 1 − γ,
+
+8
+
+CS229 Problem Set #2 Solutions
+
+so
+P (“h predicts correctly m times”) ≤ (1 − γ)m ≤ e−γm .
+Applying the union bound,
+P (∃h ∈ H, s.t. ε(h) > γ and “h predicts correct m times”) ≤ ke−γm .
+We want to make this probability equal to δ, so we set
+ke−γm = δ,
+which gives us
+γ=
+
+k
+1
+log .
+m
+δ
+
+This impiles that with probability 1 − δ,
+ˆ ≤
+ε(h)
+
+1
+k
+log .
+m
+δ
+
+(b) Rewrite the above bound as a sample complexity bound, i.e., in the form: for fixed
+ˆ ≤ γ to hold with probability at least (1 − δ), it suffices that m ≥
+δ and γ, for ε(h)
+f (k, γ, δ) (i.e., f (·) is some function of k, γ, and δ).
+Answer: From part (a), if we take the equation,
+ke−γm = δ
+and solve for m, we obtain
+m=
+
+1
+k
+log .
+γ
+δ
+
+ˆ ≤ γ will hold with probability at least 1 − δ.
+Therefore, for m larger than this, ε(h)
+
+

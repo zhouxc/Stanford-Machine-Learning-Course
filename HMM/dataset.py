@@ -10,8 +10,10 @@ def list_index(xs):
         m[x] = i
     return m
 
+
 class DataSet:
-    """    
+
+    """
     This class provides the following fields:
 
     d.states      an array containing the names of all of the states
@@ -42,26 +44,25 @@ class DataSet:
     information on the required format of this file.
      /"""
 
-
     def __init__(self, filename, debug=False):
         self.debug = debug
 
-        file = open(filename,"r")
+        file = open(filename, "r")
 
         states = set([])
         outputs = set([])
-        
+
         # A sequence is a list of (state, output) tuples
         sequences = []
         seq = []
         switched = False
 
-	for line in file.readlines():
+        for line in file.readlines():
             line = line.strip()
             if len(line) == 0:
                 continue
 
-	    if line ==  "." or line == "..":
+            if line == "." or line == "..":
                 # end of sequence
                 sequences.append(seq)
                 seq = []
@@ -74,15 +75,15 @@ class DataSet:
                     sequences = []
 
             else:
-                words = line.split();
-                
+                words = line.split()
+
                 state = words[0]
                 # Keep track of all the states/outputs
                 states.add(state)
 
                 for output in words[1:]:
                     outputs.add(output)
-                    seq.append( (state, output) )
+                    seq.append((state, output))
 
         # By the time we get here, better have seen the train/test
         # divider
@@ -92,7 +93,7 @@ class DataSet:
         # Don't forget to add the last sequence!
         if len(seq) > 0:
             sequences.append(seq)
-                    
+
         # Ok, the sequences we have now are the test ones
         test_sequences = sequences
 
@@ -104,15 +105,19 @@ class DataSet:
         state_map = list_index(self.states)
         output_map = list_index(self.outputs)
 
-        self.train_state = map((lambda seq: map(lambda p: state_map[p[0]], seq)),
-                               train_sequences)
-        self.train_output = map((lambda seq: map (lambda p: output_map[p[1]], seq)), 
-                               train_sequences)
+        self.train_state = map(
+            (lambda seq: map(lambda p: state_map[p[0]], seq)),
+            train_sequences)
+        self.train_output = map(
+            (lambda seq: map(lambda p: output_map[p[1]], seq)),
+            train_sequences)
 
-        self.test_state = map((lambda seq: map (lambda p: state_map[p[0]], seq)), 
-                               test_sequences)
-        self.test_output = map((lambda seq: map (lambda p: output_map[p[1]], seq)), 
-                               test_sequences)
+        self.test_state = map(
+            (lambda seq: map(lambda p: state_map[p[0]], seq)),
+            test_sequences)
+        self.test_output = map(
+            (lambda seq: map(lambda p: output_map[p[1]], seq)),
+            test_sequences)
 
         if self.debug:
             print self
@@ -138,15 +143,14 @@ Training states:
 %s
 
 """ % (self.states,
-       self.outputs,
-       self.train_state,
-       self.train_output,
-       self.test_state,
-       self.test_output)
-    
+            self.outputs,
+            self.train_state,
+            self.train_output,
+            self.test_state,
+            self.test_output)
+
 
 if __name__ == "__main__":
     from sys import argv
     if len(argv) > 1:
         d = DataSet(argv[1], True)
-        

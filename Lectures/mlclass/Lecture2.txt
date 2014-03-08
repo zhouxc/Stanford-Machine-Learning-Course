@@ -1,0 +1,568 @@
+Linear	  regression	  
+with	  one	  variable	  
+
+Model	  
+representa6on	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Housing	  Prices	  
+(Portland,	  OR)	  
+
+500	  
+400	  
+300	  
+
+Price	   200	  
+(in	  1000s	   100	  
+of	  dollars)	   0	  
+0	  
+
+500	  
+
+1000	  
+
+1500	  
+
+2000	  
+
+2500	  
+
+3000	  
+
+Size	  (feet2)	  
+Supervised	  Learning	  
+
+Regression	  Problem	  
+
+Given	  the	  “right	  answer”	  for	  
+each	  example	  in	  the	  data.	  
+
+Predict	  real-­‐valued	  output	  
+
+	  
+
+	  
+
+Andrew	  Ng	  
+
+Training	  set	  of	  
+housing	  prices	  
+(Portland,	  OR)	  
+
+Size	  in	  feet2	  (x)	  
+2104	  
+1416	  
+1534	  
+852	  
+…	  
+
+Price	  ($)	  in	  1000's	  (y)	  
+460	  
+232	  
+315	  
+178	  
+…	  
+
+Nota6on:	  
+	  
+	  	  	  m	  =	  Number	  of	  training	  examples	  
+	  	  	  x’s	  =	  “input”	  variable	  /	  features	  
+	  	  	  y’s	  =	  “output”	  variable	  /	  “target”	  variable	  
+	  
+
+Andrew	  Ng	  
+
+How	  do	  we	  represent	  h	  ?	  
+
+Training	  Set	  
+
+Learning	  Algorithm	  
+Size	  of	  
+house	  
+
+h	  
+
+Es6mated	  
+price	  
+Linear	  regression	  with	  one	  variable.	  
+Univariate	  linear	  regression.	  
+
+Andrew	  Ng	  
+
+Linear	  regression	  
+with	  one	  variable	  
+
+Cost	  func6on	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Training	  Set	  
+
+Size	  in	  feet2	  (x)	  
+2104	  
+1416	  
+1534	  
+852	  
+…	  
+
+Price	  ($)	  in	  1000's	  (y)	  
+460	  
+232	  
+315	  
+178	  
+…	  
+
+Hypothesis:	  
+‘s:	  	  	  	  	  	  Parameters	  
+How	  to	  choose	  	  	  	  	  ‘s	  ?	  
+
+Andrew	  Ng	  
+
+3	  
+
+3	  
+
+3	  
+
+2	  
+
+2	  
+
+2	  
+
+1	  
+
+1	  
+
+1	  
+
+0	  
+
+0	  
+
+0	  
+
+0	  
+
+1	  
+
+2	  
+
+3	  
+
+0	  
+
+1	  
+
+2	  
+
+3	  
+
+0	  
+
+1	  
+
+2	  
+
+3	  
+
+Andrew	  Ng	  
+
+y	  
+
+x	  
+
+Idea:	  Choose	  	  	  	  	  	  	  	  	  	  	  	  	  so	  that	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  
+	  	  	  	  	  	  	  	  	  	  	  is	  close	  to	  	  	  	  	  for	  our	  
+training	  examples	  	  
+
+Andrew	  Ng	  
+
+Linear	  regression	  
+with	  one	  variable	  
+
+Cost	  func6on	  
+intui6on	  I	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Hypothesis:	  
+
+Simpliﬁed	  
+
+Parameters:	  
+Cost	  Func6on:	  
+
+Goal:	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+y	  
+
+(func6on	  of	  the	  parameter	  	  	  	  	  	  )	  
+
+3	  
+
+3	  
+
+2	  
+
+2	  
+
+1	  
+
+1	  
+
+0	  
+0	  
+
+1	  
+
+x	  
+
+2	  
+
+3	  
+
+0	  
+-­‐0.5	   0	   0.5	   1	   1.5	   2	   2.5	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+y	  
+
+(func6on	  of	  the	  parameter	  	  	  	  	  	  )	  
+
+3	  
+
+3	  
+
+2	  
+
+2	  
+
+1	  
+
+1	  
+
+0	  
+0	  
+
+1	  
+
+x	  
+
+2	  
+
+3	  
+
+0	  
+-­‐0.5	   0	   0.5	   1	   1.5	   2	   2.5	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+y	  
+
+(func6on	  of	  the	  parameter	  	  	  	  	  	  )	  
+
+3	  
+
+3	  
+
+2	  
+
+2	  
+
+1	  
+
+1	  
+
+0	  
+0	  
+
+1	  
+
+x	  
+
+2	  
+
+3	  
+
+0	  
+-­‐0.5	   0	   0.5	   1	   1.5	   2	   2.5	  
+
+Andrew	  Ng	  
+
+Linear	  regression	  
+with	  one	  variable	  
+
+Cost	  func6on	  
+intui6on	  II	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Hypothesis:	  
+Parameters:	  
+Cost	  Func6on:	  
+Goal:	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+500	  
+400	  
+
+Price	  ($)	  	   300	  
+in	  1000’s	  
+200	  
+100	  
+0	  
+0	  
+
+1000	  
+
+2000	  
+
+Size	  in	  feet2	  (x)	  
+
+3000	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+Linear	  regression	  
+with	  one	  variable	  
+
+Machine	  Learning	  
+
+Gradient	  
+descent	  
+
+Andrew	  Ng	  
+
+Have	  some	  func6on	  
+Want	  	  
+Outline:	  
+•  Start	  with	  some	  
+•  Keep	  changing	  	  	  	  	  	  	  	  	  	  	  	  	  	  to	  reduce	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  
+un6l	  we	  hopefully	  end	  up	  at	  a	  minimum	  
+
+Andrew	  Ng	  
+
+J(θ0,θ1)	
+
+
+θ1	
+
+θ0	
+
+
+Andrew	  Ng	  
+
+J(θ0,θ1)	
+
+
+θ1	
+
+θ0	
+
+
+Andrew	  Ng	  
+
+Gradient	  descent	  algorithm	  
+
+Correct:	  Simultaneous	  update	  
+
+Incorrect:	  
+
+Andrew	  Ng	  
+
+Linear	  regression	  
+with	  one	  variable	  
+
+Gradient	  descent	  
+intui6on	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Gradient	  descent	  algorithm	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+If	  α	  is	  too	  small,	  gradient	  descent	  
+can	  be	  slow.	  
+
+If	  α	  is	  too	  large,	  gradient	  descent	  
+can	  overshoot	  the	  minimum.	  It	  may	  
+fail	  to	  converge,	  or	  even	  diverge.	  
+
+Andrew	  Ng	  
+
+at	  local	  op6ma	  
+Current	  value	  of	  	  
+
+Andrew	  Ng	  
+
+Gradient	  descent	  can	  converge	  to	  a	  local	  
+minimum,	  even	  with	  the	  learning	  rate	  α	  ﬁxed.	  
+
+As	  we	  approach	  a	  local	  
+minimum,	  gradient	  
+descent	  will	  automa6cally	  
+take	  smaller	  steps.	  So,	  no	  
+need	  to	  decrease	  α	  over	  
+6me.	  	  
+
+Andrew	  Ng	  
+
+Linear	  regression	  
+with	  one	  variable	  
+
+Gradient	  descent	  for	  	  
+linear	  regression	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Gradient	  descent	  algorithm	  
+
+Linear	  Regression	  Model	  
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+Gradient	  descent	  algorithm	  
+update	  	  
+and	  
+simultaneously	  
+	  
+
+Andrew	  Ng	  
+
+J(θ0,θ1)	
+
+
+θ1	
+
+θ0	
+
+
+Andrew	  Ng	  
+
+J(θ0,θ1)	
+
+
+θ1	
+
+θ0	
+
+
+Andrew	  Ng	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+(for	  ﬁxed	  	  	  	  	  	  	  	  	  	  	  ,	  this	  is	  a	  func6on	  of	  x)	  
+
+(func6on	  of	  the	  parameters	  	  	  	  	  	  	  	  	  	  	  	  )	  
+
+Andrew	  Ng	  
+
+“Batch”	  Gradient	  Descent	  
+
+“Batch”:	  Each	  step	  of	  gradient	  descent	  
+uses	  all	  the	  training	  examples.	  
+
+Andrew	  Ng	  
+
+

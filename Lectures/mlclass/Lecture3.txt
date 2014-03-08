@@ -1,0 +1,200 @@
+Linear	  Algebra	  
+review	  (op3onal)	  
+
+Matrices	  and	  
+vectors	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Matrix:	  Rectangular	  array	  of	  numbers:	  
+
+Dimension	  of	  matrix:	  number	  of	  rows	  x	  number	  of	  columns	  
+
+Andrew	  Ng	  
+
+Matrix	  Elements	  (entries	  of	  matrix)	  
+
+“	  	  ,	  	  	  entry”	  in	  the	  	  	  	  	  	  	  row,	  	  	  	  	  	  	  	  column.	  
+
+Andrew	  Ng	  
+
+Vector:	  An	  n	  x	  1	  matrix.	  
+
+element	  
+
+1-­‐indexed	  vs	  0-­‐indexed:	  
+
+Andrew	  Ng	  
+
+Linear	  Algebra	  
+review	  (op3onal)	  
+Addi3on	  and	  scalar	  
+mul3plica3on	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Matrix	  Addi4on	  
+
+Andrew	  Ng	  
+
+Scalar	  Mul4plica4on	  
+
+Andrew	  Ng	  
+
+Combina4on	  of	  Operands	  
+
+Andrew	  Ng	  
+
+Linear	  Algebra	  
+review	  (op3onal)	  
+
+Matrix-­‐vector	  
+mul3plica3on	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Example	  
+
+Andrew	  Ng	  
+
+Details:	  
+
+m	  x	  n	  matrix	  
+(m	  rows,	  
+n	  columns)	  
+
+n	  x	  1	  matrix	  
+m-­‐dimensional	  
+(n-­‐dimensional	  
+vector	  
+vector)	  
+
+To	  get	  	  	  	  	  ,	  mul3ply	  	  	  	  ’s	  	  	  	  	  	  	  row	  with	  elements	  
+of	  vector	  	  	  ,	  and	  add	  them	  up.	  
+
+Andrew	  Ng	  
+
+Example	  
+
+Andrew	  Ng	  
+
+House	  sizes:	  
+
+Andrew	  Ng	  
+
+Linear	  Algebra	  
+review	  (op3onal)	  
+
+Matrix-­‐matrix	  
+mul3plica3on	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Example	  
+
+Andrew	  Ng	  
+
+Details:	  
+
+m	  x	  n	  matrix	  
+(m	  rows,	  
+n	  columns)	  
+
+n	  x	  o	  matrix	  
+(n	  rows,	  
+o	  columns)	  
+
+m	  x	  o	  
+matrix	  
+
+The	  	  	  	  	  	  	  column	  of	  the	  matrix	  	  	  	  	  	  is	  obtained	  by	  mul3plying	  
+	  	  	  	  with	  the	  	  	  	  	  	  	  column	  of	  	  	  	  	  .	  (for	  	  	  	  =	  1,2,…,o)	  
+
+Andrew	  Ng	  
+
+Example	  
+7
+
+2
+
+7
+
+Andrew	  Ng	  
+
+House	  sizes:	  
+
+Have	  3	  compe3ng	  hypotheses:	  
+1.	  
+2.	  
+3.	  
+
+Matrix	  
+
+Matrix	  
+
+Andrew	  Ng	  
+
+Linear	  Algebra	  
+review	  (op3onal)	  
+Matrix	  mul3plica3on	  
+proper3es	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Let	  	  	  	  	  and	  	  	  	  	  be	  matrices.	  Then	  in	  general,	  
+(not	  commuta3ve.)	  
+E.g.	  
+
+Andrew	  Ng	  
+
+Let	  
+Let	  
+
+Compute	  
+Compute	  
+
+Andrew	  Ng	  
+
+Iden4ty	  Matrix	  
+Denoted	  	  	  	  	  (or	  	  	  	  	  	  	  	  	  	  ).	  
+Examples	  of	  iden3ty	  matrices:	  
+2	  x	  2	  
+
+3	  x	  3	  
+
+For	  any	  matrix	  	  	  	  ,	  
+
+4	  x	  4	  
+
+Andrew	  Ng	  
+
+Linear	  Algebra	  
+review	  (op3onal)	  
+
+Inverse	  and	  
+transpose	  
+Machine	  Learning	  
+
+Andrew	  Ng	  
+
+Not	  all	  numbers	  have	  an	  inverse.	  
+Matrix	  inverse:	  
+If	  A	  is	  an	  m	  x	  m	  matrix,	  and	  if	  it	  has	  an	  inverse,	  
+
+Matrices	  that	  don’t	  have	  an	  inverse	  are	  “singular”	  or	  “degenerate”	  
+
+Andrew	  Ng	  
+
+Matrix	  Transpose	  
+Example:	  
+Let	  	  	  	  	  be	  an	  m	  x	  n	  matrix,	  and	  let	  	  
+Then	  	  	  	  	  is	  an	  n	  x	  m	  matrix,	  and	  
+
+Andrew	  Ng	  
+
+

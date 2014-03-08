@@ -1,0 +1,281 @@
+Machine	  learning	  
+system	  design	  
+
+Machine	  Learning	  
+
+Priori3zing	  what	  to	  
+work	  on:	  Spam	  
+classiﬁca3on	  example	  
+
+Building	  a	  spam	  classiﬁer	  
+
+From: cheapsales@buystufffromme.com
+To: ang@cs.stanford.edu
+Subject: Buy now!
+
+From: Alfred Ng
+To: ang@cs.stanford.edu
+Subject: Christmas dates?
+
+Deal of the week! Buy now!
+Rolex w4tchs - $100
+Med1cine (any kind) - $50
+Also low cost M0rgages
+available.
+
+Hey Andrew,
+Was talking to Mom about plans
+for Xmas. When do you get off
+work. Meet Dec 22?
+Alf
+
+Andrew	  Ng	  
+
+Building	  a	  spam	  classiﬁer	  
+Supervised	  learning.	  	  	  	  	  	  	  	  	  	  	  features	  of	  email.	  	  	  	  	  	  	  	  	  spam	  (1)	  or	  not	  spam	  (0).	  
+Features	  	  	  	  :	  Choose	  100	  words	  indica3ve	  of	  spam/not	  spam.	  
+	  
+
+From: cheapsales@buystufffromme.com
+To: ang@cs.stanford.edu
+Subject: Buy now!
+
+Deal of the week! Buy now!
+
+Note:	  In	  prac3ce,	  take	  most	  frequently	  occurring	  	  	  	  	  	  words	  (	  10,000	  to	  50,000)	  
+in	  training	  set,	  rather	  than	  manually	  pick	  100	  words.	  
+
+Andrew	  Ng	  
+
+Building	  a	  spam	  classiﬁer	  
+How	  to	  spend	  your	  3me	  to	  make	  it	  have	  low	  error?	  
+-­‐  Collect	  lots	  of	  data	  
+-­‐  E.g.	  “honeypot”	  project.	  
+-­‐  Develop	   sophis3cated	   features	   based	   on	   email	   rou3ng	  
+informa3on	  (from	  email	  header).	  
+-­‐  Develop	   sophis3cated	   features	   for	   message	   body,	   e.g.	   should	  
+“discount”	  and	  “discounts”	  be	  treated	  as	  the	  same	  word?	  How	  
+about	  “deal”	  and	  “Dealer”?	  Features	  about	  punctua3on?	  
+-­‐  Develop	   sophis3cated	   algorithm	   to	   detect	   misspellings	   (e.g.	  
+m0rtgage,	  med1cine,	  w4tches.)	  
+
+Andrew	  Ng	  
+
+Machine	  learning	  
+system	  design	  
+
+Error	  analysis	  
+Machine	  Learning	  
+
+Recommended	  approach	  
+-­‐  Start	  with	  a	  simple	  algorithm	  that	  you	  can	  implement	  quickly.	  
+Implement	  it	  and	  test	  it	  on	  your	  cross-­‐valida3on	  data.	  
+-­‐  Plot	  learning	  curves	  to	  decide	  if	  more	  data,	  more	  features,	  etc.	  
+are	  likely	  to	  help.	  
+-­‐  Error	  analysis:	  	  Manually	  examine	  the	  examples	  (in	  cross	  
+valida3on	  set)	  that	  your	  algorithm	  made	  errors	  on.	  See	  if	  you	  
+spot	  any	  systema3c	  trend	  in	  what	  type	  of	  examples	  it	  is	  
+making	  errors	  on.	  
+
+Andrew	  Ng	  
+
+Error	  Analysis	  
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  500	  examples	  in	  cross	  valida3on	  set	  
+Algorithm	  misclassiﬁes	  100	  emails.	  
+Manually	  examine	  the	  100	  errors,	  and	  categorize	  them	  based	  on:	  
+(i)  What	  type	  of	  email	  it	  is	  
+(ii)  What	   cues	   (features)	   you	   think	   would	   have	   helped	   the	  
+algorithm	  classify	  them	  correctly.	  
+Pharma:	  
+Replica/fake:	  
+Steal	  passwords:	  
+Other:	  
+
+Deliberate	  misspellings:	  
+	  (m0rgage,	  med1cine,	  etc.)	  
+Unusual	  email	  rou3ng:	  
+Unusual	  (spamming)	  punctua3on:	  
+
+Andrew	  Ng	  
+
+The	  importance	  of	  numerical	  evalua;on	  
+Should	  discount/discounts/discounted/discoun3ng	  be	  treated	  as	  the	  
+same	  word?	  	  
+Can	  use	  “stemming”	  so\ware	  (E.g.	  “Porter	  stemmer”)	  
+	  universe/university.	  
+Error	  analysis	  may	  not	  be	  helpful	  for	  deciding	  if	  this	  is	  likely	  to	  improve	  
+performance.	  Only	  solu3on	  is	  to	  try	  it	  and	  see	  if	  it	  works.	  
+Need	  numerical	  evalua3on	  (e.g.,	  cross	  valida3on	  error)	  of	  algorithm’s	  
+performance	  with	  and	  without	  stemming.	  
+	  Without	  stemming:	   	  
+	  With	  stemming:	  
+Dis3nguish	  upper	  vs.	  lower	  case	  (Mom/mom):	  
+
+Andrew	  Ng	  
+
+Machine	  learning	  
+system	  design	  
+
+Error	  metrics	  for	  
+skewed	  classes	  
+Machine	  Learning	  
+
+Cancer	  classiﬁca;on	  example	  
+Train	  logis3c	  regression	  model	  	  	  	  	  	  	  	  	  	  .	  (	  	  	  	  	  	  	  	  	  if	  cancer,	  	  	  	  	  	  	  	  	  
+otherwise)	  
+Find	  that	  you	  got	  1%	  error	  on	  test	  set.	  
+(99%	  correct	  diagnoses)	  
+	  
+Only	  0.50%	  of	  pa3ents	  have	  cancer.	  
+function y = predictCancer(x)
+y = 0; %ignore x!
+return
+
+Andrew	  Ng	  
+
+Precision/Recall	  
+	  	  	  	  	  	  	  	  	  	  	  in	  presence	  of	  rare	  class	  that	  we	  want	  to	  detect	  
+Precision	  	  
+(Of	  all	  pa3ents	  where	  we	  predicted	  	  	  	  	  	  	  	  	  	  	  ,	  what	  
+frac3on	  actually	  has	  cancer?)	  
+
+Recall	  
+(Of	  all	  pa3ents	  that	  actually	  have	  cancer,	  what	  frac3on	  
+did	  we	  correctly	  detect	  as	  having	  cancer?)	  
+
+Andrew	  Ng	  
+
+Machine	  learning	  
+system	  design	  
+Trading	  oﬀ	  precision	  
+and	  recall	  
+Machine	  Learning	  
+
+recall	  	  	  	  	  =	  
+
+Precision	  
+
+Trading	  oﬀ	  precision	  and	  recall	  
+Logis3c	  regression:	  
+Predict	  1	  if	  	  
+Predict	  0	  if	  	  
+Suppose	  we	  want	  to	  predict	  	  	  	  	  	  	  	  	  	  	  	  (cancer)	  
+only	  if	  very	  conﬁdent.	  
+
+precision	  	  	  	  =	  
+
+Suppose	  we	  want	  to	  avoid	  missing	  too	  many	  
+cases	  of	  cancer	  (avoid	  false	  nega3ves).	  
+
+true	  posi3ves	  
+no.	  of	  predicted	  posi3ve	  
+true	  posi3ves	  
+no.	  of	  actual	  posi3ve	  
+
+1	  
+
+0.5	  
+
+0.5	  
+
+1	  
+
+Recall	  
+
+More	  generally:	  Predict	  1	  if	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  threshold.	  
+
+Andrew	  Ng	  
+
+F1	  Score	  (F	  score)	  
+How	  to	  compare	  precision/recall	  numbers?	  
+Precision(P)	  
+
+Recall	  (R)	  
+
+Average	  
+
+F1	  Score	  
+
+Algorithm	  1	  
+
+0.5	  
+
+0.4	  
+
+0.45	  
+
+0.444	  
+
+Algorithm	  2	  
+
+0.7	  
+
+0.1	  
+
+0.4	  
+
+0.175	  
+
+Algorithm	  3	  
+
+0.02	  
+
+1.0	  
+
+0.51	  
+
+0.0392	  
+
+Average:	  
+F1	  Score:	  	  
+
+Andrew	  Ng	  
+
+Machine	  learning	  
+system	  design	  
+
+Data	  for	  machine	  
+learning	  
+Machine	  Learning	  
+
+Designing	  a	  high	  accuracy	  learning	  system	  
+
+	  	  	  	  	  Accuracy	  	  	  	  	  	  
+
+E.g.	  	  Classify	  between	  confusable	  words.	  
+	  {to,	  two,	  too},	  	  {then,	  than}	  
+For	  breakfast	  I	  ate	  _____	  eggs.	  
+Algorithms	  
+-­‐  Perceptron	  (Logis3c	  regression)	  
+-­‐  Winnow	  
+-­‐  Memory-­‐based	  
+-­‐  Naïve	  Bayes	  
+Training	  set	  size	  (millions)	  
+	  
+“It’s	  not	  who	  has	  the	  best	  algorithm	  that	  wins.	  	  
+	  
+	  
+	  
+	  It’s	  who	  has	  the	  most	  data.”	  
+[Banko	  and	  Brill,	  2001]	  
+
+Large	  data	  ra;onale	  
+Assume	  feature	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  has	  suﬃcient	  informa3on	  to	  
+predict	  	  	  	  	  accurately.	  	  
+Example:	  For	  breakfast	  I	  ate	  _____	  eggs.	  
+Counterexample:	  Predict	  housing	  price	  from	  only	  size	  
+(feet2)	  and	  no	  other	  features.	  	  
+Useful	  test:	  Given	  the	  input	  	  	  	  ,	  can	  a	  human	  expert	  
+conﬁdently	  predict	  	  	  ?	  
+
+Large	  data	  ra;onale	  
+Use	  a	  learning	  algorithm	  with	  many	  parameters	  (e.g.	  logis3c	  
+regression/linear	  regression	  with	  many	  features;	  neural	  network	  
+with	  many	  hidden	  units).	  	  
+	  
+	  
+	  
+
+Use	  a	  very	  large	  training	  set	  (unlikely	  to	  overﬁt)	  
+
+

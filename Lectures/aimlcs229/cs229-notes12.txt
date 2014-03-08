@@ -1,0 +1,338 @@
+CS229 Lecture notes
+Andrew Ng
+
+Part XIII
+
+Reinforcement Learning and
+Control
+We now begin our study of reinforcement learning and adaptive control.
+In supervised learning, we saw algorithms that tried to make their outputs
+mimic the labels y given in the training set. In that setting, the labels gave
+an unambiguous “right answer” for each of the inputs x. In contrast, for
+many sequential decision making and control problems, it is very difficult to
+provide this type of explicit supervision to a learning algorithm. For example,
+if we have just built a four-legged robot and are trying to program it to walk,
+then initially we have no idea what the “correct” actions to take are to make
+it walk, and so do not know how to provide explicit supervision for a learning
+algorithm to try to mimic.
+In the reinforcement learning framework, we will instead provide our algorithms only a reward function, which indicates to the learning agent when
+it is doing well, and when it is doing poorly. In the four-legged walking example, the reward function might give the robot positive rewards for moving
+forwards, and negative rewards for either moving backwards or falling over.
+It will then be the learning algorithm’s job to figure out how to choose actions
+over time so as to obtain large rewards.
+Reinforcement learning has been successful in applications as diverse as
+autonomous helicopter flight, robot legged locomotion, cell-phone network
+routing, marketing strategy selection, factory control, and efficient web-page
+indexing. Our study of reinforcement learning will begin with a definition of
+the Markov decision processes (MDP), which provides the formalism in
+which RL problems are usually posed.
+
+1
+
+2
+
+1
+
+Markov decision processes
+
+A Markov decision process is a tuple (S, A, {Psa }, γ, R), where:
+• S is a set of states. (For example, in autonomous helicopter flight, S
+might be the set of all possible positions and orientations of the helicopter.)
+• A is a set of actions. (For example, the set of all possible directions in
+which you can push the helicopter’s control sticks.)
+• Psa are the state transition probabilities. For each state s ∈ S and
+action a ∈ A, Psa is a distribution over the state space. We’ll say more
+about this later, but briefly, Psa gives the distribution over what states
+we will transition to if we take action a in state s.
+• γ ∈ [0, 1) is called the discount factor.
+• R : S × A → R is the reward function. (Rewards are sometimes also
+written as a function of a state S only, in which case we would have
+R : S → R).
+The dynamics of an MDP proceeds as follows: We start in some state s0 ,
+and get to choose some action a0 ∈ A to take in the MDP. As a result of our
+choice, the state of the MDP randomly transitions to some successor state
+s1 , drawn according to s1 ∼ Ps0 a0 . Then, we get to pick another action a1 .
+As a result of this action, the state transitions again, now to some s2 ∼ Ps1 a1 .
+We then pick a2 , and so on. . . . Pictorially, we can represent this process as
+follows:
+a3
+a2
+a1
+a0
+...
+s3 −→
+s2 −→
+s1 −→
+s0 −→
+Upon visiting the sequence of states s0 , s1 , . . . with actions a0 , a1 , . . ., our
+total payoff is given by
+R(s0 , a0 ) + γR(s1 , a1 ) + γ 2 R(s2 , a2 ) + · · · .
+Or, when we are writing rewards as a function of the states only, this becomes
+R(s0 ) + γR(s1 ) + γ 2 R(s2 ) + · · · .
+For most of our development, we will use the simpler state-rewards R(s),
+though the generalization to state-action rewards R(s, a) offers no special
+difficulties.
+
+3
+Our goal in reinforcement learning is to choose actions over time so as to
+maximize the expected value of the total payoff:
+E R(s0 ) + γR(s1 ) + γ 2 R(s2 ) + · · ·
+Note that the reward at timestep t is discounted by a factor of γ t . Thus, to
+make this expectation large, we would like to accrue positive rewards as soon
+as possible (and postpone negative rewards as long as possible). In economic
+applications where R(·) is the amount of money made, γ also has a natural
+interpretation in terms of the interest rate (where a dollar today is worth
+more than a dollar tomorrow).
+A policy is any function π : S → A mapping from the states to the
+actions. We say that we are executing some policy π if, whenever we are
+in state s, we take action a = π(s). We also define the value function for
+a policy π according to
+V π (s) = E R(s0 ) + γR(s1 ) + γ 2 R(s2 ) + · · · s0 = s, π].
+V π (s) is simply the expected sum of discounted rewards upon starting in
+state s, and taking actions according to π.1
+Given a fixed policy π, its value function V π satisfies the Bellman equations:
+V π (s) = R(s) + γ
+Psπ(s) (s )V π (s ).
+s ∈S
+
+This says that the expected sum of discounted rewards V π (s) for starting
+in s consists of two terms: First, the immediate reward R(s) that we get
+rightaway simply for starting in state s, and second, the expected sum of
+future discounted rewards. Examining the second term in more detail, we
+see that the summation term above can be rewritten Es ∼Psπ(s) [V π (s )]. This
+is the expected sum of discounted rewards for starting in state s , where s
+is distributed according Psπ(s) , which is the distribution over where we will
+end up after taking the first action π(s) in the MDP from state s. Thus, the
+second term above gives the expected sum of discounted rewards obtained
+after the first step in the MDP.
+Bellman’s equations can be used to efficiently solve for V π . Specifically,
+in a finite-state MDP (|S| < ∞), we can write down one such equation for
+V π (s) for every state s. This gives us a set of |S| linear equations in |S|
+variables (the unknown V π (s)’s, one for each state), which can be efficiently
+solved for the V π (s)’s.
+1
+
+This notation in which we condition on π isn’t technically correct because π isn’t a
+random variable, but this is quite standard in the literature.
+
+4
+We also define the optimal value function according to
+V ∗ (s) = max V π (s).
+π
+
+(1)
+
+In other words, this is the best possible expected sum of discounted rewards
+that can be attained using any policy. There is also a version of Bellman’s
+equations for the optimal value function:
+V ∗ (s) = R(s) + max γ
+a∈A
+
+Psa (s )V ∗ (s ).
+
+(2)
+
+s ∈S
+
+The first term above is the immediate reward as before. The second term
+is the maximum over all actions a of the expected future sum of discounted
+rewards we’ll get upon after action a. You should make sure you understand
+this equation and see why it makes sense.
+We also define a policy π ∗ : S → A as follows:
+Psa (s )V ∗ (s ).
+
+π ∗ (s) = arg max
+a∈A
+
+(3)
+
+s ∈S
+
+Note that π ∗ (s) gives the action a that attains the maximum in the “max”
+in Equation (2).
+It is a fact that for every state s and every policy π, we have
+∗
+
+V ∗ (s) = V π (s) ≥ V π (s).
+∗
+
+The first equality says that the V π , the value function for π ∗ , is equal to the
+optimal value function V ∗ for every state s. Further, the inequality above
+says that π ∗ ’s value is at least a large as the value of any other other policy.
+In other words, π ∗ as defined in Equation (3) is the optimal policy.
+Note that π ∗ has the interesting property that it is the optimal policy
+for all states s. Specifically, it is not the case that if we were starting in
+some state s then there’d be some optimal policy for that state, and if we
+were starting in some other state s then there’d be some other policy that’s
+optimal policy for s . Specifically, the same policy π ∗ attains the maximum
+in Equation (1) for all states s. This means that we can use the same policy
+π ∗ no matter what the initial state of our MDP is.
+
+2
+
+Value iteration and policy iteration
+
+We now describe two efficient algorithms for solving finite-state MDPs. For
+now, we will consider only MDPs with finite state and action spaces (|S| <
+∞, |A| < ∞).
+The first algorithm, value iteration, is as follows:
+
+5
+1. For each state s, initialize V (s) := 0.
+2. Repeat until convergence {
+For every state, update V (s) := R(s) + maxa∈A γ
+
+s
+
+Psa (s )V (s ).
+
+}
+This algorithm can be thought of as repeatedly trying to update the estimated value function using Bellman Equations (2).
+There are two possible ways of performing the updates in the inner loop of
+the algorithm. In the first, we can first compute the new values for V (s) for
+every state s, and then overwrite all the old values with the new values. This
+is called a synchronous update. In this case, the algorithm can be viewed as
+implementing a “Bellman backup operator” that takes a current estimate of
+the value function, and maps it to a new estimate. (See homework problem
+for details.) Alternatively, we can also perform asynchronous updates.
+Here, we would loop over the states (in some order), updating the values one
+at a time.
+Under either synchronous or asynchronous updates, it can be shown that
+value iteration will cause V to converge to V ∗ . Having found V ∗ , we can
+then use Equation (3) to find the optimal policy.
+Apart from value iteration, there is a second standard algorithm for finding an optimal policy for an MDP. The policy iteration algorithm proceeds
+as follows:
+1. Initialize π randomly.
+2. Repeat until convergence {
+(a) Let V := V π .
+(b) For each state s, let π(s) := arg maxa∈A
+
+s
+
+Psa (s )V (s ).
+
+}
+Thus, the inner-loop repeatedly computes the value function for the current
+policy, and then updates the policy using the current value function. (The
+policy π found in step (b) is also called the policy that is greedy with respect to V .) Note that step (a) can be done via solving Bellman’s equations
+as described earlier, which in the case of a fixed policy, is just a set of |S|
+linear equations in |S| variables.
+After at most a finite number of iterations of this algorithm, V will converge to V ∗ , and π will converge to π ∗ .
+
+6
+Both value iteration and policy iteration are standard algorithms for solving MDPs, and there isn’t currently universal agreement over which algorithm is better. For small MDPs, policy iteration is often very fast and
+converges with very few iterations. However, for MDPs with large state
+spaces, solving for V π explicitly would involve solving a large system of linear equations, and could be difficult. In these problems, value iteration may
+be preferred. For this reason, in practice value iteration seems to be used
+more often than policy iteration.
+
+3
+
+Learning a model for an MDP
+
+So far, we have discussed MDPs and algorithms for MDPs assuming that the
+state transition probabilities and rewards are known. In many realistic problems, we are not given state transition probabilities and rewards explicitly,
+but must instead estimate them from data. (Usually, S, A and γ are known.)
+For example, suppose that, for the inverted pendulum problem (see problem set 4), we had a number of trials in the MDP, that proceeded as follows:
+(1) a
+
+(1)
+
+(1) a
+
+(1)
+
+(1) a
+
+(1)
+
+(1) a
+
+(1)
+
+0
+1
+2
+3
+s0 −→
+s1 −→
+s2 −→
+s3 −→
+...
+
+(2) a
+
+(2)
+
+(2) a
+
+(2)
+
+(2) a
+
+(2)
+
+(2) a
+
+(2)
+
+3
+2
+1
+0
+...
+s3 −→
+s2 −→
+s1 −→
+s0 −→
+...
+
+(j)
+
+(j)
+
+Here, si is the state we were at time i of trial j, and ai is the corresponding action that was taken from that state. In practice, each of the
+trials above might be run until the MDP terminates (such as if the pole falls
+over in the inverted pendulum problem), or it might be run for some large
+but finite number of timesteps.
+Given this “experience” in the MDP consisting of a number of trials,
+we can then easily derive the maximum likelihood estimates for the state
+transition probabilities:
+Psa (s ) =
+
+#times took we action a in state s and got to s
+#times we took action a in state s
+
+(4)
+
+Or, if the ratio above is “0/0”—corresponding to the case of never having
+taken action a in state s before—the we might simply estimate Psa (s ) to be
+1/|S|. (I.e., estimate Psa to be the uniform distribution over all states.)
+Note that, if we gain more experience (observe more trials) in the MDP,
+there is an efficient way to update our estimated state transition probabilities
+
+7
+using the new experience. Specifically, if we keep around the counts for both
+the numerator and denominator terms of (4), then as we observe more trials,
+we can simply keep accumulating those counts. Computing the ratio of these
+counts then given our estimate of Psa .
+Using a similar procedure, if R is unknown, we can also pick our estimate
+of the expected immediate reward R(s) in state s to be the average reward
+observed in state s.
+Having learned a model for the MDP, we can then use either value iteration or policy iteration to solve the MDP using the estimated transition
+probabilities and rewards. For example, putting together model learning and
+value iteration, here is one possible algorithm for learning in an MDP with
+unknown state transition probabilities:
+1. Initialize π randomly.
+2. Repeat {
+(a) Execute π in the MDP for some number of trials.
+(b) Using the accumulated experience in the MDP, update our estimates for Psa (and R, if applicable).
+(c) Apply value iteration with the estimated state transition probabilities and rewards to get a new estimated value function V .
+(d) Update π to be the greedy policy with respect to V .
+}
+We note that, for this particular algorithm, there is one simple optimization that can make it run much more quickly. Specifically, in the inner loop
+of the algorithm where we apply value iteration, if instead of initializing value
+iteration with V = 0, we initialize it with the solution found during the previous iteration of our algorithm, then that will provide value iteration with
+a much better initial starting point and make it converge more quickly.
+
+

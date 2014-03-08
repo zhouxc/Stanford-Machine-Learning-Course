@@ -1,0 +1,228 @@
+1
+
+CS229 Practice Midterm
+
+CS 229, Autumn 2007
+Practice Midterm
+Notes:
+1. The midterm will have about 5-6 long questions, and about 8-10 short questions. Space
+will be provided on the actual midterm for you to write your answers.
+2. The midterm is meant to be educational, and as such some questions could be quite
+challenging. Use your time wisely to answer as much as you can!
+
+1. [13 points] Generalized Linear Models
+Recall that generalized linear models assume that the response variable y (conditioned on
+x) is distributed according to a member of the exponential family:
+P (y; η) = b(y) exp(ηT (y) − a(η)),
+where η = θT x. For this problem, we will assume η ∈ R.
+(a) [10 points] Given a training set {(x(i) , y (i) )}m
+i=1 , the loglikelihood is given by
+m
+
+log p(y (i) | x(i) ; θ).
+
+ℓ(θ) =
+i=1
+
+Give a set conditions on b(y), T (y), and a(η) which ensure that the loglikelihood is
+a concave function of θ (and thus has a unique maximum). Your conditions must be
+reasonable, and should be as weak as possible. (E.g., the answer “any b(y), T (y), and
+a(η) so that ℓ(θ) is concave” is not reasonable. Similarly, overly narrow conditions,
+including ones that apply only to specific GLIMs, are also not reasonable.)
+(b) [3 points] When the response variable is distributed according to a Normal distribu−y2
+
+tion (with unit variance), we have b(y) = √12π e 2 , T (y) = y, and a(η) =
+that the condition(s) you gave in part (a) hold for this setting.
+
+η2
+2 .
+
+Verify
+
+2. [15 points] Bayesian linear regression
+Consider Bayesian linear regression using a Gaussian prior on the parameters θ ∈ Rn+1 .
+Thus, in our prior, θ ∼ N (0, τ 2 In ), where τ 2 ∈ R, and In+1 is the n + 1-by-n + 1 identity
+matrix. Also let the conditional distribution of y (i) given x(i) and θ be N (θT x(i) , σ 2 ), as
+in our usual linear least-squares model.1 Let a set of m IID training examples be given
+(with x(i) ∈ Rn+1 ). Recall that the MAP estimate of the parameters θ is given by:
+m
+
+p(y (i) |x(i) , θ) p(θ)
+
+θMAP = arg max
+θ
+
+i=1
+
+Find, in closed form, the MAP estimate of the parameters θ. For this problem, you should
+treat τ 2 and σ 2 as fixed, known, constants. [Hint: Your solution should involve deriving
+something that looks a bit like the Normal equations.]
+1 Equivalently,
+
+y (i) = θ T x(i) + ε(i) , where the ε(i) ’s are distributed IID N (0, σ2 ).
+
+2
+
+CS229 Practice Midterm
+
+3. [18 points] Kernels
+In this problem, you will prove that certain functions K give valid kernels. Be careful to
+justify every step in your proofs. Specifically, if you use a result proved either in the lecture
+notes or homeworks, be careful to state exactly which result you’re using.
+(a) [8 points] Let K(x, z) be a valid (Mercer) kernel over Rn ×Rn . Consider the function
+given by
+Ke (x, z) = exp(K(x, z)).
+Show that Ke is a valid kernel. [Hint: There are many ways of proving this result,
+but you might find the following two facts useful: (i) The Taylor expansion of ex is
+∞
+given by ex = j=0 j!1 xj (ii) If a sequence of non-negative numbers ai ≥ 0 has a limit
+a = limi→∞ ai , then a ≥ 0.]
+(b) [8 points] The Gaussian kernel is given by the function
+K(x, z) = e−
+
+||x−z||2
+σ2
+
+,
+
+where σ 2 > 0 is some fixed, positive constant. We said in class that this is a valid
+kernel, but did not prove it. Prove that the Gaussian kernel is indeed a valid kernel.
+[Hint: The following fact may be useful. ||x − z||2 = ||x||2 − 2xT z + ||z||2 .]
+4. [18 points] One-class SVM
+Given an unlabeled set of examples {x(1) , . . . , x(m) } the one-class SVM algorithm tries to
+find a direction w that maximally separates the data from the origin. 2
+More precisely, it solves the (primal) optimization problem:
+minw
+s.t.
+
+1 ⊤
+w w
+2
+w⊤ x(i) ≥ 1
+
+for all i = 1, . . . , m
+
+A new test example x is labeled 1 if w⊤ x ≥ 1, and 0 otherwise.
+(a) [9 points] The primal optimization problem for the one-class SVM was given above.
+Write down the corresponding dual optimization problem. Simplify your answer as
+much as possible. In particular, w should not appear in your answer.
+(b) [4 points] Can the one-class SVM be kernelized (both in training and testing)?
+Justify your answer.
+(c) [5 points] Give an SMO-like algorithm to optimize the dual. I.e., give an algorithm
+that in every optimization step optimizes over the smallest possible subset of variables.
+Also give in closed-form the update equation for this subset of variables. You should
+also justify why it is sufficient to consider this many variables at a time in each step.
+5. [18 points] Uniform Convergence
+In this problem, we consider trying to estimate the mean of a biased coin toss. We will
+repeatedly toss the coin and keep a running estimate of the mean. We would like to prove
+2 This turns out to be useful for anomaly detection, but I assume you already have enough to keep you
+entertained for the 2h 15min of the midterm, and thus wouldn’t want to read about it here. See the midterm
+solutions for details.
+
+3
+
+CS229 Practice Midterm
+
+that (with high probability), after some initial set of N tosses, the running estimate from
+that point on will always be accurate and never deviate too much from the true value.
+More formally, let Xi ∼ Bernoulli(φ) be IID random variables. Let φˆn be our estimate for
+φ after n observations:
+n
+1
+φˆn =
+Xi .
+n i=1
+We’d like to show that after a certain number of coin flips, our estimates will stay close
+to the true value of φ. More formally, we’d like to show that for all γ, δ ∈ (0, 1/2], there
+exists a value N such that
+P max |φ − φˆn | > γ ≤ δ.
+n≥N
+
+1
+)).
+Show that in order to make the guarantee above, it suffices to have N = O( γ12 log( δγ
+1
+1
+You may need to use the fact that for γ ∈ (0, 1/2], log( 1−exp(−2γ 2 ) ) = O(log( γ )).
+
+[Hint: Let An be the event that |φ − φˆn | > γ and consider taking a union bound over the
+set of events An , An+1 , An+2 , . . . ..]
+6. [40 points] Short Answers
+The following questions require a true/false accompanied by one sentence of explanation,
+or a reasonably short answer (usually at most 1-2 sentences or a figure).
+To discourage random guessing, one point will be deducted for a wrong answer
+on multiple choice questions! Also, no credit will be given for answers without
+a correct explanation.
+(a) [5 points] Let there be a binary classification problem with continuous-valued features. In Problem Set #1, you showed if we apply Gaussian discriminant analysis
+using the same covariance matrix Σ for both classes, then the resulting decision boundary will be linear. What will the decision boundary look like if we modeled the two
+classes using separate covariance matrices Σ0 and Σ1 ? (I.e., x(i) |y (i) = b ∼ N (µb , Σb ),
+for b = 0 or 1.)
+(b) [5 points] Consider a sequence of examples (x(1) , y (1) ), (x(2) , y (2) ), · · · , (x(m) , y (m) ).
+Assume that for all i we have x(i) ≤ D and that the data are linearly separated with
+a margin γ. Suppose that the perceptron algorithm makes exactly (D/γ)2 mistakes
+on this sequence of examples. Now, suppose we use a feature mapping φ(·) to a
+higher dimensional space and use the corresponding kernel perceptron algorithm on
+the same sequence of data (now in the higher-dimensional feature space). Then the
+kernel perceptron (implicitly operating in this higher dimensional feature space) will
+make a number of mistakes that is
+i.
+ii.
+iii.
+iv.
+
+strictly less than (D/γ)2 .
+equal to (D/γ)2 .
+strictly more than (D/γ)2 .
+impossible to say from the given information.
+
+(c) [5 points] Let any x(1) , x(2) , x(3) ∈ Rp be given (x(1) = x(2) , x(1) = x(3) , x(2) = x(3) ).
+Also let any z (1) , z (2) , z (3) ∈ Rq be fixed. Then there exists a valid Mercer kernel
+K : Rp × Rp → R such that for all i, j ∈ {1, 2, 3} we have K(x(i) , x(j) ) = (z (i) )⊤ z (j) .
+True or False?
+
+CS229 Practice Midterm
+
+4
+
+(d) [5 points] Let f : Rn → R be defined according to f (x) = x⊤ Ax + b⊤ x + c, where
+A is symmetric positive definite. Suppose we use Newton’s method to minimize f .
+Show that Newton’s method will find the optimum in exactly one iteration. You may
+assume that Newton’s method is initialized with 0.
+(e) [5 points] Consider binary classification, and let the input domain be X = {0, 1}n,
+i.e., the space of all n-dimensional bit vectors. Thus, each sample x has n binaryvalued features. Let Hn be the class of all boolean functions over the input space.
+What is |Hn | and V C(Hn )?
+(f) [5 points] Suppose an ℓ1 -regularized SVM (with regularization parameter C > 0) is
+trained on a dataset that is linearly separable. Because the data is linearly separable,
+to minimize the primal objective, the SVM algorithm will set all the slack variables
+to zero. Thus, the weight vector w obtained will be the same no matter what regularization parameter C is used (so long as it is strictly bigger than zero). True or
+false?
+(g) [5 points] Consider using hold-out cross validation (using 70% of the data for training,
+30% for hold-out CV) to select the bandwidth parameter τ for locally weighted linear
+regression. As the number of training examples m increases, would you expect the
+value of τ selected by the algorithm to generally become larger, smaller, or neither of
+the above? For this problem, assume that (the expected value of) y is a non-linear
+function of x.
+(h) [5 points] Consider a feature selection problem in which the mutual information
+M I(xi , y) = 0 for all features xi . Also for every subset of features Si = {xi1 , · · · , xik }
+of size < n/2 we have M I(Si , y) = 0.3 However there is a subset S ∗ of size exactly n/2
+such that M I(S ∗ , y) = 1. I.e. this subset of features allows us to predict y correctly.
+Of the three feature selection algorithms listed below, which one do you expect to
+work best on this dataset?
+i.
+ii.
+iii.
+iv.
+
+3 M I(S
+
+Forward Search.
+Backward Search.
+Filtering using mutual information M I(xi , y).
+All three are expected to perform reasonably well.
+
+P P
+= Si y P (Si , y) log(P (Si , y)/P (Si )P (y)), where the first summation is over all possible values
+of the features in Si .
+i , y)
+
+

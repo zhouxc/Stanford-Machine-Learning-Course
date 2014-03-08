@@ -1,0 +1,184 @@
+Regulariza*on	  
+The	  problem	  of	  
+overﬁ6ng	  
+Machine	  Learning	  
+
+Size	  
+
+Price	  
+
+Price	  
+
+Price	  
+
+Example:	  Linear	  regression	  (housing	  prices)	  
+
+Size	  
+
+Size	  
+
+Overﬁ&ng:	  If	  we	  have	  too	  many	  features,	  the	  learned	  hypothesis	  
+may	  ﬁt	  the	  training	  set	  very	  well	  (	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ),	  but	  
+fail	  to	  generalize	  to	  new	  examples	  (predict	  prices	  on	  new	  
+Andrew	  Ng	  
+
+Example:	  Logis*c	  regression	  
+x2	  
+
+x2	  
+
+x2	  
+
+x1	  
+
+x1	  
+
+x1	  
+
+(	  	  	  	  =	  sigmoid	  func*on)	  
+
+Andrew	  Ng	  
+
+size	  of	  house	  
+no.	  of	  bedrooms	  
+no.	  of	  ﬂoors	  
+age	  of	  house	  
+average	  income	  in	  neighborhood	  
+kitchen	  size	  
+
+Price	  
+
+Addressing	  overﬁ&ng:	  
+
+Size	  
+
+Andrew	  Ng	  
+
+Addressing	  overﬁ&ng:	  
+Op*ons:	  
+1.  Reduce	  number	  of	  features.	  
+―  Manually	  select	  which	  features	  to	  keep.	  
+―  Model	  selec*on	  algorithm	  (later	  in	  course).	  
+2.  Regulariza*on.	  
+―  Keep	  all	  the	  features,	  but	  reduce	  magnitude/values	  of	  
+parameters	  	  	  	  .	  
+―  Works	  well	  when	  we	  have	  a	  lot	  of	  features,	  each	  of	  
+which	  contributes	  a	  bit	  to	  predic*ng	  	  	  	  .	  
+	  
+	  
+
+Andrew	  Ng	  
+
+Regulariza*on	  
+Cost	  func*on	  
+Machine	  Learning	  
+
+Price	  
+
+Price	  
+
+Intui3on	  
+
+Size	  of	  house	  
+
+Size	  of	  house	  
+
+Suppose	  we	  penalize	  and	  make	  	  	  	  	  ,	  	  	  	  	  	  really	  small.	  
+
+Andrew	  Ng	  
+
+Regulariza3on.	  
+Small	  values	  for	  parameters	  	  
+―  “Simpler”	  hypothesis	  
+―  Less	  prone	  to	  overﬁ6ng	  	  
+Housing:	  
+―  Features:	  	  
+―  Parameters:	  
+
+Andrew	  Ng	  
+
+Price	  
+
+Regulariza3on.	  
+
+Size	  of	  house	  
+Andrew	  Ng	  
+
+In	  regularized	  linear	  regression,	  we	  choose	  	  	  	  	  	  to	  minimize	  
+
+Price	  
+
+What	  if	  	  	  	  	  	  is	  set	  to	  an	  extremely	  large	  value	  (perhaps	  for	  too	  large	  
+for	  our	  problem,	  say	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  )?	  
+
+Size	  of	  house	  
+
+Andrew	  Ng	  
+
+Regulariza*on	  
+Regularized	  linear	  
+regression	  
+Machine	  Learning	  
+
+Regularized	  linear	  regression	  
+
+Gradient	  descent	  
+Repeat	  
+
+Andrew	  Ng	  
+
+Normal	  equa3on	  
+
+Andrew	  Ng	  
+
+Non-­‐inver3bility	  	  (op3onal/advanced).	  
+Suppose	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  
+	  	  	  	  (#examples)	  	  (#features)	  
+
+If	  	  	  	  	  	  	  	  	  	  	  	  	  ,	  
+
+Andrew	  Ng	  
+
+Regulariza*on	  
+Regularized	  
+logis*c	  regression	  
+Machine	  Learning	  
+
+Regularized	  logis3c	  regression.	  
+x2	  
+
+x1	  
+
+Cost	  func*on:	  
+
+Andrew	  Ng	  
+
+Gradient	  descent	  
+Repeat	  
+
+Andrew	  Ng	  
+
+Advanced	  op3miza3on	  
+function [jVal, gradient] = costFunction(theta)
+jVal = [ code	  to	  compute	  
+
+];
+
+gradient(1) = [code	  to	  compute	  
+
+];
+
+gradient(2) = [code	  to	  compute	  
+
+];
+
+gradient(3) = [code	  to	  compute	  
+
+];
+
+gradient(n+1) = [ code	  to	  compute	  
+
+];
+Andrew	  Ng	  
+
+

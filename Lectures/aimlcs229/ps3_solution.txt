@@ -1,0 +1,1155 @@
+1
+
+CS229 Problem Set #3 Solutions
+
+CS 229, Public Course
+Problem Set #3 Solutions: Learning Theory and
+Unsupervised Learning
+1. Uniform convergence and Model Selection
+In this problem, we will prove a bound on the error of a simple model selection procedure.
+Let there be a binary classification problem with labels y ∈ {0, 1}, and let H1 ⊆ H2 ⊆
+. . . ⊆ Hk be k different finite hypothesis classes (|Hi | < ∞). Given a dataset S of m iid
+training examples, we will divide it into a training set Strain consisting of the first (1 − β)m
+examples, and a hold-out cross validation set Scv consisting of the remaining βm examples.
+Here, β ∈ (0, 1).
+ˆ i = arg minh∈H εˆS
+(h) be the hypothesis in Hi with the lowest training error
+Let h
+train
+i
+ˆ
+(on Strain ). Thus, hi would be the hypothesis returned by training (with empirical risk
+minimization) using hypothesis class Hi and dataset Strain . Also let h⋆i = arg minh∈Hi ε(h)
+be the hypothesis in Hi with the lowest generalization error.
+ˆ i ’s using empirical risk minimization then
+Suppose that our algorithm first finds all the h
+ˆ 1, . . . , h
+ˆ k } with
+uses the hold-out cross validation set to select a hypothesis from this the {h
+minimum training error. That is, the algorithm will output
+ˆ = arg
+h
+
+min
+
+ˆ 1 ,...,h
+ˆk}
+h∈{h
+
+εˆScv (h).
+
+For this question you will prove the following bound. Let any δ > 0 be fixed. Then with
+probability at least 1 − δ, we have that
+ˆ ≤ min
+ε(h)
+
+i=1,...,k
+
+ε(h∗i ) +
+
+4|Hi |
+2
+log
+(1 − β)m
+δ
+
++
+
+4k
+2
+log
+2βm
+δ
+
+ˆi,
+(a) Prove that with probability at least 1 − 2δ , for all h
+ˆ i )| ≤
+ˆ i ) − εˆS (h
+|ε(h
+cv
+
+1
+4k
+log .
+2βm
+δ
+
+ˆ i , the empirical error on the cross-validation set, εˆ(h
+ˆ i ) represents
+Answer: For each h
+ˆ
+the average of βm random variables with mean ε(hi ), so by the Hoeffding inequality for
+ˆ i,
+any h
+ˆ i )| ≥ γ) ≤ 2 exp(−2γ 2 βm).
+ˆ i ) − εˆS (h
+P (|ε(h
+cv
+ˆ i , we need to take the union over
+As in the class notes, to insure that this holds for all h
+ˆ
+all k of the hi ’s.
+ˆ i )| ≥ γ) ≤ 2k exp(−2γ 2 βm).
+ˆ i ) − εˆS (h
+P (∃i, s.t.|ε(h
+cv
+
+2
+
+CS229 Problem Set #3 Solutions
+
+Setting this term equal to δ/2 and solving for γ yields
+1
+4k
+log
+2βm
+δ
+
+γ=
+proving the desired bound.
+
+(b) Use part (a) to show that with probability 1 − 2δ ,
+2
+4k
+log .
+βm
+δ
+
+ˆ ≤ min ε(h
+ˆ i) +
+ε(h)
+i=1,...,k
+
+Answer:
+
+ˆ i ). Using part (a), with probability at least 1 −
+Let j = arg mini ε(h
+ˆ
+ε(h)
+
+ˆ +
+≤ εˆScv (h)
+=
+
+i
+
+ˆj ) + 2
+≤ ε(h
+=
+
+1
+4k
+log
+2βm
+δ
+
+ˆ i) +
+min εˆScv (h
+
+ˆj ) +
+≤ εˆScv (h
+
+1
+4k
+log
+2βm
+δ
+
+1
+4k
+log
+2βm
+δ
+4k
+1
+log
+2βm
+δ
+
+ˆ i) +
+min ε(h
+
+i=1,...,k
+
+2
+4k
+log
+βm
+δ
+
+ˆ i ). We know from class that for Hj , with probability 1 −
+(c) Let j = arg mini ε(h
+ˆ j ) − εˆS
+(h⋆j )| ≤
+|ε(h
+train
+
+δ
+2
+
+δ
+2
+
+4|Hj |
+2
+log
+, ∀hj ∈ Hj .
+(1 − β)m
+δ
+
+Use this to prove the final bound given at the beginning of this problem.
+Answer:
+The bounds in parts (a) and (c) both hold simultaneously with probability
+2
+(1 − 2δ )2 = 1 − δ + δ4 > 1 − δ, so with probablity greater than 1 − δ,
+ˆ ≤ ε(h⋆ ) + 2
+ε(h)
+j
+
+1
+2|Hj |
+log δ + 2
+2(1 − γ)m
+2
+
+1
+2k
+log δ
+2γm
+2
+
+which is equivalent to the bound we want to show.
+2. VC Dimension
+Let the input domain of a learning problem be X = R. Give the VC dimension for each
+of the following classes of hypotheses. In each case, if you claim that the VC dimension is
+d, then you need to show that the hypothesis class can shatter d points, and explain why
+there are no d + 1 points it can shatter.
+
+CS229 Problem Set #3 Solutions
+
+3
+
+• h(x) = 1{a < x}, with parameter a ∈ R.
+Answer: VC-dimension = 1.
+(a) It can shatter point {0}, by choosing a to be 2 and −2.
+(b) It cannot shatter any two points {x1 , x2 }, x1 < x2 , because the labelling x1 = 1 and
+x2 = 0 cannot be realized.
+• h(x) = 1{a < x < b}, with parameters a, b ∈ R.
+Answer: VC-dimension = 2.
+(a) It can shatter points {0, 2} by choosing (a, b) to be (3, 5), (−1, 1), (1, 3), (−1, 3).
+(b) It cannot shatter any three points {x1 , x2 , x3 }, x1 < x2 < x3 , because the labelling
+x1 = x3 = 1, x2 = 0 cannot be realized.
+• h(x) = 1{a sin x > 0}, with parameter a ∈ R.
+Answer: VC-dimension = 1. a controls the amplitude of the sine curve.
+(a) It can shatter point { π2 } by choosing a to be 1 and −1.
+(b) It cannot shatter any two points {x1 , x2 }, since, the labellings of x1 and x2 will flip
+together. If x1 = x2 = 1 for some a, then we cannot achieve x1 = x2 . If x1 = x2
+for some a, then we cannot achieve x1 = x2 = 1 (x1 = x2 = 0 can be achieved by
+setting a = 0).
+• h(x) = 1{sin(x + a) > 0}, with parameter a ∈ R.
+Answer: VC-dimension = 2. a controls the phase of the sine curve.
+π
+3π
+(a) It can shatter points { π4 , 3π
+4 }, by choosing a to be 0, 2 , π, and 2 .
+(b) It cannot shatter any three points {x1 , x2 , x3 }. Since sine has a preiod of 2π, let’s
+define x′i = xi mod 2π. W.l.o.g., assume x′1 < x′2 < x′3 . If the labelling of
+x1 = x2 = x3 = 1 can be realized, then the labelling of x1 = x3 = 1, x2 = 0 will
+not be realizable. Notice the similarity to the second question.
+
+3. ℓ1 regularization for least squares
+In the previous problem set, we looked at the least squares problem where the objective
+function is augmented with an additional regularization term λ θ 22 . In this problem we’ll
+consider a similar regularized objective but this time with a penalty on the ℓ1 norm of
+the parameters λ θ 1 , where θ 1 is defined as i |θi |. That is, we want to minimize the
+objective
+n
+m
+1
+J(θ) =
+|θi |.
+(θT x(i) − y (i) )2 + λ
+2 i=1
+i=1
+There has been a great deal of recent interest in ℓ1 regularization, which, as we will see,
+has the benefit of outputting sparse solutions (i.e., many components of the resulting θ are
+equal to zero).
+The ℓ1 regularized least squares problem is more difficult than the unregularized or ℓ2
+regularized case, because the ℓ1 term is not differentiable. However, there have been many
+efficient algorithms developed for this problem that work very well in practive. One very
+straightforward approach, which we have already seen in class, is the coordinate descent
+method. In this problem you’ll derive and implement a coordinate descent algorithm for
+ℓ1 regularized least squares, and apply it to test data.
+
+4
+
+CS229 Problem Set #3 Solutions
+
+(a) Here we’ll derive the coordinate descent update for a given θi . Given the X and
+y matrices, as defined in the class notes, as well a parameter vector θ, how can we
+adjust θi so as to minimize the optimization objective? To answer this question, we’ll
+rewrite the optimization objective above as
+J(θ) =
+
+1
+Xθ − y
+2
+
+2
+2
+
++λ θ
+
+1
+
+=
+
+1
+X θ¯ + Xi θi − y
+2
+
+2
+2
+
++ λ θ¯
+
+1
+
++ λ|θi |
+
+where Xi ∈ Rm denotes the ith column of X, and θ¯ is equal to θ except with θ¯i = 0;
+all we have done in rewriting the above expression is to make the θi term explicit in
+the objective. However, this still contains the |θi | term, which is non-differentiable
+and therefore difficult to optimize. To get around this we make the observation that
+the sign of θi must either be non-negative or non-positive. But if we knew the sign of
+θi , then |θi | becomes just a linear term. That, is, we can rewrite the objective as
+J(θ) =
+
+1
+X θ¯ + Xi θi − y
+2
+
+2
+2
+
++ λ θ¯
+
+1
+
++ λsi θi
+
+where si denotes the sign of θi , si ∈ {−1, 1}. In order to update θi , we can just
+compute the optimal θi for both possible values of si (making sure that we restrict
+the optimal θi to obey the sign restriction we used to solve for it), then look to see
+which achieves the best objective value.
+For each of the possible values of si , compute the resulting optimal value of θi . [Hint:
+to do this, you can fix si in the above equation, then differentiate with respect to θi
+to find the best value. Finally, clip θi so that it lies in the allowable range — i.e., for
+si = 1, you need to clip θi such that θi ≥ 0.]
+Answer: For si = 1,
+J(θ)
+
+=
+=
+
+1
+tr(X θ¯ + Xi θi − y)T (X θ¯ + Xi θi − y) + λ θ¯ 1 + λθi
+2
+1
+XiT Xi θi2 + 2XiT (X θ¯ − y)θi + X θ¯ − y 22 + λ θ¯ 1 + λθi ,
+2
+
+so
+
+∂J(θ)
+= XiT Xi θ + XiT (X θ¯ − y) + λ
+∂θi
+which means the optimal θi is given by
+θi = max
+
+−XiT (X θ¯ − y) − λ
+,0 .
+XiT Xi
+
+Similarly, for si = −1, the optimal θi is given by
+θi = min
+
+−XiT (X θ¯ − y) + λ
+,0 .
+XiT Xi
+
+(b) Implement the above coordinate descent algorithm using the updates you found in
+the previous part. We have provided a skeleton theta = l1ls(X,y,lambda) function
+in the q3/ directory. To implement the coordinate descent algorithm, you should
+repeatedly iterate over all the θi ’s, adjusting each as you found above. You can
+terminate the process when θ changes by less than 10− 5 after all n of the updates.
+Answer: The following is our implementation of l1ls.m:
+
+CS229 Problem Set #3 Solutions
+
+5
+
+function theta = l1l2(X,y,lambda)
+m = size(X,1);
+n = size(X,2);
+theta = zeros(n,1);
+old_theta = ones(n,1);
+while (norm(theta - old_theta) > 1e-5)
+old_theta = theta;
+for i=1:n,
+% compute possible values for theta
+theta(i) = 0;
+theta_i(1) = max((-X(:,i)’*(X*theta - y) - lambda) / (X(:,i)’*X(:,i)), 0);
+theta_i(2) = min((-X(:,i)’*(X*theta - y) + lambda) / (X(:,i)’*X(:,i)), 0);
+% get objective value for both possible thetas
+theta(i) = theta_i(1);
+obj_theta(1) = 0.5*norm(X*theta - y)^2 + lambda*norm(theta,1);
+theta(i) = theta_i(2);
+obj_theta(2) = 0.5*norm(X*theta - y)^2 + lambda*norm(theta,1);
+% pick the theta which minimizes the objective
+[min_obj, min_ind] = min(obj_theta);
+theta(i) = theta_i(min_ind);
+end
+end
+(c) Test your implementation on the data provided in the q3/ directory. The [X, y,
+theta true] = load data; function will load all the data — the data was generated
+by y = X*theta true + 0.05*randn(20,1), but theta true is sparse, so that very
+few of the columns of X actually contain relevant features. Run your l1ls.m implementation on this data set, ranging λ from 0.001 to 10. Comment briefly on how this
+algorithm might be used for feature selection.
+Answer: For λ = 1, our implementation of l1 regularized least squares recovers the
+exact sparsity pattern of the true parameter that generated the data. In constrast, using
+any amount of l2 regularization still leads to θ’s that contain no zeros. This suggests
+that the l1 regularization could be very useful as a feature selection algorithm: we could
+run l1 regularized least squares to see which coefficients are non-zero, then select only
+these features for use with either least-squares or possibly a completely different machine
+learning algorithm.
+4. K-Means Clustering
+In this problem you’ll implement the K-means clustering algorithm on a synthetic data
+set. There is code and data for this problem in the q4/ directory. Run load ’X.dat’;
+to load the data file for clustering. Implement the [clusters, centers] = k means(X,
+k) function in this directory. As input, this function takes the m × n data matrix X and
+the number of clusters k. It should output a m element vector, clusters, which indicates
+which of the clusters each data point belongs to, and a k × n matrix, centers, which
+contains the centroids of each cluster. Run the algorithm on the data provided, with k = 3
+
+6
+
+CS229 Problem Set #3 Solutions
+
+and k = 4. Plot the cluster assignments and centroids for each iteration of the algorithm
+using the draw clusters(X, clusters, centroids) function. For each k, be sure to run
+the algorithm several times using different initial centroids.
+The following is our implementation of k means.m:
+
+Answer:
+
+function [clusters, centroids] = k_means(X, k)
+m = size(X,1);
+n = size(X,2);
+oldcentroids = zeros(k,n);
+centroids = X(ceil(rand(k,1)*m),:);
+while (norm(oldcentroids - centroids) > 1e-15)
+oldcentroids = centroids;
+% compute cluster assignments
+for i=1:m,
+dists = sum((repmat(X(i,:), k, 1) - centroids).^2, 2);
+[min_dist, clusters(i,1)] = min(dists);
+end
+draw_clusters(X, clusters, centroids);
+pause(0.1);
+% compute cluster centroids
+for i=1:k,
+centroids(i,:) = mean(X(clusters == i, :));
+end
+end
+Below we show the centroid evolution for two typical runs with k = 3. Note that the different
+starting positions of the clusters lead to do different final clusterings.
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+0.8
+
+0.8
+
+0.8
+
+0.8
+
+0.8
+
+0.8
+
+0.6
+
+0.6
+
+0.6
+
+0.6
+
+0.6
+
+0.6
+
+0.4
+
+0.4
+
+0.4
+
+0.4
+
+0.4
+
+0.4
+
+0.2
+
+0.2
+
+0.2
+
+0.2
+
+0.2
+
+0.2
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+−0.2
+
+−0.2
+
+−0.2
+
+−0.2
+
+−0.2
+
+−0.2
+
+−0.4
+
+−0.4
+
+−0.4
+
+−0.4
+
+−0.4
+
+−0.4
+
+−0.6
+
+−0.6
+
+−0.6
+
+−0.6
+
+−0.6
+
+−0.6
+
+−0.8
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+1
+
+0.8
+
+0.8
+
+0.8
+
+0.8
+
+0.8
+
+0.8
+
+0.6
+
+0.6
+
+0.6
+
+0.6
+
+0.6
+
+0.6
+
+0.4
+
+0.4
+
+0.4
+
+0.4
+
+0.4
+
+0.4
+
+0.2
+
+0.2
+
+0.2
+
+0.2
+
+0.2
+
+0
+
+0
+
+0
+
+0
+
+0
+
+−0.2
+
+−0.2
+
+−0.2
+
+−0.2
+
+−0.2
+
+−0.4
+
+−0.4
+
+−0.4
+
+−0.4
+
+−0.4
+
+−0.4
+
+−0.6
+
+−0.6
+
+−0.6
+
+−0.6
+
+−0.6
+
+−0.6
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+0.2
+
+0
+−0.2
+
+−0.8
+−1
+
+−0.8
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+0.8
+
+1
+
+−0.8
+−1
+
+5. The Generalized EM algorithm
+When attempting to run the EM algorithm, it may sometimes be difficult to perform the M
+step exactly — recall that we often need to implement numerical optimization to perform
+the maximization, which can be costly. Therefore, instead of finding the global maximum
+of our lower bound on the log-likelihood, and alternative is to just increase this lower bound
+a little bit, by taking one step of gradient ascent, for example. This is commonly known
+as the Generalized EM (GEM) algorithm.
+
+7
+
+CS229 Problem Set #3 Solutions
+
+Put slightly more formally, recall that the M-step of the standard EM algorithm performs
+the maximization
+Qi (z (i) ) log
+
+θ := arg max
+θ
+
+i
+
+z (i)
+
+p(x(i) , z (i) ; θ)
+.
+Qi (z (i) )
+
+The GEM algorithm, in constrast, performs the following update in the M-step:
+Qi (z (i) ) log
+
+θ := θ + α∇θ
+i
+
+z (i)
+
+p(x(i) , z (i) ; θ)
+Qi (z (i) )
+
+where α is a learning rate which we assume is choosen small enough such that we do not
+decrease the objective function when taking this gradient step.
+(a) Prove that the GEM algorithm described above converges. To do this, you should
+show that the the likelihood is monotonically improving, as it does for the EM algorithm — i.e., show that ℓ(θ(t+1) ) ≥ ℓ(θ(t) ).
+Answer: We use the same logic as for the standard EM algorithm. Specifically, just
+as for EM, we have for the GEM algorithm that
+(t)
+
+Qi (z (i) ) log
+
+ℓ(θ(t+1) ) ≥
+i
+
+z (i)
+(t)
+
+Qi (z (i) ) log
+
+≥
+i
+
+= ℓ(θ
+
+z (i)
+(t)
+
+p(x(i) , z (i) ; θ(t+1) )
+(t)
+
+Qi (z (i) )
+p(x(i) , z (i) ; θ(t) )
+(t)
+
+Qi (z (i) )
+
+)
+
+where as in EM the first line holds due to Jensen’s equality, and the last line holds because
+we choose the Q distribution to make this hold with equality. The only difference between
+EM and GEM is the logic as to why the second line holds: for EM it held because θ(t+1)
+was chosen to maximize this quantity, but for GEM it holds by our assumption that we
+take a gradient step small enough so as not to decrease the objective function.
+(b) Instead of using the EM algorithm at all, suppose we just want to apply gradient ascent
+to maximize the log-likelihood directly. In other words, we are trying to maximize
+the (non-convex) function
+ℓ(θ) =
+
+p(x(i) , z (i) ; θ)
+
+log
+i
+
+z (i)
+
+θ := θ + α∇θ
+
+log
+
+so we could simply use the update
+i
+
+p(x(i) , z (i) ; θ).
+z (i)
+
+Show that this procedure in fact gives the same update as the GEM algorithm described above.
+Answer: Differentiating the log likelihood directly we get
+∂
+∂θj
+
+p(x(i) , z (i) ; θ)
+
+log
+i
+
+=
+i
+
+z (i)
+
+1
+(i) , z (i) ; θ)
+p(x
+z (i)
+
+=
+i
+
+z (i)
+
+z (i)
+
+∂
+p(x(i) , z (i) ; θ)
+∂θj
+
+1
+∂
+·
+p(x(i) , z (i) ; θ).
+p(x(i) ; θ) ∂θj
+
+8
+
+CS229 Problem Set #3 Solutions
+
+For the GEM algorithm,
+∂
+∂θj
+
+Qi (z (i) ) log
+i
+
+z (i)
+
+p(x(i) , z (i) ; θ)
+Qi (z (i) )
+
+=
+i
+
+z (i)
+
+∂
+Qi (z (i) )
+·
+p(x(i) , z (i) ; θ).
+p(x(i) , z (i) ; θ) ∂θj
+
+But the E-step of the GEM algorithm chooses
+Qi (z (i) ) = p(z (i) |x(i) ; θ) =
+
+p(x(i) , z (i) ; θ)
+,
+p(x(i) ; θ)
+
+so
+
+i
+
+z (i)
+
+∂
+Qi (z (i) )
+·
+p(x(i) , z (i) ; θ) =
+p(x(i) , z (i) ; θ) ∂θj
+
+i
+
+z (i)
+
+∂
+1
+·
+p(x(i) , z (i) ; θ)
+p(x(i) ; θ) ∂θj
+
+which is the same as the derivative of the log likelihood.
+
+

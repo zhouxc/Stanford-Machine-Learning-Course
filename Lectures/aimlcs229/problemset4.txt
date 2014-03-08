@@ -1,0 +1,312 @@
+1
+
+CS229 Problem Set #4
+
+CS 229, Public Course
+Problem Set #4: Unsupervised Learning and Reinforcement Learning
+1. EM for supervised learning
+In class we applied EM to the unsupervised learning setting. In particular, we represented
+p(x) by marginalizing over a latent random variable
+p(x) =
+
+p(x, z) =
+z
+
+p(x|z)p(z).
+z
+
+However, EM can also be applied to the supervised learning setting, and in this problem we
+discuss a “mixture of linear regressors” model; this is an instance of what is often call the
+Hierarchical Mixture of Experts model. We want to represent p(y|x), x ∈ Rn and y ∈ R,
+and we do so by again introducing a discrete latent random variable
+p(y|x) =
+
+p(y, z|x) =
+z
+
+p(y|x, z)p(z|x).
+z
+
+For simplicity we’ll assume that z is binary valued, that p(y|x, z) is a Gaussian density,
+and that p(z|x) is given by a logistic regression model. More formally
+= g(φT x)z (1 − g(φT x))1−z
+−(y − θiT x)2
+1
+exp
+p(y|x, z = i; θi ) = √
+2σ 2
+2πσ
+p(z|x; φ)
+
+i = 1, 2
+
+where σ is a known parameter and φ, θ0 , θ1 ∈ Rn are parameters of the model (here we
+use the subscript on θ to denote two different parameter vectors, not to index a particular
+entry in these vectors).
+Intuitively, the process behind model can be thought of as follows. Given a data point x,
+we first determine whether the data point belongs to one of two hidden classes z = 0 or
+z = 1, using a logistic regression model. We then determine y as a linear function of x
+(different linear functions for different values of z) plus Gaussian noise, as in the standard
+linear regression model. For example, the following data set could be well-represented by
+the model, but not by standard linear regression.
+
+2
+
+CS229 Problem Set #4
+
+(a) Suppose x, y, and z are all observed, so that we obtain a training set
+{(x(1) , y (1) , z (1) ), . . . , (x(m) , y (m) , z (m) )}. Write the log-likelihood of the parameters,
+and derive the maximum likelihood estimates for φ, θ0 , and θ1 . Note that because
+p(z|x) is a logistic regression model, there will not exist a closed form estimate of φ.
+In this case, derive the gradient and the Hessian of the likelihood with respect to φ;
+in practice, these quantities can be used to numerically compute the ML esimtate.
+(b) Now suppose z is a latent (unobserved) random variable. Write the log-likelihood of
+the parameters, and derive an EM algorithm to maximize the log-likelihood. Clearly
+specify the E-step and M-step (again, the M-step will require a numerical solution,
+so find the appropriate gradients and Hessians).
+2. Factor Analysis and PCA
+In this problem we look at the relationship between two unsupervised learning algorithms
+we discussed in class: Factor Analysis and Principle Component Analysis.
+Consider the following joint distribution over (x, z) where z ∈ Rk is a latent random
+variable
+z
+x|z
+
+∼
+∼
+
+N (0, I)
+N (U z, σ 2 I).
+
+where U ∈ Rn×k is a model parameters and σ 2 is assumed to be a known constant. This
+model is often called Probabilistic PCA. Note that this is nearly identical to the factor
+analysis model except we assume that the variance of x|z is a known scaled identity matrix
+rather than the diagonal parameter matrix, Φ, and we do not add an additional µ term to
+the mean (though this last difference is just for simplicity of presentation). However, as
+we will see, it turns out that as σ 2 → 0, this model is equivalent to PCA.
+For simplicity, you can assume for the remainder of the problem that k = 1, i.e., that U is
+a column vector in Rn .
+
+(a) Use the rules for manipulating Gaussian distributions to determine the joint distribution over (x, z) and the conditional distribution of z|x. [Hint: for later parts of
+this problem, it will help significantly if you simplify your soluting for the conditional
+distribution using the identity we first mentioned in problem set #1: (λI +BA)−1 B =
+B(λI + AB)−1 .]
+(b) Using these distributions, derive an EM algorithm for the model. Clearly state the
+E-step and the M-step of the algorithm.
+(c) As σ 2 → 0, show that if the EM algorithm convergences to a parameter vector U ⋆
+(and such convergence is guarenteed by the argument presented in class), then U ⋆
+m
+1
+(i) (i) T
+— i.e.,
+must be an eigenvector of the sample covariance matrix Σ = m
+i=1 x x
+U ⋆ must satisfy
+λU ⋆ = ΣU ⋆ .
+[Hint: When σ 2 → 0, Σz|x → 0, so the E step only needs to compute the means
+µz|x and not the variances. Let w ∈ Rm be a vector containing all these means,
+wi = µz(i) |x(i) , and show that the E step and M step can be expressed as
+w=
+
+XU
+,
+UT U
+
+U=
+
+XT w
+wT w
+
+CS229 Problem Set #4
+
+3
+
+respectively. Finally, show that if U doesn’t change after this update, it must satisfy
+the eigenvector equation shown above. ]
+3. PCA and ICA for Natural Images
+In this problem we’ll apply Principal Component Analysis and Independent Component
+Analysis to images patches collected from “natural” image scenes (pictures of leaves, grass,
+etc). This is one of the classical applications of the ICA algorithm, and sparked a great
+deal of interest in the algorithm; it was observed that the bases recovered by ICA closely
+resemble image filters present in the first layer of the visual cortex.
+The q3/ directory contains the data and several useful pieces of code for this problem. The
+raw images are stored in the images/ subdirectory, though you will not need to work with
+these directly, since we provide code for loading and normalizing the images.
+Calling the function [X ica, X pca] = load images; will load the images, break them
+into 16x16 images patches, and place all these patches into the columns of the matrices X ica and X pca. We create two different data sets for PCA and ICA because the
+algorithms require slightly different methods of preprocessing the data.1
+For this problem you’ll implement the ica.m and pca.m functions, using the PCA and
+ICA algorithms described in the class notes. While the PCA implementation should be
+straightforward, getting a good implementation of ICA can be a bit trickier. Here is some
+general advice to getting a good implementation on this data set:
+• Picking a good learning rate is important. In our experiments we used α = 0.0005 on
+this data set.
+• Batch gradient descent doesn’t work well for ICA (this has to do with the fact that
+ICA objective function is not concave), but the pure stochastic gradient described in
+the notes can be slow (There are about 20,000 16x16 images patches in the data set,
+so one pass over the data using the stochastic gradient rule described in the notes
+requires inverting the 256x256 W matrix 20,000 times). Instead, a good compromise
+is to use a hybrid stochastic/batch gradient descent where we calculate the gradient
+with respect to several examples at a time (100 worked well for us), and use this to
+update W . Our implementation makes 10 total passes over the entire data set.
+• It is a good idea to randomize the order of the examples presented to stochastic
+gradient descent before each pass over the data.
+• Vectorize your Matlab code as much as possible. For general examples of how to do
+this, look at the Matlab review session.
+For reference, computing the ICA W matrix for the entire set of image patches takes about
+5 minutes on a 1.6 Ghz laptop using our implementation.
+After you’ve learned the U matrix for PCA (the columns of U should contain the principal
+components of the data) and the W matrix of ICA, you can plot the basis functions using
+the plot ica bases(W); and plot pca bases(U); functions we have provide. Comment
+briefly on the difference between the two sets of basis functions.
+1 Recall that the first step of performing PCA is to subtract the mean and normalize the variance of the features.
+For the image data we’re using, the preprocessing step for the ICA algorithm is slightly different, though the
+precise mechanism and justification is not imporant for the sake of this problem. Those who are curious about
+the details should read Bell and Sejnowki’s paper “The ’Independent Components’ of Natural Scenes are Edge
+Filters,” which provided the basis for the implementation we use in this problem.
+
+4
+
+CS229 Problem Set #4
+
+4. Convergence of Policy Iteration
+In this problem we show that the Policy Iteration algorithm, described in the lecture notes,
+is guarenteed to find the optimal policy for an MDP. First, define B π to be the Bellman
+operator for policy π, defined as follows: if V ′ = B(V ), then
+V ′ (s) = R(s) + γ
+
+Psπ(s) (s′ )V (s′ ).
+s′ ∈S
+
+(a) Prove that if V1 (s) ≤ V2 (s) for all s ∈ S, then B(V1 )(s) ≤ B(V2 )(s) for all s ∈ S.
+
+(b) Prove that for any V ,
+
+B π (V ) − V π
+
+∞
+
+≤γ V −Vπ
+
+∞
+
+where V ∞ = maxs∈S |V (s)|. Intuitively, this means that applying the Bellman
+operator B π to any value function V , brings that value function “closer” to the value
+function for π, V π . This also means that applying B π repeatedly (an infinite number
+of times)
+B π (B π (. . . B π (V ) . . .))
+will result in the value function V π (a little bit more is needed to make this completely
+formal, but we won’t worry about that here).
+[Hint: Use the fact that for any α, x ∈ Rn , if i αi = 1 and αi ≥ 0, then i αi xi ≤
+maxi xi .]
+(c) Now suppose that we have some policy π, and use Policy Iteration to choose a new
+policy π ′ according to
+Psa (s′ )V π (s′ ).
+
+π ′ (s) = arg max
+a∈A
+
+s′ ∈S
+
+Show that this policy will never perform worse that the previous one — i.e., show
+′
+that for all s ∈ S, V π (s) ≤ V π (s).
+′
+[Hint: First show that V π (s) ≤ B π (V π )(s), then use the proceeding excercises to
+′
+′
+show that B π (V π )(s) ≤ V π (s).]
+
+(d) Use the proceeding exercises to show that policy iteration will eventually converge
+(i.e., produce a policy π ′ = π). Furthermore, show that it must converge to the
+optimal policy π ⋆ . For the later part, you may use the property that if some value
+function satisfies
+V (s) = R(s) + γ max
+a∈A
+
+s′ ∈ SPsa (s′ )V (s′ )
+
+then V = V ⋆ .
+5. Reinforcement Learning: The Mountain Car
+In this problem you will implement the Q-Learning reinforcement learning algorithm described in class on a standard control domain known as the Mountain Car.2 The Mountain
+Car domain simulates a car trying to drive up a hill, as shown in the figure below.
+2 The
+
+dynamics of this domain were taken from Sutton and Barto, 1998.
+
+5
+
+CS229 Problem Set #4
+
+0.6
+
+0.4
+
+0.2
+
+0
+
+−0.2
+
+−0.4
+
+−0.6
+
+−1.2
+
+−1
+
+−0.8
+
+−0.6
+
+−0.4
+
+−0.2
+
+0
+
+0.2
+
+0.4
+
+0.6
+
+All states except those at the top of the hill have a constant reward R(s) = −1, while the
+goal state at the hilltop has reward R(s) = 0; thus an optimal agent will try to get to the
+top of the hill as fast as possible (when the car reaches the top of the hill, the episode is
+over, and the car is reset to its initial position). However, when starting at the bottom
+of the hill, the car does not have enough power to reach the top by driving forward, so
+it must first accerlaterate accelerate backwards, building up enough momentum to reach
+the top of the hill. This strategy of moving away from the goal in order to reach the goal
+makes the problem difficult for many classical control algorithms.
+As discussed in class, Q-learning maintains a table of Q-values, Q(s, a), for each state and
+action. These Q-values are useful because, in order to select an action in state s, we only
+need to check to see which Q-value is greatest. That is, in state s we take the action
+arg max Q(s, a).
+a∈A
+
+The Q-learning algorithm adjusts its estimates of the Q-values as follows. If an agent is in
+state s, takes action a, then ends up in state s′ , Q-learning will update Q(s, a) by
+Q(s, a) = (1 − α)Q(s, a) + γ(R(s′ ) + γ max
+Q(s′ , a′ ).
+′
+a ∈A
+
+At each time, your implementation of Q-learning can execute the greedy policy π(s) =
+arg maxa∈A Q(s, a)
+Implement the [q, steps per episode] = qlearning(episodes) function in the q5/
+directory. As input, the function takes the total number of episodes (each episode starts
+with the car at the bottom of the hill, and lasts until the car reaches the top), and outputs
+a matrix of the Q-values and a vector indicating how many steps it took before the car was
+able to reach the top of the hill. You should use the [x, s, absorb] = mountain car(x,
+actions(a)) function to simulate one control cycle for the task — the x variable describes
+the true (continuous) state of the system, whereas the s variable describes the discrete
+index of the state, which you’ll use to build the Q values.
+Plot a graph showing the average number of steps before the car reaches the top of the
+hill versus the episode number (there is quite a bit of variation in this quantity, so you will
+probably want to average these over a large number of episodes, as this will give you a
+better idea of how the number of steps before reaching the hilltop is decreasing). You can
+also visualize your resulting controller by calling the draw mountain car(q) function.
+
+

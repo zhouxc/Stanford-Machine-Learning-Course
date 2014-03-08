@@ -5,17 +5,19 @@
 from __future__ import division
 from optparse import OptionParser
 import sys
-import os
 
-from util import *
+from util import (
+    normalize_filename,
+    print_timing,
+    )
 from dataset import DataSet
-from hmm import *
-
-import sys
+from hmm import (
+    HMM
+    )
 
 
 def split_into_categories(d):
-    """given a dataset d, return a dict mapping categories 
+    """given a dataset d, return a dict mapping categoriess
     to arrays of observation sequences.  Only splits the training data"""
     a = {}
     for seqnum in range(len(d.train_output)):
@@ -34,13 +36,14 @@ def train_N_state_hmms_from_data(filename, num_states, debug=False):
     builds a separate hmm for each category in data """
     dataset = DataSet(filename)
     category_seqs = split_into_categories(dataset)
-    
+
     # Build a hmm for each category in data
     hmms = {}
     for cat, seqs in category_seqs.items():
         if debug:
-            print "\n\nLearning %s-state HMM for category %s" % (num_states, cat)
-        
+            print "\n\nLearning %s-state HMM for category %s" % (
+                num_states, cat)
+
         model = HMM(range(num_states), dataset.outputs)
         model.learn_from_observations(seqs, debug)
         hmms[cat] = model
@@ -49,8 +52,6 @@ def train_N_state_hmms_from_data(filename, num_states, debug=False):
             print model
     return (hmms, dataset)
 
-
- 
 
 @print_timing
 def compute_classification_performance(hmms, dataset, debug=False):
@@ -65,20 +66,21 @@ def compute_classification_performance(hmms, dataset, debug=False):
         log_probs = [(cat, hmms[cat].log_prob_of_sequence(seq))
                      for cat in hmms.keys()]
         # Want biggest first...
-        log_probs.sort(lambda a,b: cmp(b[1], a[1]))
+        log_probs.sort(lambda a, b: cmp(b[1], a[1]))
         if debug:
-            ll_str = " ".join(["%s=%.4f" % (c, v) for c,v in log_probs])
-            #print "Actual: %s; [%s]" % (actual_category, ll_str)
+            ll_str = " ".join(["%s=%.4f" % (c, v) for c, v in log_probs])
+            print "Actual: %s; [%s]" % (actual_category, ll_str)
 
         # Sorted, so the first one is the one we predicted.
         best_cat = log_probs[0][0]
         if actual_category != best_cat:
             errors += 1
     fraction_incorrect = errors * 1.0 / total
-    #if debug:
-    print "Classification mistakes: %d / %d = %.3f" % (errors, total, fraction_incorrect)
+    # if debug:
+    print "Classification mistakes: %d / %d = %.3f" % (
+        errors, total, fraction_incorrect)
     return fraction_incorrect
-    
+
 
 def main(argv=None):
     if argv is None:
@@ -95,18 +97,20 @@ def main(argv=None):
         print "ERROR: Missing arguments"
         parser.print_usage()
         sys.exit(1)
-        
+
     num_states = int(args[0])
     filename = args[1]
     filename = normalize_filename(filename)
 
     # Read all the data, then split it up into each category
     # Build models from the category data files
-    hmms, dataset = train_N_state_hmms_from_data(filename, num_states, options.verbose)
-    
+    hmms, dataset = train_N_state_hmms_from_data(
+        filename, num_states, options.verbose)
+
     # See how well we do in classifying test sequences
-    fraction_incorrect = compute_classification_performance(hmms, dataset, options.verbose)   
-    
+    fraction_incorrect = compute_classification_performance(
+        hmms, dataset, options.verbose)
+    print(fraction_incorrect)
     return 0
 
 if __name__ == "__main__":

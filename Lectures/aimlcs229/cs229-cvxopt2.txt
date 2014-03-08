@@ -1,0 +1,1016 @@
+Convex Optimization Overview (cnt’d)
+Chuong B. Do
+October 26, 2007
+
+1
+
+Recap
+
+During last week’s section, we began our study of convex optimization, the study of
+mathematical optimization problems of the form,
+f (x)
+minimize
+n
+x∈R
+
+subject to gi (x) ≤ 0, i = 1, . . . , m,
+hi (x) = 0, i = 1, . . . , p,
+
+(1)
+
+where x ∈ Rn is the optimization variable, f : Rn → R and gi : Rn → R are convex functions,
+and hi : Rn → R are affine functions. In a convex optimization problem, the convexity of both
+the objective function f and the feasible region (i.e., the set of x’s satisfying all constraints)
+allows us to conclude that any feasible locally optimal point must also be globally optimal.
+This fact provides the key intuition for why convex optimization problems can in general be
+solved efficiently.
+In these lecture notes, we continue our foray into the field of convex optimization. In
+particular, we will introduce the theory of Lagrange duality for convex optimization problems
+with inequality and equality constraints. We will also discuss generic yet efficient algorithms
+for solving convex optimization problems, and then briefly mention directions for further
+exploration.
+
+2
+
+Duality
+
+To explain the fundamental ideas behind duality theory, we start with a motivating example
+based on CS 229 homework grading. We prove a simple weak duality result in this setting,
+and then relate it to duality in optimization. We then discuss strong duality and the KKT
+optimality conditions.
+
+2.1
+
+A motivating example: CS 229 homework grading
+
+In CS 229, students must complete four homeworks throughout the quarter, each consisting
+of five questions apiece. Suppose that during one year that the course is offered, the TAs
+1
+
+decide to economize on their work load for the quarter by grading only one problem on
+each submitted problem set. Nevertheless, they also require that every student submit
+an attempted solution to every problem (a requirement which, if violated, would lead to
+automatic failure of the course).
+Because they are extremely cold-hearted1 , the TAs always try to ensure that the students
+lose as many points as possible; if the TAs grade a problem that the student did not attempt,
+the number of points lost is set to +∞ to denote automatic failure in the course. Conversely,
+each student in the course seeks to minimize the number of points lost on his or her assignments, and thus must decide on a strategy—i.e., an allocation of time to problems—that
+minimizes the number of points lost on the assignment.
+The struggle between student and TAs can be summarized in a matrix A = (aij ) ∈ Rn×m ,
+whose columns correspond to different problems that the TAs might grade, and whose rows
+correspond to different strategies for time allocation that the student might use for the
+problem set. For example, consider the following matrix,
+
+✷
+5
+✻
+A=✹ 8
+
+✸
+
+5
+5 5 5
+8
+1 8 8 ✼
+✺,
++∞ +∞ +∞ 0 +∞
+
+Here, the student must decide between three strategies (corresponding to the three rows of
+the matrix, A):
+• i = 1: she invests an equal effort into all five problems and hence loses at most 5 points
+on each problem,
+• i = 2: she invests more time into problem 3 than the other four problems, and
+• i = 3: she skips four problems in order to guarantee no points lost on problem 4.
+Similarly, the TAs must decide between five strategies (j ∈ {1, 2, 3, 4, 5}) corresponding to
+the choice of problem graded.
+If the student is forced to submit the homework without knowing the TAs choice of
+problem to be graded, and if the TAs are allowed to decide which problem to grade after
+having seen the student’s problem set, then the number of points she loses will be:
+p∗ = min max aij
+i
+
+j
+
+(= 5 in the example above)
+
+(P)
+
+where the order of the minimization and maximization reflect that for each fixed student time
+allocation strategy i, the TAs will have the opportunity to choose the worst scoring problem
+maxj aij to grade. However, if the TAs announce beforehand which homework problem will
+be graded, then the the number of points lost will be:
+d∗ = max min aij
+j
+
+i
+
+(= 0 in the example above)
+
+(D)
+
+where this time, for each possible announced homework problem j to be graded, the student
+will have the opportunity to choose the optimal time allocation strategy, mini aij , which loses
+1
+
+Clearly, this is a fictional example. The CS 229 TAs want you to succeed. Really, we do.
+
+2
+
+her the fewest points. Here, (P) is called the primal optimization problem whereas (D) is
+called the dual optimization problem. Rows containing +∞ values correspond to strategies
+where the student has flagrantly violated the TAs demand that all problems be attempted;
+for reasons, which will become clear later, we refer to these rows as being primal-infeasible.
+In the example, the value of the dual problem is lower than that of the primal problem,
+i.e., d∗ = 0 < 5 = p∗ . This intuitively makes sense: the second player in this adversarial
+game has the advantage of knowing his/her opponent’s strategy. This principle, however,
+holds more generally:
+Theorem 2.1 (Weak duality). For any matrix A = (aij ) ∈ Rm×n , it is always the case that
+max min aij = d∗ ≤ p∗ = min max aij .
+j
+
+i
+
+i
+
+j
+
+Proof. Let (id , jd ) be the row and column associated with d∗ , and let (ip , jp ) be the row and
+column associated with p∗ . We have,
+d∗ = aid jd ≤ aip jd ≤ aip jp = p∗ .
+Here, the first inequality follows from the fact that aid jd is the smallest element in the jd th
+column (i.e., id was the strategy chosen by the student after the TAs chose problem jd , and
+hence, it must correspond to the fewest points lost in that column). Similarly, the second
+inequality follow from the fact that aip jp is the largest element in the ip th row (i.e., jp was
+the problem chosen by the TAs after the student picked strategy ip , so it must correspond
+to the most points lost in that row).
+
+2.2
+
+Duality in optimization
+
+The task of constrained optimization, it turns out, relates closely with the adversarial game
+described in the previous section. To see the connection, first recall our original optimization
+problem,
+minimize
+f (x)
+x
+subject to gi (x) ≤ 0, i = 1, . . . , m,
+hi (x) = 0, i = 1, . . . , p.
+Define the generalized Lagrangian to be
+L(x, λ, ν) := f (x) +
+
+m
+❳
+i=1
+
+λi gi (x) +
+
+p
+❳
+
+νi hi (x).
+
+i=1
+
+Here, the variables λ and ν are called the the dual variables (or Lagrange multipliers).
+Analogously, the variables x are known as the primal variables.
+The correspondence between primal/dual optimization and game playing can be pictured
+informally using an infinite matrix whose rows are indexed by x ∈ Rn and whose columns
+3
+
+p
+are indexed by (λ, ν) ∈ Rm
++ × R (i.e., λi ≥ 0, for i = 1, . . . , m). In particular, we have
+
+✷
+✸
+..
+...
+..
+.
+.
+✻
+✼
+A=✻
+✻✹· · · L(x, λ, ν) · · ·✼✼✺
+.
+.
+.
+..
+
+..
+
+..
+
+Here, the “student” manipulates the primal variables x in order to minimize the Lagrangian
+L(x, λ, ν) while the “TAs” manipulate the dual variables (λ, ν) in order to maximize the
+Lagrangian.
+To see the relationship between this game and the original optimization problem, we
+formulate the following primal problem:
+p∗ = min max
+x
+
+λ,ν:λi ≥0
+
+= min
+x
+
+L(x, λ, ν)
+
+θP (x)
+
+(P’)
+
+where θP (x) := maxλ,ν:λi ≥0 L(x, λ, ν). Computing p∗ is equivalent to our original convex
+optimization primal in the following sense: for any candidate solution x,
+• if gi (x) > 0 for some i ∈ {1, . . . , m}, then setting λi = ∞ gives θP (x) = ∞.
+• if hi (x) = 0 for some i ∈ {1, . . . , m}, then setting λi = ∞·Sign(hi (x)) gives θP (x) = ∞.
+• if x is feasible (i.e., x obeys all the constraints of our original optimization problem),
+then θP (x) = f (x), where the maximum is obtained, for example, by setting all of the
+λi ’s and νi ’s to zero.
+Intuitively then, θP (x) behaves conceptually like an “unconstrained” version of the original
+constrained optimization problem in which the infeasible region of f is “carved away” by
+forcing θP (x) = ∞ for any infeasible x; thus, only points in the feasible region are left
+as candidate minimizers. This idea of using penalties to ensure that minimizers stay in the
+feasible region will come up later when talk about barrier algorithms for convex optimization.
+By analogy to the CS 229 grading example, we can form the following dual problem:
+d∗ = max min
+x
+λ,ν:λi ≥0
+
+= max
+
+λ,ν:λi ≥0
+
+L(x, λ, ν)
+
+θD (λ, ν)
+
+(D’)
+
+where θD (λ, ν) := minx L(x, λ, ν). Dual problems can often be easier to solve than their
+corresponding primal problems. In the case of SVMs, for instance, SMO is a dual optimization algorithm which considers joint optimization of pairs of dual variables. Its simple form
+derives largely from the simplicity of the dual objective and the simplicity of the corresponding constraints on the dual variables. Primal-based SVM solutions are indeed possible, but
+when the number of training examples is large and the kernel matrix K of inner products
+Kij = K(x(i) , x(j) ) is large, dual-based optimization can be considerably more efficient.
+4
+
+Using an argument essentially identical to that presented in Theorem (2.1), we can show
+that in this setting, we again have d∗ ≤ p∗ . This is the property of weak duality for
+general optimization problems. Weak duality can be particularly useful in the design of
+optimization algorithms. For example, suppose that during the course of an optimization
+algorithm we have a candidate primal solution x and dual-feasible vector (λ, ν) such that
+θP (x) − θD (λ, ν) ≤ . From weak duality, we have that
+θD (λ, ν) ≤ d∗ ≤ p∗ ≤ θP (x),
+implying that x and (λ, ν) must be -optimal (i.e., their objective functions differ by no more
+than from the objective functions of the true optima x∗ and (λ∗ , ν ∗ ).
+In practice, the dual objective θD (λ, ν) can often be found in closed form, thus allowing
+the dual problem (D’) to depend only on the dual variables λ and ν. When the Lagrangian is
+differentiable with respect to x, then a closed-form for θD (λ, ν) can often be found by setting
+the gradient of the Lagrangian to zero, so as to ensure that the Lagrangian is minimized
+with respect to x.2 An example derivation of the dual problem for the L1 soft-margin SVM
+is shown in the Appendix.
+
+2.3
+
+Strong duality
+
+For any primal/dual optimization problems, weak duality will always hold. In some cases,
+however, the inequality d∗ ≤ p∗ may be replaced with equality, i.e., d∗ = p∗ ; this latter
+condition is known as strong duality. Strong duality does not hold in general. When it
+does however, the lower-bound property described in the previous section provide a useful
+termination criterion for optimization algorithms. In particular, we can design algorithms
+which simultaneously optimize both the primal and dual problems. Once the candidate
+solutions x of the primal problem and (λ, ν) of the dual problem obey θP (x) − θD (λ, ν) ≤ ,
+then we know that both solutions are -accurate. This is guaranteed to happen provided
+our optimization algorithm works properly, since strong duality guarantees that the optimal
+primal and dual values are equal.
+Conditions which guarantee strong duality for convex optimization problems are known
+as constraint qualifications. The most commonly invoked constraint qualification, for
+example, is Slater’s condition:
+Theorem 2.2. Consider a convex optimization problem of the form (1), whose corresponding
+primal and dual problems are given by (P’) and (D’). If there exists a primal feasible x for
+2
+
+Often, differentiating the Lagrangian with respect to x leads to the generation of additional requirements
+on dual variables that must hold at any fixed point of the Lagrangian with respect to x. When these
+constraints are not satisfied, one can show that the Lagrangian is unbounded below (i.e., θD (λ, ν) = −∞).
+Since such points are clearly not optimal solutions for the dual problem, we can simply exclude them from
+the domain of the dual problem altogether by adding the derived
+Pmconstraints to the existing constraints of the
+dual problem. An example of this is the derived constraint, i=1 αi y (i) = 0, in the SVM formulation. This
+procedure of incorporating derived constraints into the dual problem is known as making dual constraints
+explicit (see [1], page 224).
+
+5
+
+which each inequality constraint is strictly satisfied (i.e., gi (x) < 0), then d∗ = p∗ .3
+The proof of this theorem is beyond the scope of this course. We will, however, point out
+its application to the soft-margin SVMs described in class. Recall that soft-margin SVMs
+were found by solving
+m
+❳
+1
+w 2+C
+ξi
+w,b,ξ
+2
+i=1
+subject to y (i) (wT x(i) + b) ≥ 1 − ξi , i = 1, . . . , m,
+ξi ≥ 0,
+i = 1, . . . , m.
+
+minimize
+
+Slater’s condition applies provided we can find at least one primal feasible setting of w, b,
+and ξ where all inequalities are strict. It is easy to verify that w = 0, b = 0, ξ = 2 · 1 satisfies
+these conditions (where 0 and 1 denote the vector of all 0’s and all 1’s, respectively), since
+y (i) (wT x(i) + b) = y (i) (0T x(i) + 0) = 0 > −1 = 1 − 2 = 1 − ξi ,
+
+i = 1, . . . , m,
+
+and the remaining m inequalities are trivially strictly satisfied. Hence, strong duality holds,
+so the optimal values of the primal and dual soft-margin SVM problems will be equal.
+
+2.4
+
+The KKT conditions
+
+In the case of differentiable unconstrained convex optimization problems, setting the gradient
+to “zero” provides a simple means for identifying candidate local optima. For constrained
+convex programming, do similar criteria exist for characterizing the optima of primal/dual
+optimization problems? The answer, it turns out, is provided by a set of requirements known
+as the Karush-Kuhn-Tucker (KKT) necessary and sufficient conditions (see [1],
+pages 242-244).
+Suppose that the constraint functions g1 , . . . , gm , h1 , . . . , hp are not only convex (the hi ’s
+must be affine) but also differentiable.
+˜ ν˜) are dual feasible, and if
+Theorem 2.3. If x˜ is primal feasible and (λ,
+˜ ν˜) = 0,
+∇x L(˜
+x, λ,
+˜ i gi (˜
+λ
+x) = 0,
+
+(KKT1)
+i = 1, . . . , m,
+
+(KKT2)
+
+˜ ν˜) are dual optimal, and strong duality holds.
+then x˜ is primal optimal, (λ,
+Theorem 2.4. If Slater’s condition holds, then conditions of Theorem 2.3 are necessary for
+any (x∗ , λ∗ , ν ∗ ) such that x∗ is primal optimal and (λ∗ , ν ∗ ) are dual feasible.
+3
+
+One can actually show a more general version of Slater’s inequality, which requires only strict satisfaction
+of non-affine inequality constraints (but allowing affine inequalities to be satisfied with equality). See [1],
+page 226.
+
+6
+
+(KKT1) is the standard gradient stationarity condition found for unconstrained differentiable
+optimization problems. The set of inequalities corresponding to (KKT2) are known as the
+KKT complementarity (or complementary slackness) conditions. In particular,
+if x∗ is primal optimal and (λ∗ , ν ∗ ) is dual optimal, then (KKT2) implies that
+λ∗i > 0 ⇒ gi (x∗ ) = 0
+gi (x∗ ) < 0 ⇒ λ∗i = 0
+That is, whenever λ∗i is greater than zero, its corresponding inequality constraint must be
+tight; conversely, any strictly satisfied inequality must have have λ∗i equal to zero. Thus, we
+can interpret the dual variables λ∗i as measuring the “importance” of a particular constraint
+in characterizing the optimal point.
+This interpretation provides an intuitive explanation for the difference between hardmargin and soft-margin SVMs. Recall the dual problems for a hard-margin SVM:
+maximize
+α,β
+
+m
+❳
+
+αi −
+
+i=1
+
+m ❳
+m
+1❳
+αi αi y (i) y (j) x(i) , x(j)
+2 i=1 j=1
+
+subject to αi ≥ 0,
+m
+❳
+
+i = 1, . . . , m,
+
+(2)
+
+i = 1, . . . , m,
+
+(3)
+
+αi y (i) = 0,
+
+i=1
+
+and the L1 soft-margin SVM:
+m ❳
+m
+1❳
+αi αi y (i) y (j) x(i) , x(j)
+α,β
+2
+i=1 j=1
+i=1
+subject to 0 ≤ αi ≤ C,
+
+maximize
+
+m
+❳
+
+m
+❳
+
+αi −
+
+αi y (i) = 0.
+
+i=1
+
+Note that the only difference in the soft-margin formulation is the introduction of upper
+bounds on the dual variables αi . Effectively, this upper bound constraint limits the influence
+of any single primal inequality constraint (i.e., any single training example) on the decision
+boundary, leading to improved robustness for the L1 soft-margin model.
+What consequences do the KKT conditions have for practical optimization algorithms?
+When Slater’s conditions hold, then the KKT conditions are both necessary and sufficient for
+primal/dual optimality of a candidate primal solution x˜ and a corresponding dual solution
+˜ ν˜). Therefore, many optimization algorithms work by trying to guarantee that the KKT
+(λ,
+conditions are satisfied; the SMO algorithm, for instance, works by iteratively identifying
+Lagrange multipliers for which the corresponding KKT conditions are unsatisfied and then
+“fixing” KKT complementarity.4
+4
+
+See [1], pages 244-245 for an example of an optimization problem where the KKT conditions can be
+solved directly, thus skipping the need for primal/dual optimization altogether.
+
+7
+
+3
+
+Algorithms for convex optimization
+
+Thus far, we have talked about convex optimization problems and their properties. But
+how does one solve a convex optimization problem in practice? In this section, we describe
+a generic strategy for solving convex optimization problems known as the interior-point
+method. This method combines a safe-guarded variant of Newton’s algorithm with a “barrier” technique for enforcing inequality constraints.
+
+3.1
+
+Unconstrained optimization
+
+We consider first the problem of unconstrained optimization, i.e.,
+minimize f (x).
+x
+
+In Newton’s algorithm for unconstrained optimization, we consider the Taylor approximation f˜ of the function f , centered at the current iterate xt . Discarding terms of higher
+order than two, we have
+1
+f˜(x) = f (xt ) + ∇x f (xt )T (x − xt ) + (x − xt )∇2x f (xt )(x − xt ).
+2
+To minimize f˜(x), we can set its gradient to zero. In particular, if xnt denotes the minimum
+of f˜(x), then
+∇x f (xt ) + ∇2x f (xt )(xnt − xt ) = 0
+∇2x f (xt )(xnt − xt ) = −∇x f (xt )
+xnt − xt = −∇2x f (xt )−1 ∇x f (xt )
+xnt = xt − ∇2x f (xt )−1 ∇x f (xt )
+assuming ∇2x f (xt )T is positive definite (and hence, full rank). This, of course, is the standard
+Newton algorithm for unconstrained minimization.
+While Newton’s method converges quickly if given an initial point near the minimum, for
+points far from the minimum, Newton’s method can sometimes diverge (as you may have
+discovered in problem 1 of Problem Set #1 if you picked an unfortunate initial point!). A
+simple fix for this behavior is to use a line-search procedure. Define the search direction d
+to be,
+d := ∇2x f (xt )−1 ∇x f (xt ).
+A line-search procedure is an algorithm for finding an appropriate step size γ ≥ 0 such that
+the iteration
+xt+1 = xt − γ · d
+will ensure that the function f decreases by a sufficient amount (relative to the size of the
+step taken) during each iteration.
+8
+
+One simple yet effective method for doing this is called a backtracking line search.
+In this method, one initially sets γ to 1 and then iteratively reduces γ by a multiplicative
+factor β until f (xt + γ · d) is sufficiently smaller than f (xt ):
+Backtracking line-search
+•
+•
+•
+•
+
+Choose α ∈ (0, 0.5), β ∈ (0, 1).
+Set γ ← 1.
+While f (xt + γ · d) > f (xt ) + γ · α∇x f (xt )T d, do γ ← βγ.
+Return γ.
+
+Since the function f is known to decrease locally near xt in the direction of d, such a
+step will be found, provided γ is small enough. For more details, see [1], pages 464-466.
+In order to use Newton’s method, one must be able to compute and invert the Hessian
+matrix ∇2x f (xt ), or equivalently, compute the search direction d indirectly without forming
+the Hessian. For some problems, the number of primal variables x is sufficiently large
+that computing the Hessian can be very difficult. In many cases, this can be dealt with
+by clever use of linear algebra. In other cases, however, we can resort to other nonlinear
+minimization schemes, such as quasi-Newton methods, which initially behave like gradient
+descent but gradually construct approximations of the inverse Hessian based on the gradients
+observed throughout the course of the optimization.5 Alternatively, nonlinear conjugate
+gradient schemes (which augment the standard conjugate gradient (CG) algorithm for
+solving linear least squares systems with a line-search) provide another generic blackbox tool
+for multivariable function minimization which is simple to implement, yet highly effective in
+practice.6
+
+3.2
+
+Inequality-constrained optimization
+
+Using our tools for unconstrained optimization described in the previous section, we now
+tackle the (slightly) harder problem of constrained optimization. For simplicity, we consider
+convex optimization problems without equality constraints7 , i.e., problems of the form,
+minimize
+f (x)
+x
+subject to gi (x) ≤ 0, i = 1, . . . , m.
+5
+
+For more information on Quasi-Newton methods, the standard reference is Jorge Nocedal and Stephen
+J. Wright’s textbook, Numerical Optimization.
+6
+For an excellent tutorial on the conjugate gradient method, see Jonathan Shewchuk’s tutorial, available
+at: http://www.cs.cmu.edu/∼quake-papers/painless-conjugate-gradient.pdf
+7
+In practice, there are many of ways of dealing with equality constraints. Sometimes, we can eliminate
+equality constraints by either reparameterizing of the original primal problem, or converting to the dual
+problem. A more general strategy is to rely on equality-constrained variants of Newton’s algorithms which
+ensure that the equality constraints are satisfied at every iteration of the optimization. For a more complete
+treatment of this topic, see [1], Chapter 10.
+
+9
+
+We will also assume knowledge of a feasible starting point x0 which satisfies all of our
+constraints with strict inequality (as needed for Slater’s condition to hold).8
+Recall that in our discussion of the Lagrangian-based formulation of the primal problem,
+L(x, λ).
+
+min max
+x
+
+λ:λi ≥0
+
+we stated that the inner maximization, maxλ:λi ≥0 L(x, λ), was constructed in such a way
+that the infeasible region of f was “carved away”, leaving only points in the feasible region
+as candidate minima. The same idea of using penalties to ensure that minimizers stay in the
+feasible region is the basis of barrier -based optimization. Specifically, if B(z) is the barrier
+function
+
+✽
+❁0 z < 0
+B(z) = ✿
+∞ z ≥ 0,
+
+then the primal problem is equivalent to
+min
+x
+
+f (x) +
+
+m
+❳
+
+B(gi (x)).
+
+(4)
+
+i=1
+
+When gi (x) < 0, the objective of the problem is simply f (x); infeasible points are “carved
+away” using the barrier function B(z).
+While conceptually correct, optimization using the straight barrier function B(x) is numerically difficult. To ameliorate this, the log-barrier optimization algorithm approximates
+the solution to (4) by solving the unconstrained problem,
+minimize
+f (x) −
+x
+
+m
+1❳
+log(−gi (x)).
+t i=1
+
+for some fixed t > 0. Here, the function −(1/t) log(−z) ≈ B(z), and the accuracy of the
+approximation increases as t → ∞. Rather than using a large value of t in order to obtain
+a good approximation, however, the log-barrier algorithm works by solving a sequence of
+unconstrained optimization problems, increasing t each time, and using the solution of the
+previous unconstrained optimization problem as the initial point for the next unconstrained
+optimization. Furthermore, at each point in the algorithm, the primal solution points stay
+strictly in the interior of the feasible region:
+8
+
+For more information on finding feasible starting points for barrier algorithms, see [1], pages 579-585.
+For inequality-problems where the primal problem is feasible but not strictly feasible, primal-dual interior
+point methods are applicable, also described in [1], pages 609-615.
+
+10
+
+Log-barrier optimization
+• Choose µ > 1, t > 0.
+• x ← x0 .
+• Repeat until convergence:
+(a) Compute x = min f (x) −
+x
+
+m
+1❳
+log(−gi (x)) using x as the initial point.
+t i=1
+
+(b) t ← µ · t, x ← x .
+One might expect that as t increases, the difficulty of solving each unconstrained minimization problem also increases due to numerical issues or ill-conditioning of the optimization
+problem. Surprisingly, Nesterov and Nemirovski showed in 1994 that this is not the case
+for certain types of barrier functions, including the log-barrier; in particular, by using an
+appropriate barrier function, one obtains a general convex optimization algorithm which
+takes time polynomial in the dimensionality of the optimization variables and the desired
+accuracy!
+
+4
+
+Directions for further exploration
+
+In many real-world tasks, 90% of the challenge involves figuring out how to write an optimization problem in a convex form. Once the correct form has been found, a number of
+pre-existing software packages for convex optimization have been well-tuned to handle different specific types of optimization problems. The following constitute a small sample of
+the available tools:
+• commerical packages: CPLEX, MOSEK
+• MATLAB-based: CVX, Optimization Toolbox (linprog, quadprog), SeDuMi
+• libraries: CVXOPT (Python), GLPK (C), COIN-OR (C)
+• SVMs: LIBSVM, SVM-light
+• machine learning: Weka (Java)
+In particular, we specifically point out CVX as an easy-to-use generic tool for solving convex
+optimization problems easily using MATLAB, and CVXOPT as a powerful Python-based
+library which runs independently of MATLAB.9 If you’re interested in looking at some of the
+other packages listed above, they are easy to find with a web search. In short, if you need a
+specific convex optimization algorithm, pre-existing software packages provide a rapid way
+to prototype your idea without having to deal with the numerical trickiness of implementing
+your own complete convex optimization routines.
+9
+
+CVX is available at http://www.stanford.edu/∼boyd/cvx and CVXOPT is available at http://www.
+ee.ucla.edu/∼vandenbe/cvxopt/.
+
+11
+
+Also, if you find this material fascinating, make sure to check out Stephen Boyd’s class,
+EE364: Convex Optimization I, which will be offered during the Winter Quarter. The
+textbook for the class (listed as [1] in the References) has a wealth of information about
+convex optimization and is available for browsing online.
+
+References
+[1] Stephen Boyd and Lieven Vandenberghe. Convex Optimization. Cambridge UP, 2004.
+Online: http://www.stanford.edu/∼boyd/cvxbook/
+
+Appendix: The soft-margin SVM
+To see the primal/dual action in practice, we derive the dual of the soft-margin SVM primal
+presented in class, and corresponding KKT complementarity conditions. We have,
+m
+❳
+1
+w 2+C
+ξi
+w,b,ξ
+2
+i=1
+subject to y (i) (wT x(i) + b) ≥ 1 − ξi , i = 1, . . . , m,
+ξi ≥ 0,
+i = 1, . . . , m.
+
+minimize
+
+First, we put this into our standard form, with “≤ 0” inequality constraints and no equality
+constraints. That is,
+m
+❳
+1
+2
+w +C
+ξi
+minimize
+w,b,ξ
+2
+i=1
+subject to 1 − ξi − y (i) (wT x(i) + b) ≤ 0, i = 1, . . . , m,
+−ξi ≤ 0,
+i = 1, . . . , m.
+
+Next, we form the generalized Lagrangian,10
+1
+L(w, b, ξ, α, β) = w
+2
+
+2
+
++C
+
+m
+❳
+i=1
+
+ξi +
+
+m
+❳
+
+(i)
+
+T
+
+αi (1 − ξi − y (w x
+
+(i)
+
++ b)) −
+
+m
+❳
+
+βi ξi ,
+
+i=1
+
+i=1
+
+which gives the primal and dual optimization problems:
+max
+
+α,β:αi ≥0,βi ≥0
+
+min
+w,b,ξ
+
+θD (α, β)
+θP (w, b, ξ)
+
+where θD (α, β) := min
+w,b,ξ
+
+where θP (w, b, ξ) :=
+
+L(w, b, ξ, α, β),
+max
+
+α,β:αi ≥0,βi ≥0
+
+L(w, b, ξ, α, β).
+
+(SVM-D)
+(SVM-P)
+
+To get the dual problem in the form shown in the lecture notes, however, we still have a
+little more work to do. In particular,
+10
+
+Here, it is important to note that (w, b, ξ) collectively play the role of the x primal variables. Similarly,
+(α, β) collectively play the role of the λ dual variables used for inequality constraints. There are no “ν” dual
+variables here since there are no affine constraints in this problem.
+
+12
+
+1. Eliminating the primal variables. To eliminate the primal variables from the dual
+problem, we compute θD (α, β) by noticing that
+θD (α, β) = minw,b,ξ
+
+L(w, b, ξ, α, β)
+
+is an unconstrained optimization problem, where the objective function L(w, b, ξ, α, β)
+ˆ minimize the Lagrangian,
+is differentiable. Therefore, for any fixed (α, β), if (w,
+ˆ ˆb, ξ)
+it must be the case that
+ˆ α, β) = wˆ −
+∇w L(w,
+ˆ ˆb, ξ,
+
+m
+❳
+
+αi y (i) x(i) = 0
+
+(5)
+
+i=1
+
+m
+❳
+∂
+ˆ
+ˆ
+L(w,
+ˆ b, ξ, α, β) = −
+αi y (i) = 0
+∂b
+i=1
+∂
+ˆ α, β) = C − αi − βi = 0.
+L(w,
+ˆ ˆb, ξ,
+∂ξi
+
+(6)
+(7)
+
+Adding (6) and (7) to the constraints of our dual optimizaton problem, we obtain,
+ˆ
+θD (α, β) = L(w,
+ˆ ˆb, ξ)
+m
+m
+m
+❳
+❳
+❳
+1
+= wˆ 2 + C
+βi ξˆi
+αi (1 − ξˆi − y (i) (wˆ T x(i) + ˆb)) −
+ξˆi +
+2
+i=1
+i=1
+i=1
+m
+m
+m
+❳
+❳
+❳
+1
+= wˆ 2 + C
+βi ξˆi
+ξˆi +
+αi (1 − ξˆi − y (i) (wˆ T x(i) )) −
+2
+i=1
+i=1
+i=1
+m
+❳
+1
+αi (1 − y (i) (wˆ T x(i) )).
+= wˆ 2 +
+2
+i=1
+ˆ for fixed (α, β), the
+where the first equality follows from the optimality of (w,
+ˆ ˆb, ξ)
+second equality uses the definition of the generalized Lagrangian, and the third and
+fourth equalities follow from (6) and (7), respectively. Finally, to use (5), observe that
+1
+wˆ
+2
+
+2
+
++
+
+m
+❳
+i=1
+
+m
+❳
+1
+wˆ 2 − wˆ T
+αi y (i) x(i)
+2
+i=1
+i=1
+m
+❳
+1
+=
+αi + wˆ 2 − wˆ 2
+2
+i=1
+m
+❳
+1
+=
+αi − wˆ 2
+2
+i=1
+m
+m ❳
+m
+❳
+1❳
+=
+αi −
+αi αi y (i) y (j) x(i) , x(j) .
+2 i=1 j=1
+i=1
+
+αi (1 − y (i) (wˆ T x(i) )) =
+
+13
+
+m
+❳
+
+αi +
+
+Therefore, our dual problem (with no more primal variables) is simply
+maximize
+α,β
+
+m
+❳
+
+αi −
+
+i=1
+
+m ❳
+m
+1❳
+αi αi y (i) y (j) x(i) , x(j)
+2 i=1 j=1
+
+subject to αi ≥ 0,
+βi ≥ 0,
+αi + βi = C,
+m
+❳
+
+i = 1, . . . , m,
+i = 1, . . . , m,
+i = 1, . . . , m,
+
+αi y (i) = 0.
+
+i=1
+
+2. KKT complementary. KKT complementarity requires that for any primal optimal
+(w∗ , b∗ , ξ ∗ ) and dual optimal (α∗ , β ∗ ),
+αi∗ (1 − ξi∗ − y (i) (w∗ T x(i) + b∗ )) = 0
+βi∗ ξi∗ = 0
+for i = 1, . . . , m. From the first condition, we see that if αi > 0, then in order for the
+product to be zero, then 1 − ξi∗ − y (i) (w∗ T x(i) + b∗ ) = 0. It follows that
+y (i) (w∗ T x(i) + b∗ ) ≤ 1
+since ξ ∗ ≥ 0 by primal feasibility. Similarly, if βi∗ > 0, then ξi∗ = 0 to ensure complementarity. From the primal constraint, y (i) (wT x(i) + b) ≥ 1 − ξi , it follows that
+y (i) (w∗ T x(i) + b∗ ) ≥ 1.
+Finally, since βi∗ > 0 is equivalent to αi∗ < C (since α∗ + βi∗ = C), we can summarize
+the KKT conditions as follows:
+αi∗ = 0 ⇒ y (i) (w∗ T x(i) + b∗ ) ≥ 1,
+0 < αi∗ < C ⇒ y (i) (w∗ T x(i) + b∗ ) = 1,
+αi∗ = C ⇒ y (i) (w∗ T x(i) + b∗ ) ≤ 1.
+3. Simplification. We can tidy up our dual problem slightly by observing that each pair
+of constraints of the form
+βi ≥ 0
+
+αi + βi = C
+
+is equivalent to the single constraint, αi ≤ C; that is, if we solve the optimization
+problem
+m ❳
+m
+1❳
+αi αi y (i) y (j) x(i) , x(j)
+α,β
+2
+i=1 j=1
+i=1
+subject to 0 ≤ αi ≤ C,
+
+maximize
+
+m
+❳
+
+m
+❳
+
+αi −
+
+αi y (i) = 0.
+
+i=1
+
+14
+
+i = 1, . . . , m,
+
+(8)
+
+and subsequently set βi = C − αi , then it follows that (α, β) will be optimal for the
+previous dual problem above. This last form, indeed, is the form of the soft-margin
+SVM dual given in the lecture notes.
+
+15
+
+
